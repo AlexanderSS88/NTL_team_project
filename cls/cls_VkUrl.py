@@ -41,7 +41,7 @@ class VkUrl(HttpR):
                                   self.get_params(
                                       fields='bdate,'
                                              'sex,'
-                                             'photo_400_orig,'
+                                             # 'photo_400_orig,'
                                              'interests,'
                                              'music',
                                       pdict={'user_ids': user_id})

@@ -4,7 +4,7 @@ from cls.cls_VkUrl import VkUrl
 
 if __name__ == '__main__':
     vk = VkUrl('vk_token.txt')
-    vk_id = '84482680'
+    vk_id = '668524'
 
     pprint(vk.get_personal_data(user_id=vk_id))
 
