@@ -76,18 +76,20 @@ class Person:
         """
         files_inf_list = list()
 
-        for photo in photo_list[0]:
-            max_photo = max(photo['sizes'], key=lambda size: int(size['width']))
+        for item in photo_list:
+            for photo in item:
+                # max_photo = max(photo['sizes'], key=lambda size: int(size['width']))
+                max_photo = photo['sizes'][-1]
 
-            file_name = f"{photo['likes']['count']}.jpeg"
+                file_name = f"{photo['likes']['count']}.jpeg"
 
-            # Collect the list of files.
-            files_inf_list.append({'file_name': file_name,
-                                   'likes': photo['likes']['count'],
-                                   'date': photo['date'],
-                                   'url': max_photo['url'],
-                                   'size': max_photo['type'],
-                                   'width': max_photo['width']})
+                # Collect the list of files.
+                files_inf_list.append({'file_name': file_name,
+                                       'likes': photo['likes']['count'],
+                                       'date': photo['date'],
+                                       'url': max_photo['url'],
+                                       'size': max_photo['type'],
+                                       'width': max_photo['width']})
 
         files_inf_list.sort(key=lambda x: int(x['likes']), reverse=True)
 
