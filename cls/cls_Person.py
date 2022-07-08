@@ -14,7 +14,7 @@ class Person:
 
         # tokens for different access kind
         self.vk = VkUrl('vk_token.txt')
-        self.vk_ = VkUrl('vk_token_.txt')
+        self.vk_ = VkUrl('vk_bot.txt')
 
         # get personal data
         self.pers_data_json = (self.vk.get_personal_data(user_id=self.user_id))
@@ -40,6 +40,17 @@ class Person:
         n_char = '\n'
         return f"{self.pers_data_json['response'][0]['first_name']} {self.pers_data_json['response'][0]['last_name']}" \
                f"\nhttps://vk.com/id{self.user_id}\nattachment({''.join([f'{url},{n_char}' for url in self.photo_list])})"
+
+    def get_person_data(self):
+        """
+        :return: the person information in short dictionary
+        """
+        return {'first_name': self.pers_data_json['response'][0]['first_name'],
+                'last_name': self.pers_data_json['response'][0]['last_name'],
+                'age': self.age,
+                'city': self.sity_name,
+                'city_id': self.sity_id,
+                'photos_list': self.photo_list}
 
     @staticmethod
     def get_age(pers_data_json: dict):

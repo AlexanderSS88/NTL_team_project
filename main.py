@@ -1,6 +1,4 @@
 from pprint import pprint
-
-from cls.cls_VkUrl import VkUrl
 from cls.cls_Person import Person
 
 """
@@ -13,8 +11,8 @@ def get_personal_data(user_id: int):
     user = Person(str(user_id))
 
     print(user)
-
-    print(f'\nage: {user.age}\nsity: {user.sity_name}')
+    print()
+    pprint(user.get_person_data())
 
 
 if __name__ == '__main__':
