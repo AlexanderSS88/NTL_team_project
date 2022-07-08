@@ -24,7 +24,7 @@ class Person:
         # get city name
         self.sity_name = self.pers_data_json['response'][0]['city']['title']
         self.sity_id = self.pers_data_json['response'][0]['city']['id']
-        self.interests = self.pers_data_json['response'][0]['interests']
+        self.interests = self.get_interests(self.pers_data_json['response'][0]['interests'])
         # the base albums list, common for everybody
         self.album_list = ['wall', 'profile']
         # search another albums
@@ -66,6 +66,14 @@ class Person:
             return datetime.now().year - data_.year
         else:
             return None
+
+    @staticmethod
+    def get_interests(intr_str: str) -> list:
+        interests = []
+        if len(intr_str) >0:
+            interests = intr_str.split('.')
+        return interests
+
 
     @staticmethod
     def format_files_list(photo_list: dict, qtt: int) -> list:

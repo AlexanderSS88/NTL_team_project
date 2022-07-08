@@ -18,5 +18,5 @@ def get_personal_data(user_id: int):
 
 
 if __name__ == '__main__':
-    vk_id = 84482680
+    vk_id = 668524
     get_personal_data(vk_id)
