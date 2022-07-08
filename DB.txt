@@ -2,6 +2,9 @@ CREATE TABLE IF NOT EXISTS user_info (
 id integer PRIMARY KEY,
 user_name varchar(40) NOT NULL,
 user_surname varchar(40) NOT NULL,
+age integer (3),
+sex varchar (40),
+city varchar (40),
 account_link varchar(80) NOT NULL
 );
 
@@ -16,5 +19,3 @@ id integer PRIMARY KEY,
 interest_name varchar(40) NOT NULL,
 interest_id_user integer REFERENCES user_info(id)
 );
-
-
