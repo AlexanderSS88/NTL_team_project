@@ -1,6 +1,8 @@
 import requests
 from cls.cls_HttpReq import HttpR
 
+from pprint import pprint
+
 """
 This is the VKontakte API communication class
 """

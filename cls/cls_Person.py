@@ -1,5 +1,5 @@
 from pprint import pprint
-
+from datetime import datetime
 from cls.cls_VkUrl import VkUrl
 
 """
@@ -19,7 +19,10 @@ class Person:
         # get personal data
         self.pers_data_json = (self.vk.get_personal_data(user_id=self.user_id))
         # get person age
-        self.age = self.get_age(self.pers_data_json)
+        self.age = self.get_age(self.pers_data_json['response'][0])
+        # get city name
+        self.sity_name = self.pers_data_json['response'][0]['city']['title']
+        self.sity_id = self.pers_data_json['response'][0]['city']['id']
         # the base albums list, common for everybody
         self.album_list = ['wall', 'profile']
         # search another albums
@@ -40,8 +43,11 @@ class Person:
 
     @staticmethod
     def get_age(pers_data_json: dict):
-        pprint(pers_data_json)
-
+        """
+        Calculate Age from date of birth
+        """
+        data_ = datetime.strptime(pers_data_json['bdate'], '%d.%m.%Y')
+        return datetime.now().year - data_.year
 
     @staticmethod
     def format_files_list(photo_list: dict, qtt: int) -> list:

@@ -14,7 +14,9 @@ def get_personal_data(user_id: int):
 
     print(user)
 
+    print(f'\nage: {user.age}\nsity: {user.sity_name}')
+
 
 if __name__ == '__main__':
-    vk_id = 84482680
+    vk_id = 1
     get_personal_data(vk_id)
