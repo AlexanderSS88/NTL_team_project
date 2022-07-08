@@ -41,7 +41,7 @@ class VkUrl(HttpR):
                                   self.get_params(
                                       fields='bdate,'
                                              'sex,'
-                                             # 'photo_400_orig,'
+                                      # 'photo_400_orig,'
                                              'interests,'
                                              'music',
                                       pdict={'user_ids': user_id})
@@ -104,12 +104,15 @@ class VkUrl(HttpR):
 
         album_list = []
         result = requests.get(self.get_url(method="photos.getAlbums"),
-                              params=self.get_params(
-                                  fields='',
-                                  pdict={'owner_id': user_id}),
+                              params=self.transform_param(
+                                  self.get_params(
+                                      fields='',
+                                      pdict={'owner_id': user_id})),
                               timeout=5)
 
         result = result.json()
+
+        pprint(f'result: {result}')
 
         for items in result['response']['items']:
             album_list.append(items['id'])
