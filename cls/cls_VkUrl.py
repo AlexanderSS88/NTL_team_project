@@ -1,8 +1,6 @@
 import requests
 from cls.cls_HttpReq import HttpR
 
-from pprint import pprint
-
 """
 This is the VKontakte API communication class
 """
@@ -32,6 +30,24 @@ class VkUrl(HttpR):
     def transform_param(param: dict):
         return ''.join([f'&{key}={value}' for key, value in param.items()])
 
+    def get_base_personal_data(self, user_id: str) -> dict:
+        """
+        Gets a user's data by user id
+        """
+        result = requests.get(self.get_url(method="users.get"),
+                              params=self.transform_param(
+                                  self.get_params(
+                                      fields='bdate,'
+                                             'sex,'
+                                             'city,'
+                                      # 'photo_400_orig,'
+                                             'interests,'
+                                             'music',
+                                      pdict={'user_ids': user_id})
+                              ), timeout=5)
+
+        return result.json()
+
     def get_personal_data(self, user_id: str) -> dict:
         """
         Gets a user's data by user id
@@ -41,6 +57,7 @@ class VkUrl(HttpR):
                                   self.get_params(
                                       fields='bdate,'
                                              'sex,'
+                                             'city,'
                                       # 'photo_400_orig,'
                                              'interests,'
                                              'music',
@@ -70,7 +87,7 @@ class VkUrl(HttpR):
         else:
             return f"Error"
 
-    def get_photo_f_profile(self, user_id: str, album_name_list: list) -> list | str:
+    def get_photo_f_profile_by_album_list(self, user_id: str, album_name_list: list) -> list | str:
 
         """
         Gets a user's photos data by user id in album_name_list
@@ -90,10 +107,10 @@ class VkUrl(HttpR):
                                                  'extended': '1'})),
                                   timeout=5)
 
-        if result.status_code != 200 and 'error' in result.json():
-            return f"Error"
-        else:
-            photos_list.append(result.json()['response']['items'])
+            if result.status_code != 200 and 'error' in result.json():
+                return f"Error"
+            else:
+                photos_list.append(result.json()['response']['items'])
 
         return photos_list
 
@@ -112,10 +129,7 @@ class VkUrl(HttpR):
 
         result = result.json()
 
-        pprint(f'result: {result}')
-
         for items in result['response']['items']:
             album_list.append(items['id'])
-            print(items['title'])
 
         return album_list
