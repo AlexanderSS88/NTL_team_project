@@ -32,6 +32,24 @@ class VkUrl(HttpR):
     def transform_param(param: dict):
         return ''.join([f'&{key}={value}' for key, value in param.items()])
 
+    def get_base_personal_data(self, user_id: str) -> dict:
+        """
+        Gets a user's data by user id
+        """
+        result = requests.get(self.get_url(method="users.get"),
+                              params=self.transform_param(
+                                  self.get_params(
+                                      fields='bdate,'
+                                             'sex,'
+                                             'city,'
+                                      # 'photo_400_orig,'
+                                             'interests,'
+                                             'music',
+                                      pdict={'user_ids': user_id})
+                              ), timeout=5)
+
+        return result.json()
+
     def get_personal_data(self, user_id: str) -> dict:
         """
         Gets a user's data by user id
@@ -39,7 +57,10 @@ class VkUrl(HttpR):
         result = requests.get(self.get_url(method="users.get"),
                               params=self.transform_param(
                                   self.get_params(
-                                      fields='photo_400_orig,'
+                                      fields='bdate,'
+                                             'sex,'
+                                             'city,'
+                                      # 'photo_400_orig,'
                                              'interests,'
                                              'music',
                                       pdict={'user_ids': user_id})
@@ -67,3 +88,50 @@ class VkUrl(HttpR):
             return result.json()['response']['items']
         else:
             return f"Error"
+
+    def get_photo_f_profile_by_album_list(self, user_id: str, album_name_list: list) -> list | str:
+
+        """
+        Gets a user's photos data by user id in album_name_list
+        """
+
+        photos_list = []
+
+        for album_name in album_name_list:
+            result = requests.get(self.get_url(method="photos.get"),
+                                  params=self.transform_param(
+                                      self.get_params(
+                                          fields='',
+                                          pdict={'owner_id': user_id,
+                                                 'album_id': album_name,
+                                                 'count': '200',
+                                                 'photo_sizes': '1',
+                                                 'extended': '1'})),
+                                  timeout=5)
+
+            if result.status_code != 200 and 'error' in result.json():
+                return f"Error"
+            else:
+                photos_list.append(result.json()['response']['items'])
+
+        return photos_list
+
+    def search_albums(self, user_id: str) -> list:
+        """
+        Gets albums list.
+        """
+
+        album_list = []
+        result = requests.get(self.get_url(method="photos.getAlbums"),
+                              params=self.transform_param(
+                                  self.get_params(
+                                      fields='',
+                                      pdict={'owner_id': user_id})),
+                              timeout=5)
+
+        result = result.json()
+
+        for items in result['response']['items']:
+            album_list.append(items['id'])
+
+        return album_list

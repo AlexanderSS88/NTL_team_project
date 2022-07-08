@@ -7,4 +7,3 @@ class HttpR:
         # to take a token from file
         with open(token_file_n, 'r') as t_file:
             self.token = t_file.read().strip()
-            print(self.token)

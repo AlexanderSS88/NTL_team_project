@@ -1,11 +1,22 @@
 from pprint import pprint
+from cls.cls_Person import Person
 
-from cls.cls_VkUrl import VkUrl
+"""
+Get user data by user id.
+This function is separated to use for different persons in main.
+"""
+
+
+def get_personal_data(user_id: int):
+    user = Person(str(user_id))
+
+    print('Version for Bot:')
+    print(user)
+    print()
+    print('Version for Database')
+    pprint(user.get_person_data())
+
 
 if __name__ == '__main__':
-    vk = VkUrl('vk_token.txt')
-    vk_id = '1'
-
-    pprint(vk.get_personal_data(user_id=vk_id))
-    pprint(vk.get_photo_f_profile(user_id=vk_id, album_name='wall'))
-    pprint(vk.get_photo_f_profile(user_id=vk_id, album_name='profile'))
+    vk_id = 1
+    get_personal_data(vk_id)
