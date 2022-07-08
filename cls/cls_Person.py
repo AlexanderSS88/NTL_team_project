@@ -60,8 +60,12 @@ class Person:
         """
         Calculate Age from date of birth
         """
-        data_ = datetime.strptime(pers_data_json['bdate'], '%d.%m.%Y')
-        return datetime.now().year - data_.year
+        data_str = pers_data_json.get('bdate')
+        if data_str is not None:
+            data_ = datetime.strptime(data_str, '%d.%m.%Y')
+            return datetime.now().year - data_.year
+        else:
+            return None
 
     @staticmethod
     def format_files_list(photo_list: dict, qtt: int) -> list:
