@@ -70,10 +70,9 @@ class Person:
     @staticmethod
     def get_interests(intr_str: str) -> list:
         interests = []
-        if len(intr_str) >0:
+        if len(intr_str) > 0:
             interests = intr_str.split('.')
         return interests
-
 
     @staticmethod
     def format_files_list(photo_list: dict, qtt: int) -> list:
