@@ -18,11 +18,13 @@ class Person:
 
         # get personal data
         self.pers_data_json = (self.vk.get_personal_data(user_id=self.user_id))
+        # pprint(self.pers_data_json)
         # get person age
         self.age = self.get_age(self.pers_data_json['response'][0])
         # get city name
         self.sity_name = self.pers_data_json['response'][0]['city']['title']
         self.sity_id = self.pers_data_json['response'][0]['city']['id']
+        self.interests = self.pers_data_json['response'][0]['interests']
         # the base albums list, common for everybody
         self.album_list = ['wall', 'profile']
         # search another albums
@@ -50,6 +52,7 @@ class Person:
                 'age': self.age,
                 'city': self.sity_name,
                 'city_id': self.sity_id,
+                'interests': self.interests,
                 'photos_list': self.photo_list}
 
     @staticmethod

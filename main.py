@@ -10,8 +10,10 @@ This function is separated to use for different persons in main.
 def get_personal_data(user_id: int):
     user = Person(str(user_id))
 
+    print('Version for Bot:')
     print(user)
     print()
+    print('Version for Database')
     pprint(user.get_person_data())
 
 
