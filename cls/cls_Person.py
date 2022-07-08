@@ -13,8 +13,8 @@ class Person:
         self.photo_quantity = 3
 
         # tokens for different access kind
-        self.vk = VkUrl('vk_token.txt')
-        self.vk_ = VkUrl('vk_bot.txt')
+        self.vk = VkUrl('tokens/vk_token.txt')
+        self.vk_ = VkUrl('tokens/vk_bot.txt')
 
         # get personal data
         self.pers_data_json = (self.vk.get_personal_data(user_id=self.user_id))
