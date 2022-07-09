@@ -2,8 +2,8 @@ CREATE TABLE IF NOT EXISTS user_info (
 id integer PRIMARY KEY,
 user_name varchar(40) NOT NULL,
 user_surname varchar(40) NOT NULL,
-age varchar (40),
-sex varchar (40),
+age int,
+sex int,
 city varchar (40),
 account_link varchar(80) NOT NULL
 );
