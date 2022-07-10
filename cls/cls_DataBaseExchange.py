@@ -7,21 +7,20 @@ class DataBaseExchange(DataBaseConnection):
     def __init__(self, db_data_file_path='/tokens/database_data.txt'):
         super().__init__(db_data_file_path)
 
-
-    """
-                {'first_name': self.pers_data_json['response'][0]['first_name'],
-                    'last_name': self.pers_data_json['response'][0]['last_name'],
-                    'id': self.user_id,
-                    'url': f'https://vk.com/id{self.user_id}',
-                    'age': self.age,
-                    'city': self.city_name,
-                    'city_id': self.city_id,
-                    'interests': self.interests,
-                    'photos_list': self.photo_list}
-    """
-
     def add_user_data(self, user_data: dict):
-        ...
+        try:
+            sel = self.connection.execute(f"INSERT INTO user_info VALUES ("
+                                          f"'{user_data.get('id')}', "
+                                          f"'{user_data.get('first_name')}', "
+                                          f"'{user_data.get('last_name')}', "
+                                          f"'{user_data.get('age')}', "
+                                          f"'{user_data.get('sex')}', "
+                                          f"'{user_data.get('city')}', "
+                                          f"'{user_data.get('url')}');"
+                                          )
+            print(f"User {user_data.get('id')} data recorded to DataBae.")
+        except sqlalchemy.exc.IntegrityError:
+            print('This person was in DataBae yet.')
 
     def create_tables(self):
         sel = self.connection.execute("""

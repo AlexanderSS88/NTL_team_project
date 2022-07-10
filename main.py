@@ -10,7 +10,7 @@ This function is separated to use for different persons in main.
 
 def get_personal_data(user_id: int):
     user = Person(str(user_id))
-    user.get_photos_of_person()
+    # user.get_photos_of_person()
 
     print('Version for Bot:')
     print(user)
@@ -18,9 +18,12 @@ def get_personal_data(user_id: int):
     print('Version for Database')
     pprint(user.get_person_data())
 
+    data_base = DataBaseExchange()
+    data_base.add_user_data(user.get_person_data())
+
 
 if __name__ == '__main__':
-    data_base = DataBaseExchange()
 
-    # vk_id = 668524
-    # get_personal_data(vk_id)
+    for vk_id in range(84482600, 84482670):
+        print(f'vk_id: {vk_id}')
+        get_personal_data(vk_id)

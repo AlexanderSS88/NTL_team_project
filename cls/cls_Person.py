@@ -1,4 +1,4 @@
-from pprint import pprint
+# from pprint import pprint
 from datetime import datetime
 from cls.cls_VkUrl import VkUrl
 
@@ -14,13 +14,15 @@ class Person:
     # the base albums list, common for everybody
     album_list = ['wall', 'profile']
     photo_list = []
+    city_name = str
+    city_id = str
 
     def __init__(self, user_id):
         self.user_id = user_id
         self.photo_quantity = 3
 
         # tokens for different access kind
-        path = Path(pathlib.Path.cwd(), 'tokens', 'vk_token.txt')
+        path = Path(pathlib.Path.cwd(), 'tokens', 'vk_bot.txt')
         self.vk = VkUrl(str(path))
         path = Path(pathlib.Path.cwd(), 'tokens', 'vk_bot.txt')
         self.vk_ = VkUrl(str(path))
@@ -31,12 +33,14 @@ class Person:
         self.successful_read = True
 
         if self.test_response(self.pers_data_json):
+            personal_dict = self.pers_data_json['response'][0]
             # get person age
-            self.age = self.get_age(self.pers_data_json['response'][0])
+            self.age = self.get_age(personal_dict)
+            self.sex = personal_dict.get('sex')
             # get city name
-            self.city_name = self.pers_data_json['response'][0]['city']['title']
-            self.city_id = self.pers_data_json['response'][0]['city']['id']
-            self.interests = self.get_interests(self.pers_data_json['response'][0]['interests'])
+            self.get_city(personal_dict)
+
+            self.interests = self.get_interests(personal_dict)
         else:
             print('Error')
             self.successful_read = False
@@ -67,6 +71,21 @@ class Person:
 
         return self.photo_list
 
+    def get_city(self, pers_data_json: dict):
+        city_dict = pers_data_json.get('city')
+        if city_dict is None:
+            self.city_name = 'Unknown'
+            self.city_id = -1
+            return
+
+        self.city_name = city_dict.get('title')
+        if self.city_name is None:
+            self.city_name = 'Unknown'
+
+        self.city_id = city_dict.get('id')
+        if self.city_id is None:
+            self.city_id = -1
+
     @staticmethod
     def test_response(response: dict) -> bool:
         return 'response' in response
@@ -81,6 +100,7 @@ class Person:
                     'id': self.user_id,
                     'url': f'https://vk.com/id{self.user_id}',
                     'age': self.age,
+                    'sex': self.sex,
                     'city': self.city_name,
                     'city_id': self.city_id,
                     'interests': self.interests,
@@ -95,16 +115,22 @@ class Person:
         """
         data_str = pers_data_json.get('bdate')
         if data_str is not None:
-            data_ = datetime.strptime(data_str, '%d.%m.%Y')
+            try:
+                data_ = datetime.strptime(data_str, '%d.%m.%Y')
+            except ValueError:
+                return -1
+
             return datetime.now().year - data_.year
         else:
-            return None
+            return -1
 
     @staticmethod
-    def get_interests(intr_str: str) -> list:
+    def get_interests(pers_data_json: dict) -> list:
+        data_str = pers_data_json.get('interests')
         interests = []
-        if len(intr_str) > 0:
-            interests = intr_str.split('.')
+        if data_str is not None:
+            if len(data_str) > 0:
+                interests = data_str.split('.')
         return interests
 
     @staticmethod

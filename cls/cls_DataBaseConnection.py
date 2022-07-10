@@ -10,7 +10,8 @@ class DataBaseConnection:
 
         print(self.connection)
 
-    def make_database_connection(self, db_data_file_path: str):
+    @staticmethod
+    def make_database_connection(db_data_file_path: str):
         path = str(Path(pathlib.Path.cwd())) + db_data_file_path
 
         config = configparser.ConfigParser()

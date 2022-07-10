@@ -1,7 +1,8 @@
 import requests
+import time
 from cls.cls_HttpReq import HttpR
 
-from pprint import pprint
+# from pprint import pprint
 
 """
 This is the VKontakte API communication class
@@ -48,6 +49,7 @@ class VkUrl(HttpR):
                                       pdict={'user_ids': user_id})
                               ), timeout=5)
 
+        time.sleep(0.3)
         return result.json()
 
     def get_personal_data(self, user_id: str) -> dict:
@@ -66,6 +68,7 @@ class VkUrl(HttpR):
                                       pdict={'user_ids': user_id})
                               ), timeout=5)
 
+        time.sleep(0.3)
         return result.json()
 
     def get_photo_f_profile(self, user_id: str, album_name: str) -> dict | str:
@@ -83,6 +86,8 @@ class VkUrl(HttpR):
                                              'photo_sizes': '1',
                                              'extended': '1'})),
                               timeout=5)
+
+        time.sleep(0.3)
 
         if result.status_code == 200 and 'error' not in result.json():
             return result.json()['response']['items']
@@ -108,6 +113,7 @@ class VkUrl(HttpR):
                                                  'photo_sizes': '1',
                                                  'extended': '1'})),
                                   timeout=5)
+            time.sleep(0.3)
 
             if result.status_code != 200 and 'error' in result.json():
                 return f"Error"
@@ -128,6 +134,7 @@ class VkUrl(HttpR):
                                       fields='',
                                       pdict={'owner_id': user_id})),
                               timeout=5)
+        time.sleep(0.3)
 
         result = result.json()
 
