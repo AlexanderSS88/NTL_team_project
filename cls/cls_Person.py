@@ -2,6 +2,9 @@ from pprint import pprint
 from datetime import datetime
 from cls.cls_VkUrl import VkUrl
 
+import pathlib
+from pathlib import Path
+
 """
 Class to describe user person.
 """
@@ -13,8 +16,10 @@ class Person:
         self.photo_quantity = 3
 
         # tokens for different access kind
-        self.vk = VkUrl('tokens/vk_token.txt')
-        self.vk_ = VkUrl('tokens/vk_bot.txt')
+        path = Path(pathlib.Path.cwd(), 'tokens', 'vk_token.txt')
+        self.vk = VkUrl(path)
+        path = Path(pathlib.Path.cwd(), 'tokens', 'vk_bot.txt')
+        self.vk_ = VkUrl(path)
 
         # get personal data
         self.pers_data_json = (self.vk.get_personal_data(user_id=self.user_id))
