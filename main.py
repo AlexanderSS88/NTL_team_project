@@ -10,6 +10,7 @@ This function is separated to use for different persons in main.
 
 def get_personal_data(user_id: int):
     user = Person(str(user_id))
+    user.get_photos_of_person()
 
     print('Version for Bot:')
     print(user)

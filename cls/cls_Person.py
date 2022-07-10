@@ -11,6 +11,10 @@ Class to describe user person.
 
 
 class Person:
+    # the base albums list, common for everybody
+    album_list = ['wall', 'profile']
+    photo_list = []
+
     def __init__(self, user_id):
         self.user_id = user_id
         self.photo_quantity = 3
@@ -33,15 +37,6 @@ class Person:
             self.city_name = self.pers_data_json['response'][0]['city']['title']
             self.city_id = self.pers_data_json['response'][0]['city']['id']
             self.interests = self.get_interests(self.pers_data_json['response'][0]['interests'])
-            # the base albums list, common for everybody
-            self.album_list = ['wall', 'profile']
-            # search another albums
-            self.album_list.extend(self.vk_.search_albums(user_id=user_id))
-            # get a list of all photos from all albums
-            self.photo_list = self.vk.get_photo_f_profile_by_album_list(user_id=self.user_id,
-                                                                        album_name_list=self.album_list)
-            # sort of photos by bigger likes quantity and take 3 best
-            self.photo_list = self.format_files_list(self.photo_list, self.photo_quantity)
         else:
             print('Error')
             self.successful_read = False
@@ -61,7 +56,7 @@ class Person:
             return 'Error'
 
     def get_photos_of_person(self) -> list:
-        self.album_list = ['wall', 'profile']
+
         # search another albums
         self.album_list.extend(self.vk_.search_albums(user_id=self.user_id))
         # get a list of all photos from all albums
