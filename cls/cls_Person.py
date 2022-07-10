@@ -24,41 +24,58 @@ class Person:
         # get personal data
         self.pers_data_json = (self.vk.get_personal_data(user_id=self.user_id))
         # pprint(self.pers_data_json)
-        # get person age
-        self.age = self.get_age(self.pers_data_json['response'][0])
-        # get city name
-        self.sity_name = self.pers_data_json['response'][0]['city']['title']
-        self.sity_id = self.pers_data_json['response'][0]['city']['id']
-        self.interests = self.get_interests(self.pers_data_json['response'][0]['interests'])
-        # the base albums list, common for everybody
-        self.album_list = ['wall', 'profile']
-        # search another albums
-        self.album_list.extend(self.vk_.search_albums(user_id=user_id))
-        # get a list of all photos from all albums
-        self.photo_list = self.vk.get_photo_f_profile_by_album_list(user_id=self.user_id,
-                                                                    album_name_list=self.album_list)
-        # sort of photos by bigger likes quantity and take 3 best
-        self.photo_list = self.format_files_list(self.photo_list, self.photo_quantity)
+        self.successful_read = True
+
+        if self.test_response(self.pers_data_json):
+            # get person age
+            self.age = self.get_age(self.pers_data_json['response'][0])
+            # get city name
+            self.sity_name = self.pers_data_json['response'][0]['city']['title']
+            self.sity_id = self.pers_data_json['response'][0]['city']['id']
+            self.interests = self.get_interests(self.pers_data_json['response'][0]['interests'])
+            # the base albums list, common for everybody
+            self.album_list = ['wall', 'profile']
+            # search another albums
+            self.album_list.extend(self.vk_.search_albums(user_id=user_id))
+            # get a list of all photos from all albums
+            self.photo_list = self.vk.get_photo_f_profile_by_album_list(user_id=self.user_id,
+                                                                        album_name_list=self.album_list)
+            # sort of photos by bigger likes quantity and take 3 best
+            self.photo_list = self.format_files_list(self.photo_list, self.photo_quantity)
+        else:
+            print('Error')
+            self.successful_read = False
 
     def __str__(self):
         """
         :return: the person information for bot
         """
         n_char = '\n'
-        return f"{self.pers_data_json['response'][0]['first_name']} {self.pers_data_json['response'][0]['last_name']}" \
-               f"\nhttps://vk.com/id{self.user_id}\nattachment({''.join([f'{url},{n_char}' for url in self.photo_list])})"
+
+        if self.successful_read:
+            return f"{self.pers_data_json['response'][0]['first_name']} {self.pers_data_json['response'][0]['last_name']}" \
+                   f"\nhttps://vk.com/id{self.user_id}\nattachment({''.join([f'{url},{n_char}' for url in self.photo_list])})"
+        else:
+            return 'Error'
+
+    @staticmethod
+    def test_response(response: dict) -> bool:
+        return 'response' in response
 
     def get_person_data(self):
         """
         :return: the person information in short dictionary
         """
-        return {'first_name': self.pers_data_json['response'][0]['first_name'],
-                'last_name': self.pers_data_json['response'][0]['last_name'],
-                'age': self.age,
-                'city': self.sity_name,
-                'city_id': self.sity_id,
-                'interests': self.interests,
-                'photos_list': self.photo_list}
+        if self.successful_read:
+            return {'first_name': self.pers_data_json['response'][0]['first_name'],
+                    'last_name': self.pers_data_json['response'][0]['last_name'],
+                    'age': self.age,
+                    'city': self.sity_name,
+                    'city_id': self.sity_id,
+                    'interests': self.interests,
+                    'photos_list': self.photo_list}
+        else:
+            return 'Error'
 
     @staticmethod
     def get_age(pers_data_json: dict):
