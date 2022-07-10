@@ -60,6 +60,18 @@ class Person:
         else:
             return 'Error'
 
+    def get_photos_of_person(self) -> list:
+        self.album_list = ['wall', 'profile']
+        # search another albums
+        self.album_list.extend(self.vk_.search_albums(user_id=self.user_id))
+        # get a list of all photos from all albums
+        self.photo_list = self.vk.get_photo_f_profile_by_album_list(user_id=self.user_id,
+                                                                    album_name_list=self.album_list)
+        # sort of photos by bigger likes quantity and take 3 best
+        self.photo_list = self.format_files_list(self.photo_list, self.photo_quantity)
+
+        return self.photo_list
+
     @staticmethod
     def test_response(response: dict) -> bool:
         return 'response' in response

@@ -13,19 +13,9 @@ class DataBaseExchange:
 
     def make_database_connection(self, db_data_file_path: str):
         path = str(Path(pathlib.Path.cwd())) + db_data_file_path
-        print(pathlib.Path.cwd())
-        print(path)
 
-        config = configparser.ConfigParser()  # create a parser object
-        print(path)
-        print(config.read(path))  # read confif file
-
-        # print(config)
-        print(len(config))
-        print(config['DEFAULT'])
-
-        for key, val in config['DEFAULT'].items():
-            print(f'{key}: {val}')
+        config = configparser.ConfigParser()
+        config.read(path)
 
         user_name = config['DEFAULT']['user_name']
         user_pass_word = config['DEFAULT']['user_pass_word']
@@ -37,6 +27,21 @@ class DataBaseExchange:
             f'postgresql://{user_name}:{user_pass_word}@{host}:{port}/{database_name}')
 
         return engine.connect()
+
+    """
+                {'first_name': self.pers_data_json['response'][0]['first_name'],
+                    'last_name': self.pers_data_json['response'][0]['last_name'],
+                    'id': self.user_id,
+                    'url': f'https://vk.com/id{self.user_id}',
+                    'age': self.age,
+                    'city': self.city_name,
+                    'city_id': self.city_id,
+                    'interests': self.interests,
+                    'photos_list': self.photo_list}
+    """
+
+    def add_user_data(self, user_data: dict):
+        ...
 
     def create_tables(self):
         sel = self.connection.execute("""

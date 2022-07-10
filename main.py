@@ -21,5 +21,5 @@ def get_personal_data(user_id: int):
 if __name__ == '__main__':
     data_base = DataBaseExchange()
 
-    vk_id = 668524
-    get_personal_data(vk_id)
+    # vk_id = 668524
+    # get_personal_data(vk_id)
