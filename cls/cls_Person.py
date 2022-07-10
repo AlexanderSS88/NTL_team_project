@@ -17,9 +17,9 @@ class Person:
 
         # tokens for different access kind
         path = Path(pathlib.Path.cwd(), 'tokens', 'vk_token.txt')
-        self.vk = VkUrl(path)
+        self.vk = VkUrl(str(path))
         path = Path(pathlib.Path.cwd(), 'tokens', 'vk_bot.txt')
-        self.vk_ = VkUrl(path)
+        self.vk_ = VkUrl(str(path))
 
         # get personal data
         self.pers_data_json = (self.vk.get_personal_data(user_id=self.user_id))
@@ -30,8 +30,8 @@ class Person:
             # get person age
             self.age = self.get_age(self.pers_data_json['response'][0])
             # get city name
-            self.sity_name = self.pers_data_json['response'][0]['city']['title']
-            self.sity_id = self.pers_data_json['response'][0]['city']['id']
+            self.city_name = self.pers_data_json['response'][0]['city']['title']
+            self.city_id = self.pers_data_json['response'][0]['city']['id']
             self.interests = self.get_interests(self.pers_data_json['response'][0]['interests'])
             # the base albums list, common for everybody
             self.album_list = ['wall', 'profile']
@@ -53,8 +53,10 @@ class Person:
         n_char = '\n'
 
         if self.successful_read:
-            return f"{self.pers_data_json['response'][0]['first_name']} {self.pers_data_json['response'][0]['last_name']}" \
-                   f"\nhttps://vk.com/id{self.user_id}\nattachment({''.join([f'{url},{n_char}' for url in self.photo_list])})"
+            return f"{self.pers_data_json['response'][0]['first_name']} " \
+                   f"{self.pers_data_json['response'][0]['last_name']}" \
+                   f"\nhttps://vk.com/id{self.user_id}\n" \
+                   f"attachment({''.join([f'{url},{n_char}' for url in self.photo_list])})"
         else:
             return 'Error'
 
@@ -69,9 +71,11 @@ class Person:
         if self.successful_read:
             return {'first_name': self.pers_data_json['response'][0]['first_name'],
                     'last_name': self.pers_data_json['response'][0]['last_name'],
+                    'id': self.user_id,
+                    'url': f'https://vk.com/id{self.user_id}',
                     'age': self.age,
-                    'city': self.sity_name,
-                    'city_id': self.sity_id,
+                    'city': self.city_name,
+                    'city_id': self.city_id,
                     'interests': self.interests,
                     'photos_list': self.photo_list}
         else:
@@ -97,7 +101,7 @@ class Person:
         return interests
 
     @staticmethod
-    def format_files_list(photo_list: dict, qtt: int) -> list:
+    def format_files_list(photo_list: list, qtt: int) -> list:
         """
         Format a list of files_inf_list by template:
             [{
