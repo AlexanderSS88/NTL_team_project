@@ -2,6 +2,10 @@ import sqlalchemy
 import re
 from cls.cls_DataBaseConnection import DataBaseConnection
 
+"""
+Here collected all dialogs between program and database.
+"""
+
 
 class DataBaseExchange(DataBaseConnection):
 
@@ -9,33 +13,47 @@ class DataBaseExchange(DataBaseConnection):
         super().__init__(make_connection=make_connection, db_data_file_path=db_data_file_path)
 
     def add_user_data(self, user_data: dict):
+        """
+        Add a user data to database
+        :param user_data:
+        :return: None
+        """
 
         sel = self.connection.execute(
             f"SELECT EXISTS(SELECT * FROM user_info WHERE id={user_data.get('id')});").fetchmany(1)
 
         if sel[0][0]:
             print('This person was in DataBase. Personal data will be rewritten.')
-            sel = self.connection.execute(f"DELETE FROM user_info WHERE id={user_data.get('id')};")
+            self.connection.execute(f"DELETE FROM user_info WHERE id={user_data.get('id')};")
 
         try:
-            sel = self.connection.execute(f"INSERT INTO user_info VALUES ("
-                                          f"'{user_data.get('id')}', "
-                                          f"'{self.normalize_user_data(user_data.get('first_name'))}', "
-                                          f"'{self.normalize_user_data(user_data.get('last_name'))}', "
-                                          f"'{user_data.get('age')}', "
-                                          f"'{user_data.get('sex')}', "
-                                          f"'{self.normalize_user_data(user_data.get('city'))}', "
-                                          f"'{user_data.get('url')}');"
-                                          )
+            self.connection.execute(
+                f"""INSERT INTO user_info VALUES (
+                '{user_data.get('id')}', 
+                '{self.normalize_user_data(user_data.get('first_name'))}', 
+                '{self.normalize_user_data(user_data.get('last_name'))}', 
+                '{user_data.get('age')}', 
+                '{user_data.get('sex')}', 
+                '{self.normalize_user_data(user_data.get('city'))}', 
+                '{user_data.get('url')}');"""
+            )
             print(f"User {user_data.get('id')} data recorded to DataBae.")
         except sqlalchemy.exc.IntegrityError:
             print('This person was in DataBae yet.')
 
     @staticmethod
     def normalize_user_data(data_str):
+        """
+        Solve some word problems before add data to database.
+        :param data_str:
+        :return: fixed string
+        """
         return re.sub("[$|@|&|'|*]", "", data_str)
 
     def create_tables(self):
+        """
+        Create tables in database if there is are not existed
+        """
         sel = self.connection.execute("""
         CREATE TABLE IF NOT EXISTS user_info (
         id integer PRIMARY KEY,
@@ -68,7 +86,7 @@ class DataBaseExchange(DataBaseConnection):
 
     def get_candidates(self, min_age: int, max_age: int, city_name: str) -> list:
 
-        return [item[0] for item in self.connection.execute(f"""SELECT id FROM user_info WHERE 
-                                                            age BETWEEN {min_age} AND {max_age}
-                                                            AND city = '{city_name}';""").fetchall()]
-
+        return [item[0] for item in self.connection.execute(
+            f"""SELECT id FROM user_info WHERE
+            age BETWEEN {min_age} AND {max_age}
+            AND city = '{city_name}';""").fetchall()]

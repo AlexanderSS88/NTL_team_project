@@ -95,11 +95,9 @@ class VkUrl(HttpR):
             return f"Error"
 
     def get_photo_f_profile_by_album_list(self, user_id: str, album_name_list: list) -> list | str:
-
         """
         Gets a user's photos data by user id in album_name_list
         """
-
         photos_list = []
 
         for album_name in album_name_list:
@@ -126,7 +124,6 @@ class VkUrl(HttpR):
         """
         Gets albums list.
         """
-
         album_list = []
         result = requests.get(self.get_url(method="photos.getAlbums"),
                               params=self.transform_param(

@@ -3,9 +3,12 @@ from pathlib import Path
 import configparser
 import sqlalchemy
 
-
+"""
+Here program takes database parameters from configuration file and make connection.
+"""
 class DataBaseConnection:
     def __init__(self, make_connection: bool, db_data_file_path='/tokens/database_data.txt'):
+        # it's not necessary to make database connections in some tests
         if make_connection:
             self.connection = self.make_database_connection(db_data_file_path)
             print(self.connection)
