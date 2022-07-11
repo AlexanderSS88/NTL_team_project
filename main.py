@@ -35,6 +35,7 @@ if __name__ == '__main__':
         command = input("Please choose the command: \n"
                         "'s'-scan VKontakte users to add to DataBase,\n"
                         "'c' -get candidates list, \n"
+                        "'p' -get photos list, \n"
                         "'q'- to quit: \t")
         match command:
             case 'q':
@@ -53,6 +54,11 @@ if __name__ == '__main__':
                                                            max_age=int(max_age),
                                                            city_name=city)
                 print(candidates_list)
+            case 'p':
+                user_id_4_photo = input("Input user id:\t")
+                user = Person(str(user_id_4_photo))
+                photos_list = user.get_photos_of_person(user_id_4_photo)
+                print(photos_list)
 
 
 
