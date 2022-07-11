@@ -10,7 +10,6 @@ This function is separated to use for different persons in main.
 
 def get_personal_data(user_id: int):
     user = Person(str(user_id))
-    # user.get_photos_of_person()
 
     print('Version for Bot:')
     print(user)
@@ -21,6 +20,7 @@ def get_personal_data(user_id: int):
     if user.data_are_good:
         data_base = DataBaseExchange()
         data_base.add_user_data(user.get_person_data())
+        user.get_photos_of_person(user_id)
     else:
         print('The person data are not useful.')
 
