@@ -1,4 +1,4 @@
-# from pprint import pprint
+from pprint import pprint
 from datetime import datetime
 from cls.cls_VkUrl import VkUrl
 
@@ -168,9 +168,11 @@ class Person:
         """
         files_inf_list = list()
 
+        if 'Error' in photo_list:
+            return files_inf_list
+
         for item in photo_list:
             for photo in item:
-                # max_photo = max(photo['sizes'], key=lambda size: int(size['width']))
                 max_photo = photo['sizes'][-1]
 
                 file_name = f"{photo['likes']['count']}.jpeg"
