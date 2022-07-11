@@ -115,7 +115,7 @@ class VkUrl(HttpR):
                                   timeout=5)
             time.sleep(0.3)
 
-            if result.status_code != 200 and 'error' in result.json():
+            if result.status_code != 200 or 'error' in result.json():
                 return f"Error"
             else:
                 photos_list.append(result.json()['response']['items'])
