@@ -1,18 +1,28 @@
 import sqlalchemy
+import re
 from cls.cls_DataBaseConnection import DataBaseConnection
 
 
 class DataBaseExchange(DataBaseConnection):
 
-    def __init__(self, db_data_file_path='/tokens/database_data.txt'):
-        super().__init__(db_data_file_path)
+    def __init__(self, db_data_file_path='/tokens/database_data.txt', make_connection= True):
+        super().__init__(make_connection= make_connection, db_data_file_path= db_data_file_path)
 
     def add_user_data(self, user_data: dict):
+
+        sel = self.connection.execute(f"SELECT EXISTS(SELECT * FROM user_info WHERE id={user_data.get('id')});").fetchmany(1)
+        # print (f'sel = {sel[0][0]}')
+
+        if sel[0][0]:
+            print('This person was in DataBae yet.')
+            sel = self.connection.execute(f"DELETE FROM user_info WHERE id={user_data.get('id')};")
+
+
         try:
             sel = self.connection.execute(f"INSERT INTO user_info VALUES ("
                                           f"'{user_data.get('id')}', "
-                                          f"'{user_data.get('first_name')}', "
-                                          f"'{user_data.get('last_name')}', "
+                                          f"'{self.normalize_user_data(user_data.get('first_name'))}', "
+                                          f"'{self.normalize_user_data(user_data.get('last_name'))}', "
                                           f"'{user_data.get('age')}', "
                                           f"'{user_data.get('sex')}', "
                                           f"'{user_data.get('city')}', "
@@ -21,6 +31,11 @@ class DataBaseExchange(DataBaseConnection):
             print(f"User {user_data.get('id')} data recorded to DataBae.")
         except sqlalchemy.exc.IntegrityError:
             print('This person was in DataBae yet.')
+
+    @staticmethod
+    def normalize_user_data(data_str):
+        return re.sub("[$|@|&|'|*]", "", data_str)
+
 
     def create_tables(self):
         sel = self.connection.execute("""

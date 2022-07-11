@@ -5,14 +5,16 @@ import sqlalchemy
 
 
 class DataBaseConnection:
-    def __init__(self, db_data_file_path='/tokens/database_data.txt'):
-        self.connection = self.make_database_connection(db_data_file_path)
-
-        print(self.connection)
+    def __init__(self, make_connection: bool, db_data_file_path='/tokens/database_data.txt'):
+        if make_connection:
+            self.connection = self.make_database_connection(db_data_file_path)
+            print(self.connection)
 
     @staticmethod
     def make_database_connection(db_data_file_path: str):
         path = str(Path(pathlib.Path.cwd())) + db_data_file_path
+
+        print(path)
 
         config = configparser.ConfigParser()
         config.read(path)

@@ -21,7 +21,7 @@ def get_personal_data(user_id: int):
         print('Version for Database:')
         pprint(user_dict)
         data_base.add_user_data(user_dict)
-        user.get_photos_of_person(user_id)
+        # user.get_photos_of_person(user_id)
 
     else:
         print('The person data are not useful.')
