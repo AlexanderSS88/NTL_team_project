@@ -21,6 +21,9 @@ class Person:
         self.user_id = user_id
         self.photo_quantity = 3
 
+        # marker of good user data
+        self.data_are_good = True
+
         # tokens for different access kind
         path = Path(pathlib.Path.cwd(), 'tokens', 'vk_bot.txt')
         self.vk = VkUrl(str(path))
@@ -42,6 +45,7 @@ class Person:
 
             self.interests = self.get_interests(personal_dict)
         else:
+            self.data_are_good = False
             print('Error')
             self.successful_read = False
 
@@ -76,10 +80,12 @@ class Person:
         if city_dict is None:
             self.city_name = 'Unknown'
             self.city_id = -1
+            self.data_are_good = False
             return
 
         self.city_name = city_dict.get('title')
         if self.city_name is None:
+            self.data_are_good = False
             self.city_name = 'Unknown'
 
         self.city_id = city_dict.get('id')
@@ -108,8 +114,7 @@ class Person:
         else:
             return 'Error'
 
-    @staticmethod
-    def get_age(pers_data_json: dict):
+    def get_age(self, pers_data_json: dict):
         """
         Calculate Age from date of birth
         """
@@ -118,10 +123,12 @@ class Person:
             try:
                 data_ = datetime.strptime(data_str, '%d.%m.%Y')
             except ValueError:
+                self.data_are_good = False
                 return -1
 
             return datetime.now().year - data_.year
         else:
+            self.data_are_good = False
             return -1
 
     @staticmethod

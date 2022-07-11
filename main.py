@@ -18,8 +18,11 @@ def get_personal_data(user_id: int):
     print('Version for Database')
     pprint(user.get_person_data())
 
-    data_base = DataBaseExchange()
-    data_base.add_user_data(user.get_person_data())
+    if user.data_are_good:
+        data_base = DataBaseExchange()
+        data_base.add_user_data(user.get_person_data())
+    else:
+        print('The person data are not useful.')
 
 
 if __name__ == '__main__':
