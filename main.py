@@ -31,6 +31,28 @@ if __name__ == '__main__':
 
     data_base.create_tables()
 
-    for vk_id in range(1, 84482670):
-        print(f'vk_id: {vk_id}')
-        get_personal_data(vk_id)
+    while True:
+        command = input("Please choose the command: \n"
+                        "'s'-scan VKontakte users to add to DataBase,\n"
+                        "'c' -get candidates list, \n"
+                        "'q'- to quit: \t")
+        match command:
+            case 'q':
+                break
+            case 's':
+                start_id = input("Input start user id for scan:\t")
+                last_id = input("Input last user id for scan:\t")
+                for vk_id in range(int(start_id), int(last_id)):
+                    print(f'vk_id: {vk_id}')
+                    get_personal_data(vk_id)
+            case 'c':
+                min_ege = input("Input min age of candidate:\t")
+                max_age = input("Input max age of candidate:\t")
+                city = input("Input the city name:\t")
+                candidates_list = data_base.get_candidates(min_age=int(min_ege),
+                                                           max_age=int(max_age),
+                                                           city_name=city)
+                print(candidates_list)
+
+
+
