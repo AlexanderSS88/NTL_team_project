@@ -11,11 +11,18 @@ Class to describe user person.
 
 
 class Person:
+    user_id = int
+    first_name = str
+    last_name = str
+    city_name = str
+    city_id = str
+    sex = int
+    age = int
+
     # the base albums list, common for everybody
     album_list = ['wall', 'profile']
     photo_list = []
-    city_name = str
-    city_id = str
+
 
     def __init__(self, user_id):
         self.user_id = user_id
@@ -36,7 +43,10 @@ class Person:
         self.successful_read = True
 
         if self.test_response(self.pers_data_json):
+
             personal_dict = self.pers_data_json['response'][0]
+            self.first_name = personal_dict['first_name']
+            self.last_name = personal_dict['first_name']
             # get person age
             self.age = self.get_age(personal_dict)
             self.sex = personal_dict.get('sex')
