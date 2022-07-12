@@ -32,6 +32,10 @@ class Application:
     OWNER_ID = ()
     CALLBACK_TYPES = ['show_snackbar', 'open_link', 'open_app']
 
+    pattern_hi = "(прив)|(хай)|(здаров)|(салам)|(здравст)|(добр..)|(салют)|(ку)|(hi)|(ghbd)|(\[fq)"
+    pattern_no = "(не)|(нет)|(нехочу)|(не хочу)|(no)|(ne)|(not)"
+    pattern_yes = "(давай)|(да)|(ок)|(хорош)|(соглас)|(добро)|(ладно)|(yes)|(lf)|(yep)|(замётано)"
+
     def __init__(self, db_data_file_path='/tokens/application_data.ini'):
         self.take_application_data(db_data_file_path)
 
@@ -70,24 +74,41 @@ class Application:
 
                 companion_user = Person(event.object.message['from_id'])
 
-                pattern_hi = "(прив)|(хай)|(здаров)|(салам)|(здравст)|(добр..)|(салют)|(ку)|(hi)|(ghbd)|(\[fq)"
-                pattern_no = "(не)|(нет)|(нехочу)|(не хочу)|(no)|(ne)|(not)(\[fq)"
-
                 if event.obj.message['text'] == 'изыди':
                     self.write_msg(companion_user.user_id, "Как скажете.")
-                    return "Canceled by user."
-                elif re.findall(pattern_hi, event.obj.message['text'], flags=re.IGNORECASE):
+                    return [companion_user.user_id, "Canceled by user."]
+                elif re.findall(self.pattern_hi, event.obj.message['text'], flags=re.IGNORECASE):
                     message_good = f"Здаров, коль не шутишь! {companion_user.first_name}, предлагаю тебе попробовать познакомиться с кем-нибудь. Согласен? :)"
                     self.write_msg(companion_user.user_id, message_good)
-                elif re.findall(pattern_no, event.obj.message['text'], flags=re.IGNORECASE):
+                elif re.findall(self.pattern_no, event.obj.message['text'], flags=re.IGNORECASE):
                     message_no = "Как знаешь.\nЕсли что, я тут, обращайся"
                     self.write_msg(companion_user.user_id, message_no)
+                elif re.findall(self.pattern_yes, event.obj.message['text'], flags=re.IGNORECASE):
+                    self.write_msg(companion_user.user_id, "Тогда проиступим!")
+                    return [companion_user.user_id, "Have dialog."]
                 else:
                     message_bad = f"Не здороваюсь.... {companion_user.last_name}, будешь знакомиться с кем-нибудь?"
                     self.write_msg(companion_user.user_id, message_bad)
 
-        return companion_user.user_id
+        return ['-1', 'Error']
+
+    def look_at_candidates(self, user_id):
+        # Здесь новый цикл
+        # for event in self.longpoll.listen():
+        print(f' look_at_candidates, your user_id: {user_id}')
 
 
 bot = Application()
-print(bot.new_companion())
+
+while True:
+    dialog = bot.new_companion()
+
+    # если клиент не против, можно начть новый цикл опроса
+    if 'Have dialog.' in dialog:
+        bot.look_at_candidates(dialog[0])
+
+    # выход из программы
+    if 'Canceled by user.' in dialog:
+        break
+
+# print(bot.new_companion())
