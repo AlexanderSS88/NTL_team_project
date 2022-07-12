@@ -53,7 +53,6 @@ class Application:
         config.read(path)
 
         self.GROUP_ID = config['DEFAULT']['GROUP_ID']
-        print(f'self.GROUP_ID: {self.GROUP_ID}')
         self.GROUP_TOKEN = config['DEFAULT']['GROUP_TOKEN']
         self.API_VERSION = config['DEFAULT']['API_VERSION']
         self.APPLICATION_TOKEN = config['DEFAULT']['APPLICATION_TOKEN']
@@ -72,12 +71,17 @@ class Application:
                 companion_user = Person(event.object.message['from_id'])
 
                 pattern_hi = "(прив)|(хай)|(здаров)|(салам)|(здравст)|(добр..)|(салют)|(ку)|(hi)|(ghbd)|(\[fq)"
+                pattern_no = "(не)|(нет)|(нехочу)|(не хочу)|(no)|(ne)|(not)(\[fq)"
 
                 if event.obj.message['text'] == 'изыди':
+                    self.write_msg(companion_user.user_id, "Как скажете.")
                     return "Canceled by user."
-                if re.findall(pattern_hi, event.obj.message['text'], flags=re.IGNORECASE):
+                elif re.findall(pattern_hi, event.obj.message['text'], flags=re.IGNORECASE):
                     message_good = f"Здаров, коль не шутишь! {companion_user.first_name}, предлагаю тебе попробовать познакомиться с кем-нибудь. Согласен? :)"
                     self.write_msg(companion_user.user_id, message_good)
+                elif re.findall(pattern_no, event.obj.message['text'], flags=re.IGNORECASE):
+                    message_no = "Как знаешь.\nЕсли что, я тут, обращайся"
+                    self.write_msg(companion_user.user_id, message_no)
                 else:
                     message_bad = f"Не здороваюсь.... {companion_user.last_name}, будешь знакомиться с кем-нибудь?"
                     self.write_msg(companion_user.user_id, message_bad)
