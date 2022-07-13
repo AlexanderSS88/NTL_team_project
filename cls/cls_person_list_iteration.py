@@ -11,11 +11,12 @@ class PersonListIteration:
     def get_id(self) -> str:
         for person in self.person_list:
             yield person
+        yield 'It was a last one'
 
 
-pers_list = PersonListIteration(my_list)
-for item in pers_list.get_id():
-    print(item)
+# pers_list = PersonListIteration(my_list)
+# for item in pers_list.get_id():
+#     print(item)
 
 
 class PersonListStack:
@@ -46,9 +47,12 @@ class PersonListStack:
         self.pop()
         return item
 
-print('pers_st = PersonListStack(my_list)')
 
-pers_st = PersonListStack(my_list)
-
-while not pers_st.is_empty():
-    print(pers_st.get_next())
+# print('pers_st = PersonListStack(my_list)')
+#
+# pers_st = PersonListStack(my_list)
+#
+# while not pers_st.is_empty():
+#     print(pers_st.get_next())
+#
+# print('It was a last one')

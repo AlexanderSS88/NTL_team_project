@@ -2,7 +2,7 @@ import requests
 import time
 from cls.cls_HttpReq import HttpR
 
-# from pprint import pprint
+from pprint import pprint
 
 """
 This is the VKontakte API communication class
@@ -134,8 +134,10 @@ class VkUrl(HttpR):
         time.sleep(0.3)
 
         result = result.json()
-
-        for items in result['response']['items']:
-            album_list.append(items['id'])
+        if not 'response' in result:
+            pprint(result)
+        else:
+            for items in result['response']['items']:
+                album_list.append(items['id'])
 
         return album_list

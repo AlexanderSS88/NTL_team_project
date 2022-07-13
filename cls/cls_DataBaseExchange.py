@@ -86,7 +86,13 @@ class DataBaseExchange(DataBaseConnection):
 
     def get_candidates(self, min_age: int, max_age: int, city_name: str) -> list:
 
-        return [item[0] for item in self.connection.execute(
-            f"""SELECT id FROM user_info WHERE
-            age BETWEEN {min_age} AND {max_age}
-            AND city = '{city_name}';""").fetchall()]
+        if min_age == max_age:
+            return [item[0] for item in self.connection.execute(
+                f"""SELECT id FROM user_info WHERE
+                        age = {min_age}
+                        AND city = '{city_name}';""").fetchall()]
+        else:
+            return [item[0] for item in self.connection.execute(
+                f"""SELECT id FROM user_info WHERE
+                age BETWEEN {min_age} AND {max_age}
+                AND city = '{city_name}';""").fetchall()]

@@ -63,13 +63,13 @@ class Person:
         """
         :return: the person information for bot
         """
-        n_char = '\n'
+        # n_char = '\n'
 
         if self.successful_read:
             return f"{self.pers_data_json['response'][0]['first_name']} " \
                    f"{self.pers_data_json['response'][0]['last_name']}" \
-                   f"\nhttps://vk.com/id{self.user_id}\n" \
-                   f"attachment({''.join([f'{url},{n_char}' for url in self.photo_list])})"
+                   f"\nhttps://vk.com/id{self.user_id}"
+                   # f"attachment({''.join([f'{url},{n_char}' for url in self.photo_list])})"
         else:
             return 'Error'
 
@@ -84,6 +84,22 @@ class Person:
         self.photo_list = self.format_files_list(self.photo_list, self.photo_quantity)
 
         return self.photo_list
+
+    def get_photos_of_person_4_attach(self, user_id) -> str:
+
+        n_char = '\n'
+
+        # search another albums
+        self.album_list.extend(self.vk_.search_albums(user_id=user_id))
+        # get a list of all photos from all albums
+        self.photo_list = self.vk.get_photo_f_profile_by_album_list(user_id=user_id,
+                                                                    album_name_list=self.album_list)
+        # sort of photos by bigger likes quantity and take 3 best
+        self.photo_list = self.format_files_list(self.photo_list, self.photo_quantity)
+
+        print(f'self.photo_list len {len(self.photo_list)}')
+
+        return f"attachment({''.join([f'{url},{n_char}' for url in self.photo_list])})"
 
     def get_photos_of_person(self, user_id) -> list:
 

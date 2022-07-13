@@ -1,6 +1,7 @@
 from pprint import pprint
 from cls.cls_Person import Person
 from cls.cls_DataBaseExchange import DataBaseExchange
+# from my_v_SM import Application
 
 """
 Get user data by user id.
@@ -62,7 +63,18 @@ if __name__ == '__main__':
                 print(photos_list)
             case 'b':
                 # start bot
-                ...
+                bot = Application()
+
+                while True:
+                    dialog = bot.new_companion()
+
+                    # если клиент не против, можно начть новый цикл опроса
+                    if 'Have dialog.' in dialog:
+                        ...
+
+                    # выход из программы
+                    if 'Canceled by user.' in dialog:
+                        break
 
 
 
