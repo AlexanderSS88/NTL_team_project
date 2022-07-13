@@ -46,7 +46,7 @@ class Person:
 
             personal_dict = self.pers_data_json['response'][0]
             self.first_name = personal_dict['first_name']
-            self.last_name = personal_dict['first_name']
+            self.last_name = personal_dict['last_name']
             # get person age
             self.age = self.get_age(personal_dict)
             self.sex = personal_dict.get('sex')
