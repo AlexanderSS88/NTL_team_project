@@ -1,8 +1,6 @@
-/tokens/vk_bot.txt
 /tokens/vk_token.txt
-/tokens/group_token.txt
-/vk_tools/vk_config.txt
-/tokens/vk_config.txt
-/tokens/database_data.txt
 /tokens/application_data.ini
 /trash/
+/tokens/db_passw.txt
+/tokens/vk_bot_token.txt
+/tokens/application_tokens.txt

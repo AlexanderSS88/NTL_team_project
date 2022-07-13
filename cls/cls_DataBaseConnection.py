@@ -1,13 +1,15 @@
 import pathlib
 from pathlib import Path
-import configparser
 import sqlalchemy
+from vk_tools.cls_tokens import Token
 
 """
 Here program takes database parameters from configuration file and make connection.
 """
+
+
 class DataBaseConnection:
-    def __init__(self, make_connection: bool, db_data_file_path='/tokens/database_data.txt'):
+    def __init__(self, make_connection: bool, db_data_file_path='/tokens/application_data.ini'):
         # it's not necessary to make database connections in some tests
         if make_connection:
             self.connection = self.make_database_connection(db_data_file_path)
@@ -15,18 +17,17 @@ class DataBaseConnection:
 
     @staticmethod
     def make_database_connection(db_data_file_path: str):
-        path = str(Path(pathlib.Path.cwd())) + db_data_file_path
+        token = Token()
 
-        print(path)
+        user_name = token.app_dict['DATABASE']['user_name']
+        port = token.app_dict['DATABASE']['port']
+        database_name = token.app_dict['DATABASE']['database_name']
+        host = token.app_dict['DATABASE']['host']
 
-        config = configparser.ConfigParser()
-        config.read(path)
+        path = str(Path(pathlib.Path.cwd())) + '/tokens/db_passw.txt'
 
-        user_name = config['DEFAULT']['user_name']
-        user_pass_word = config['DEFAULT']['user_pass_word']
-        port = config['DEFAULT']['port']
-        database_name = config['DEFAULT']['database_name']
-        host = config['DEFAULT']['host']
+        with open(path, 'r') as t_file:
+            user_pass_word = t_file.read().strip()
 
         engine = sqlalchemy.create_engine(
             f'postgresql://{user_name}:{user_pass_word}@{host}:{port}/{database_name}')

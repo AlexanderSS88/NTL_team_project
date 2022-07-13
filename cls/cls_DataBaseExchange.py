@@ -9,7 +9,7 @@ Here collected all dialogs between program and database.
 
 class DataBaseExchange(DataBaseConnection):
 
-    def __init__(self, db_data_file_path='/tokens/database_data.txt', make_connection=True):
+    def __init__(self, db_data_file_path='/tokens/application_data.ini', make_connection=True):
         super().__init__(make_connection=make_connection, db_data_file_path=db_data_file_path)
 
     def add_user_data(self, user_data: dict):

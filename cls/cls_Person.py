@@ -1,6 +1,6 @@
 from pprint import pprint
 from datetime import datetime
-from cls.cls_VkUrl import VkUrl
+from vk_tools.cls_VkUrl import VkUrl
 
 import pathlib
 from pathlib import Path
@@ -23,7 +23,6 @@ class Person:
     album_list = ['wall', 'profile']
     photo_list = []
 
-
     def __init__(self, user_id):
         self.user_id = user_id
         self.photo_quantity = 3
@@ -32,14 +31,11 @@ class Person:
         self.data_are_good = True
 
         # tokens for different access kind
-        path = Path(pathlib.Path.cwd(), 'tokens', 'vk_bot.txt')
+        path = Path(pathlib.Path.cwd(), 'tokens', 'vk_bot_token.txt')
         self.vk = VkUrl(str(path))
-        path = Path(pathlib.Path.cwd(), 'tokens', 'vk_bot.txt')
-        self.vk_ = VkUrl(str(path))
 
         # get personal data
         self.pers_data_json = (self.vk.get_personal_data(user_id=self.user_id))
-        # pprint(self.pers_data_json)
         self.successful_read = True
 
         if self.test_response(self.pers_data_json):
@@ -63,20 +59,18 @@ class Person:
         """
         :return: the person information for bot
         """
-        # n_char = '\n'
 
         if self.successful_read:
             return f"{self.pers_data_json['response'][0]['first_name']} " \
                    f"{self.pers_data_json['response'][0]['last_name']}" \
                    f"\nhttps://vk.com/id{self.user_id}"
-                   # f"attachment({''.join([f'{url},{n_char}' for url in self.photo_list])})"
         else:
             return 'Error'
 
     def get_photos_of_person(self) -> list:
 
         # search another albums
-        self.album_list.extend(self.vk_.search_albums(user_id=self.user_id))
+        self.album_list.extend(self.vk.search_albums(user_id=self.user_id))
         # get a list of all photos from all albums
         self.photo_list = self.vk.get_photo_f_profile_by_album_list(user_id=self.user_id,
                                                                     album_name_list=self.album_list)
@@ -90,7 +84,7 @@ class Person:
         n_char = '\n'
 
         # search another albums
-        self.album_list.extend(self.vk_.search_albums(user_id=user_id))
+        self.album_list.extend(self.vk.search_albums(user_id=user_id))
         # get a list of all photos from all albums
         self.photo_list = self.vk.get_photo_f_profile_by_album_list(user_id=user_id,
                                                                     album_name_list=self.album_list)
@@ -104,7 +98,7 @@ class Person:
     def get_photos_of_person(self, user_id) -> list:
 
         # search another albums
-        self.album_list.extend(self.vk_.search_albums(user_id=user_id))
+        self.album_list.extend(self.vk.search_albums(user_id=user_id))
         # get a list of all photos from all albums
         self.photo_list = self.vk.get_photo_f_profile_by_album_list(user_id=user_id,
                                                                     album_name_list=self.album_list)

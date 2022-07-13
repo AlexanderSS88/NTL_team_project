@@ -1,6 +1,6 @@
 import requests
 import time
-from cls.cls_HttpReq import HttpR
+from vk_tools.cls_HttpReq import HttpR
 
 from pprint import pprint
 
@@ -89,9 +89,10 @@ class VkUrl(HttpR):
 
         time.sleep(0.3)
 
-        if result.status_code == 200 and 'error' not in result.json():
+        if result.status_code == 200 and 'response' in result.json():
             return result.json()['response']['items']
         else:
+            pprint(result.json())
             return f"Error"
 
     def get_photo_f_profile_by_album_list(self, user_id: str, album_name_list: list) -> list | str:
@@ -113,10 +114,11 @@ class VkUrl(HttpR):
                                   timeout=5)
             time.sleep(0.3)
 
-            if result.status_code != 200 or 'error' in result.json():
-                return f"Error"
-            else:
+            if result.status_code == 200 and 'response' in result.json():
                 photos_list.append(result.json()['response']['items'])
+            else:
+                pprint(result.json())
+                return f"Error"
 
         return photos_list
 
