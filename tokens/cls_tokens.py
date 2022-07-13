@@ -15,8 +15,6 @@ class Token:
     def read_tokens(self):
         path = str(Path(pathlib.Path.cwd())) + '/tokens/tokens.txt'
 
-        print(path)
-
         config = configparser.ConfigParser()
         config.read(path)
 
@@ -36,8 +34,6 @@ class Token:
 
     def read_application_data(self):
         path = str(Path(pathlib.Path.cwd())) + '/tokens/application_data.ini'
-
-        print(path)
 
         config = configparser.ConfigParser()
         config.read(path)
