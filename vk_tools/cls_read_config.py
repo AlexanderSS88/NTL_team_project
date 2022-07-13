@@ -3,9 +3,9 @@ import configparser  # импортируем библиотеку
 
 class VkData:
 
-    def __init__(self, file_name: str):
+    def __init__(self, file_name = "tokens/vk_config.txt"):
         config = configparser.ConfigParser()  # create a parser object
-        config.read("tokens/vk_config.txt")  # read confif file
+        config.read(file_name)  # read confif file
 
         # [GROUP_DATA]
         self.GROUP_ID = config['GROUP_DATA']['group_id']

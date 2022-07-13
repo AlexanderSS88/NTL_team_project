@@ -1,7 +1,7 @@
 from pprint import pprint
 from cls.cls_Person import Person
 from cls.cls_DataBaseExchange import DataBaseExchange
-# from my_v_SM import Application
+from vk_tools.cls_application import Application
 
 """
 Get user data by user id.
@@ -62,7 +62,7 @@ if __name__ == '__main__':
                 photos_list = user.get_photos_of_person(user_id_4_photo)
                 print(photos_list)
             case 'b':
-                # start bot
+
                 bot = Application()
 
                 while True:
@@ -70,7 +70,24 @@ if __name__ == '__main__':
 
                     # если клиент не против, можно начть новый цикл опроса
                     if 'Have dialog.' in dialog:
-                        ...
+                        pers_list = bot.get_data_4_candidates_list()
+                        print(f'pers_list: {pers_list}')
+                        if 'Fail' in pers_list:
+                            bot.write_msg('Может в следующий раз?')
+                            break
+                        if (len(pers_list)) == 0:
+                            bot.write_msg(
+                                'Извини, никого не нашлось:(\nМожет в следующий раз?\nСпасибо что воспользовались нашим сервисом.')
+                            break
+
+                        bot.write_msg('Теперь посмотрим кого удалось отыскать.\n')
+                        bot_person = bot.person_list_presentation(pers_list)
+                        if bot_person == 'Complete':
+                            bot.write_msg('Это были все кандидаты.\nСпасибо что воспользовались нашим сервисом.')
+                            break
+                        elif bot_person == 'Canceled':
+                            bot.write_msg('Может в следующий раз?\nСпасибо что воспользовались нашим сервисом.')
+                            break
 
                     # выход из программы
                     if 'Canceled by user.' in dialog:

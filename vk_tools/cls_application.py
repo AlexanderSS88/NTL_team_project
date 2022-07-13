@@ -1,20 +1,8 @@
-# import vk_api
-# import os
-import json
 import re
-import csv
-import requests
-import sqlalchemy
 from vk_api import VkApi
-from cls.cls_Person import Person
 from random import randrange
-from main import get_personal_data
-# from cls_HttpReq import HttpR
-# from cls_VkUrl import VkUrl
-from vk_api.longpoll import VkLongPoll, VkEventType
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
-from vk_api.keyboard import VkKeyboard, VkKeyboardColor
-from cls.cls_person_list_iteration import PersonListIteration, PersonListStack
+from cls.cls_person_list_iteration import PersonListStack
 
 from pprint import pprint
 import pathlib
@@ -87,16 +75,37 @@ class Application:
                 elif re.findall(self.pattern_hi, event.obj.message['text'], flags=re.IGNORECASE):
                     message_good = f"Здаров, коль не шутишь! {companion_user.first_name}, предлагаю тебе попробовать познакомиться с кем-нибудь. Согласен? :)"
                     self.write_msg(user_id=companion_user.user_id, message=message_good)
-                elif re.findall(self.pattern_no, event.obj.message['text'], flags=re.IGNORECASE):
-                    message_no = "Как знаешь.\nЕсли что, я тут, обращайся"
-                    self.write_msg(user_id=companion_user.user_id, message=message_no)
-                elif re.findall(self.pattern_yes, event.obj.message['text'], flags=re.IGNORECASE):
-                    self.write_msg(user_id=companion_user.user_id, message="Тогда проиступим!")
-                    self.user_id = companion_user.user_id
-                    return [companion_user.user_id, "Have dialog."]
+                    for event2 in self.longpoll.listen():
+                        if event2.type == VkBotEventType.MESSAGE_NEW:
+                            pprint(event2.object.message)
+                            if event2.obj.message['text'] == 'изыди':
+                                self.write_msg(user_id=companion_user.user_id, message="Как скажете.")
+                                return [companion_user.user_id, "Canceled by user."]
+                            if re.findall(self.pattern_no, event2.obj.message['text'], flags=re.IGNORECASE):
+                                message_no = "Как знаешь.\nЕсли что, я тут, обращайся"
+                                self.write_msg(user_id=companion_user.user_id, message=message_no)
+                            if re.findall(self.pattern_yes, event2.obj.message['text'], flags=re.IGNORECASE):
+                                self.write_msg(user_id=companion_user.user_id, message="Тогда проиступим!")
+                                self.user_id = companion_user.user_id
+                                return [companion_user.user_id, "Have dialog."]
+
                 else:
                     message_bad = f"Не здороваюсь.... {companion_user.last_name}, будешь знакомиться с кем-нибудь?"
                     self.write_msg(user_id=companion_user.user_id, message=message_bad)
+
+                    for event2 in self.longpoll.listen():
+                        if event2.type == VkBotEventType.MESSAGE_NEW:
+                            pprint(event2.object.message)
+                            if event2.obj.message['text'] == 'изыди':
+                                self.write_msg(user_id=companion_user.user_id, message="Как скажете.")
+                                return [companion_user.user_id, "Canceled by user."]
+                            if re.findall(self.pattern_no, event2.obj.message['text'], flags=re.IGNORECASE):
+                                message_no = "Как знаешь.\nЕсли что, я тут, обращайся"
+                                self.write_msg(user_id=companion_user.user_id, message=message_no)
+                            if re.findall(self.pattern_yes, event2.obj.message['text'], flags=re.IGNORECASE):
+                                self.write_msg(user_id=companion_user.user_id, message="Тогда проиступим!")
+                                self.user_id = companion_user.user_id
+                                return [companion_user.user_id, "Have dialog."]
 
         return ['-1', 'Error']
 
@@ -212,45 +221,10 @@ class Application:
 
             self.write_msg('Следующий?')
             if self.get_user_opinion() == 'No':
-                bot.write_msg('Может в следующий раз?')
+                self.write_msg('Может в следующий раз?')
                 pers_st.clean()
                 return 'Canceled'
 
         return 'Complete'
 
 
-bot = Application()
-
-while True:
-    dialog = bot.new_companion()
-
-    # если клиент не против, можно начть новый цикл опроса
-    if 'Have dialog.' in dialog:
-        pers_list = bot.get_data_4_candidates_list()
-        print(f'pers_list: {pers_list}')
-        if 'Fail' in pers_list:
-            bot.write_msg('Может в следующий раз?')
-            break
-        if (len(pers_list)) == 0:
-            bot.write_msg(
-                'Извини, никого не нашлось:(\nМожет в следующий раз?\nСпасибо что воспользовались нашим сервисом.')
-            break
-
-        bot.write_msg('Теперь посмотрим кого удалось отыскать.\n')
-        bot_person = bot.person_list_presentation(pers_list)
-        if bot_person == 'Complete':
-            bot.write_msg('Это были все кандидаты.\nСпасибо что воспользовались нашим сервисом.')
-            break
-        elif bot_person == 'Canceled':
-            bot.write_msg('Может в следующий раз?\nСпасибо что воспользовались нашим сервисом.')
-            break
-
-        # pers_st = PersonListIteration(bot.get_data_4_candidates_list())
-        # while not pers_st.is_empty():
-        #     print(pers_st.get_next())
-
-    # выход из программы
-    if 'Canceled by user.' in dialog:
-        break
-
-# print(bot.new_companion())
