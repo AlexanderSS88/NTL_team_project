@@ -5,12 +5,10 @@ from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from cls.cls_person_list_iteration import PersonListStack
 
 from pprint import pprint
-import pathlib
-from pathlib import Path
-import configparser
 
 from cls.cls_Person import Person
 from cls.cls_DataBaseExchange import DataBaseExchange
+from tokens.cls_tokens import Token
 
 
 class Application:
@@ -41,18 +39,13 @@ class Application:
             self.longpoll = VkBotLongPoll(self.vk_session, group_id=self.GROUP_ID)
 
     def take_application_data(self, db_data_file_path):
-        path = str(Path(pathlib.Path.cwd())) + db_data_file_path
 
-        print(path)
-
-        config = configparser.ConfigParser()
-        config.read(path)
-
-        self.GROUP_ID = config['APPLICATION']['GROUP_ID']
-        self.GROUP_TOKEN = config['APPLICATION']['GROUP_TOKEN']
-        self.API_VERSION = config['APPLICATION']['API_VERSION']
-        self.APPLICATION_TOKEN = config['APPLICATION']['APPLICATION_TOKEN']
-        self.OWNER_ID = config['APPLICATION']['OWNER_ID']
+        token = Token()
+        self.GROUP_ID = token.app_dict['APPLICATION']['GROUP_ID']
+        self.GROUP_TOKEN = token.app_dict['APPLICATION_TOKENS']['GROUP_TOKEN']
+        self.API_VERSION = token.app_dict['APPLICATION']['API_VERSION']
+        self.APPLICATION_TOKEN = token.app_dict['APPLICATION_TOKENS']['APPLICATION_TOKEN']
+        self.OWNER_ID = token.app_dict['APPLICATION']['OWNER_ID']
 
     # Send messages
     def write_msg(self, message, user_id='default'):

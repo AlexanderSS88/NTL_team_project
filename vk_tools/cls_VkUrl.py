@@ -1,6 +1,6 @@
 import requests
 import time
-from vk_tools.cls_HttpReq import HttpR
+from tokens.cls_tokens import Token
 
 from pprint import pprint
 
@@ -9,11 +9,12 @@ This is the VKontakte API communication class
 """
 
 
-class VkUrl(HttpR):
+class VkUrl():
     url_ = "https://api.vk.com/method/"
 
     def __init__(self, token_file_n: str):
-        super().__init__(token_file_n)
+        token = Token()
+        self.token = token.app_dict['TOKENS']['vk_bot_token']
 
     def get_url(self, method: str):
         """

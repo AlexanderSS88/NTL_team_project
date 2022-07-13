@@ -1,7 +1,7 @@
 import pathlib
 from pathlib import Path
 import sqlalchemy
-from vk_tools.cls_tokens import Token
+from tokens.cls_tokens import Token
 
 """
 Here program takes database parameters from configuration file and make connection.
@@ -26,8 +26,7 @@ class DataBaseConnection:
 
         path = str(Path(pathlib.Path.cwd())) + '/tokens/db_passw.txt'
 
-        with open(path, 'r') as t_file:
-            user_pass_word = t_file.read().strip()
+        user_pass_word = token.app_dict['PASSWORDS']['db_passw']
 
         engine = sqlalchemy.create_engine(
             f'postgresql://{user_name}:{user_pass_word}@{host}:{port}/{database_name}')

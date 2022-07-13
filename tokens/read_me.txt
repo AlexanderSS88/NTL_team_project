@@ -1,5 +1,12 @@
 This is the folder for your tokens.
 
+Токены следует собрать в файле "tokens.txt" в формате:
+    [TOKENS]
+    vk_token =
+    vk_bot_token =
+    [PASSWORDS]
+    db_passw =
+
 Основные данные для работы приложения содержатся в файле "application_data.ini":
     [APPLICATION]
     GROUP_ID = 214414105

@@ -13,7 +13,26 @@ class Token:
         self.read_application_data()
 
     def read_tokens(self):
-        pass
+        path = str(Path(pathlib.Path.cwd())) + '/tokens/tokens.txt'
+
+        print(path)
+
+        config = configparser.ConfigParser()
+        config.read(path)
+
+        self.app_dict.setdefault('TOKENS', {
+            'vk_token': config['TOKENS']['vk_token'],
+            'vk_bot_token': config['TOKENS']['vk_bot_token']
+        })
+        self.app_dict.setdefault('PASSWORDS', {
+            'db_passw': config['PASSWORDS']['db_passw']
+        })
+        self.app_dict.setdefault('APPLICATION_TOKENS', {
+            'GROUP_TOKEN': config['APPLICATION_TOKENS']['GROUP_TOKEN'],
+            'APPLICATION_TOKEN': config['APPLICATION_TOKENS']['APPLICATION_TOKEN']
+        })
+
+
 
     def read_application_data(self):
         path = str(Path(pathlib.Path.cwd())) + '/tokens/application_data.ini'
@@ -23,13 +42,11 @@ class Token:
         config = configparser.ConfigParser()
         config.read(path)
 
-        pprint(config)
-
         self.app_dict.setdefault('APPLICATION', {
             'GROUP_ID': config['APPLICATION']['GROUP_ID'],
-            'GROUP_TOKEN': config['APPLICATION']['GROUP_TOKEN'],
+            # 'GROUP_TOKEN': config['APPLICATION']['GROUP_TOKEN'],
             'API_VERSION': config['APPLICATION']['API_VERSION'],
-            'APPLICATION_TOKEN': config['APPLICATION']['APPLICATION_TOKEN'],
+            # 'APPLICATION_TOKEN': config['APPLICATION']['APPLICATION_TOKEN'],
             'OWNER_ID': config['APPLICATION']['OWNER_ID']
         })
         self.app_dict.setdefault('GROUP_DATA', {'GROUP_ID': config['GROUP_DATA']['group_id']})
@@ -47,4 +64,3 @@ class Token:
             'database_name': config['DATABASE']['database_name'],
             'host': config['DATABASE']['host']
         })
-
