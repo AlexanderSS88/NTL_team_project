@@ -14,7 +14,7 @@ class VkUrl():
 
     def __init__(self, token_file_n: str):
         token = Token()
-        self.token = token.app_dict['TOKENS']['vk_token']
+        self.token = token.app_dict['TOKENS']['vk_token'] # personal token
 
     def get_url(self, method: str):
         """
