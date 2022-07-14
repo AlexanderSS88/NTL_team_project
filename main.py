@@ -27,6 +27,39 @@ def get_personal_data(user_id: int):
     else:
         print('The person data are not useful.')
 
+def bot_cycle():
+    bot = Application()
+
+    while True:
+        dialog = bot.new_companion()
+
+        # если клиент не против, можно начть новый цикл опроса
+        if 'Have dialog.' in dialog:
+            pers_list = bot.get_data_4_candidates_list()
+            print(f'pers_list: {pers_list}')
+            if 'Fail' in pers_list:
+                bot.write_msg('Может в следующий раз?')
+                break
+            if (len(pers_list)) == 0:
+                bot.write_msg(
+                    'Извини, никого не нашлось:(\nМожет в следующий раз?\nСпасибо что воспользовались нашим сервисом.')
+                break
+
+            bot.write_msg('Теперь посмотрим кого удалось отыскать.\n')
+            bot_person = bot.person_list_presentation(pers_list)
+            if bot_person == 'Complete':
+                bot.write_msg('Это были все кандидаты.\nСпасибо что воспользовались нашим сервисом.')
+                # break
+            elif bot_person == 'Canceled':
+                bot.write_msg('Может в следующий раз?\nСпасибо что воспользовались нашим сервисом.')
+                # break
+            elif bot_person == 'Stop':
+                return 'Canceled by User'
+
+        # выход из программы
+        if 'Stop' in dialog:
+            return 'Canceled by User'
+
 
 if __name__ == '__main__':
 
@@ -62,36 +95,9 @@ if __name__ == '__main__':
                 photos_list = user.get_photos_of_person(user_id_4_photo)
                 print(photos_list)
             case 'b':
+                print(bot_cycle())
 
-                bot = Application()
 
-                while True:
-                    dialog = bot.new_companion()
-
-                    # если клиент не против, можно начть новый цикл опроса
-                    if 'Have dialog.' in dialog:
-                        pers_list = bot.get_data_4_candidates_list()
-                        print(f'pers_list: {pers_list}')
-                        if 'Fail' in pers_list:
-                            bot.write_msg('Может в следующий раз?')
-                            break
-                        if (len(pers_list)) == 0:
-                            bot.write_msg(
-                                'Извини, никого не нашлось:(\nМожет в следующий раз?\nСпасибо что воспользовались нашим сервисом.')
-                            break
-
-                        bot.write_msg('Теперь посмотрим кого удалось отыскать.\n')
-                        bot_person = bot.person_list_presentation(pers_list)
-                        if bot_person == 'Complete':
-                            bot.write_msg('Это были все кандидаты.\nСпасибо что воспользовались нашим сервисом.')
-                            break
-                        elif bot_person == 'Canceled':
-                            bot.write_msg('Может в следующий раз?\nСпасибо что воспользовались нашим сервисом.')
-                            break
-
-                    # выход из программы
-                    if 'Canceled by user.' in dialog:
-                        break
 
 
 

@@ -12,7 +12,7 @@ This is the VKontakte API communication class
 class VkUrl():
     url_ = "https://api.vk.com/method/"
 
-    def __init__(self, token_file_n: str):
+    def __init__(self):
         token = Token()
         self.token = token.app_dict['TOKENS']['vk_token'] # personal token
 
@@ -70,7 +70,11 @@ class VkUrl():
                               ), timeout=5)
 
         time.sleep(0.3)
-        return result.json()
+        if result.status_code == 200 and 'response' in result.json():
+            return result.json()
+        else:
+            pprint(result.json())
+            return f"Error"
 
     def get_photo_f_profile(self, user_id: str, album_name: str) -> dict | str:
 

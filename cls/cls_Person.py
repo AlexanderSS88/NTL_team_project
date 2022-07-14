@@ -5,6 +5,8 @@ from vk_tools.cls_VkUrl import VkUrl
 import pathlib
 from pathlib import Path
 
+from tokens.cls_tokens import Token
+
 """
 Class to describe user person.
 """
@@ -30,9 +32,7 @@ class Person:
         # marker of good user data
         self.data_are_good = True
 
-        # tokens for different access kind
-        path = Path(pathlib.Path.cwd(), 'tokens', 'vk_bot_token.txt')
-        self.vk = VkUrl(str(path))
+        self.vk = VkUrl()
 
         # get personal data
         self.pers_data_json = (self.vk.get_personal_data(user_id=self.user_id))

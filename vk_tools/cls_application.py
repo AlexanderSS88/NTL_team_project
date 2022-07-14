@@ -26,6 +26,8 @@ class Application:
     pattern_no = "(не)|(нет)|(нехочу)|(не хочу)|(no)|(ne)|(not)"
     pattern_yes = "(давай)|(да)|(ок)|(хорош)|(соглас)|(добро)|(ладно)|(yes)|(lf)|(yep)|(замётано)"
 
+    flag_stop = False
+
     def __init__(self, db_data_file_path='/tokens/application_data.ini'):
         self.take_application_data(db_data_file_path)
 
@@ -57,11 +59,14 @@ class Application:
     # The new user dialog cycle
     def new_companion(self):
         for event in self.longpoll.listen():
+            print('new_companion cycle')
             if event.type == VkBotEventType.MESSAGE_NEW:
                 companion_user = Person(event.object.message['from_id'])
+                print(f'companion_user: {companion_user.user_id}')
 
                 if event.obj.message['text'] == 'изыди':
                     self.write_msg(user_id=companion_user.user_id, message="Как скажете.")
+                    self.flag_stop = True
                     return [companion_user.user_id, "Canceled by user."]
                 elif re.findall(self.pattern_hi, event.obj.message['text'], flags=re.IGNORECASE):
                     message_good = f"Здаров, коль не шутишь! {companion_user.first_name}, " \
@@ -70,15 +75,17 @@ class Application:
 
                     for event2 in self.longpoll.listen():
                         if event2.type == VkBotEventType.MESSAGE_NEW:
-                            pprint(event2.object.message)
+                            # pprint(event2.object.message)
 
                             if event2.obj.message['text'] == 'изыди':
                                 self.write_msg(user_id=companion_user.user_id, message="Как скажете.")
-                                return [companion_user.user_id, "Canceled by user."]
+                                # return [companion_user.user_id, "Canceled by user."]
+                                return [companion_user.user_id, "Stop"]
 
                             elif re.findall(self.pattern_no, event2.obj.message['text'], flags=re.IGNORECASE):
                                 message_no = "Как знаешь.\nЕсли что, я тут, обращайся"
                                 self.write_msg(user_id=companion_user.user_id, message=message_no)
+                                return [companion_user.user_id, "Canceled"]
 
                             elif re.findall(self.pattern_yes, event2.obj.message['text'], flags=re.IGNORECASE):
                                 self.write_msg(user_id=companion_user.user_id, message="Тогда проиступим!")
@@ -136,14 +143,21 @@ class Application:
         still_in_dialog = False  # insurance flag
 
         for i in range(10):
+            print('for i in range(10)')
             match self.get_user_opinion():
                 case 'Yes':
+                    print("case 'Yes'")
                     still_in_dialog = True
                     break
-                case 'No':
+                case 'No|Canceled by user.':
+                    print("case 'No'")
                     break
                 case 'Unknown':
+                    print("case 'Unknown'")
                     pass
+
+        if self.flag_stop:
+            return 'Stop'
 
         # if user canceled the dialog
         if not still_in_dialog:
@@ -160,6 +174,9 @@ class Application:
                 if self.is_age_valid(user_answer):
                     still_in_dialog = True
                     break
+
+        if self.flag_stop:
+            return 'Stop'
 
         if not still_in_dialog:
             return 'Fail'
@@ -225,9 +242,11 @@ class Application:
             self.write_msg(user.get_photos_of_person_4_attach(next_person))
 
             self.write_msg('Следующий?')
-            if self.get_user_opinion() == 'No':
+            if self.get_user_opinion() != 'Yes':
                 self.write_msg('Как скажешь.')
                 pers_st.clean()
+                if self.flag_stop:
+                    return 'Stop'
                 return 'Canceled'
 
         return 'Complete'
