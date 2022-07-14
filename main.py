@@ -27,6 +27,7 @@ def get_personal_data(user_id: int):
     else:
         print('The person data are not useful.')
 
+
 def bot_cycle():
     bot = Application()
 
@@ -96,9 +97,3 @@ if __name__ == '__main__':
                 print(photos_list)
             case 'b':
                 print(bot_cycle())
-
-
-
-
-
-

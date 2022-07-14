@@ -2,18 +2,18 @@ import pathlib
 from pathlib import Path
 import configparser
 
-from pprint import pprint
-
 
 class Token:
     app_dict = {}
 
-    def __init__(self):
+    def __init__(self, direct_name='tokens'):
+        self.direct_name = direct_name
         self.read_tokens()
         self.read_application_data()
 
     def read_tokens(self):
-        path = str(Path(pathlib.Path.cwd())) + '/tokens/tokens.txt'
+        print(f'self.direct_name: {self.direct_name}')
+        path = str(Path(pathlib.Path.cwd())) + '/' + self.direct_name + '/tokens.txt'
 
         print(f'path: {path}')
 
@@ -33,7 +33,8 @@ class Token:
         })
 
     def read_application_data(self):
-        path = str(Path(pathlib.Path.cwd())) + '/tokens/application_data.ini'
+        print(f'self.direct_name: {self.direct_name}')
+        path = str(Path(pathlib.Path.cwd())) + '/' + self.direct_name + '/application_data.ini'
 
         print(f'path: {path}')
 

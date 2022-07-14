@@ -1,0 +1,8 @@
+[TOKENS]
+vk_token = vk_token
+vk_bot_token = vk_bot_token
+[PASSWORDS]
+db_passw = password
+[APPLICATION_TOKENS]
+GROUP_TOKEN = GROUP_TOKEN
+APPLICATION_TOKEN = APPLICATION_TOKEN

@@ -9,26 +9,22 @@ Here program takes database parameters from configuration file and make connecti
 
 
 class DataBaseConnection:
-    def __init__(self, make_connection: bool, db_data_file_path='/tokens/application_data.ini'):
+    def __init__(self, make_connection: bool, db_data_file_path='tokens'):
+        self.db_data_file_path = db_data_file_path
         # it's not necessary to make database connections in some tests
         if make_connection:
-            self.connection = self.make_database_connection(db_data_file_path)
+            engine = sqlalchemy.create_engine(self.prepare_database_connection())
+
+            self.connection = engine.connect()
             print(self.connection)
 
-    @staticmethod
-    def make_database_connection(db_data_file_path: str):
-        token = Token()
+    def prepare_database_connection(self):
+        token = Token(self.db_data_file_path)
 
         user_name = token.app_dict['DATABASE']['user_name']
         port = token.app_dict['DATABASE']['port']
         database_name = token.app_dict['DATABASE']['database_name']
         host = token.app_dict['DATABASE']['host']
-
-        path = str(Path(pathlib.Path.cwd())) + '/tokens/db_passw.txt'
-
         user_pass_word = token.app_dict['PASSWORDS']['db_passw']
 
-        engine = sqlalchemy.create_engine(
-            f'postgresql://{user_name}:{user_pass_word}@{host}:{port}/{database_name}')
-
-        return engine.connect()
+        return f'postgresql://{user_name}:{user_pass_word}@{host}:{port}/{database_name}'
