@@ -49,10 +49,10 @@ class TestDBFunctions(unittest.TestCase):
         self.assertMultiLineEqual(self.db.prepare_database_connection(),
                                   f'postgresql://postgres:password@localhost:5432/cours_w_DB')
 
-    @mock.patch('cls.cls_DataBaseExchange.connection.execute', side_effect=mocked_connection_execute)
-    def test_get_candidates(self, mock_get):
-        data = self.db.create_tables()
-        self.assertListEqual(data, [1, 2])
+    # @mock.patch('cls.cls_DataBaseExchange.connection.execute', side_effect=mocked_connection_execute)
+    # def test_get_candidates(self, mock_get):
+    #     data = self.db.create_tables()
+    #     self.assertListEqual(data, [1, 2])
 
 
 

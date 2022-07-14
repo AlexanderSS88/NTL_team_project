@@ -122,7 +122,6 @@ class VkUrl():
         time.sleep(0.3)
 
         result = result.json()
-        pprint(result)
         if not 'response' in result:
             pprint(result)
         else:

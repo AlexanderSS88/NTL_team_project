@@ -11,7 +11,6 @@ class DataBaseExchange(DataBaseConnection):
 
     def __init__(self, db_data_file_path='tokens', make_connection=True):
         super().__init__(make_connection=make_connection, db_data_file_path=db_data_file_path)
-        self.connection = self.connection
 
     def add_user_data(self, user_data: dict):
         """
