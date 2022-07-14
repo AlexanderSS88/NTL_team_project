@@ -69,7 +69,7 @@ class VkUrl():
                                       pdict={'user_ids': user_id})
                               ), timeout=5)
 
-        time.sleep(0.03)
+        time.sleep(0.3)
         return result.json()
 
     def get_photo_f_profile(self, user_id: str, album_name: str) -> dict | str:

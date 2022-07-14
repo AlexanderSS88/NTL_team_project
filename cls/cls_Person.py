@@ -52,7 +52,6 @@ class Person:
             self.interests = self.get_interests(personal_dict)
         else:
             self.data_are_good = False
-            print('Error')
             self.successful_read = False
 
     def __str__(self):
