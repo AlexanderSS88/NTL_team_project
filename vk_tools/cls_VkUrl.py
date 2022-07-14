@@ -12,8 +12,8 @@ This is the VKontakte API communication class
 class VkUrl():
     url_ = "https://api.vk.com/method/"
 
-    def __init__(self):
-        token = Token()
+    def __init__(self, db_data_file_path='tokens'):
+        token = Token(db_data_file_path)
         self.token = token.app_dict['TOKENS']['vk_token'] # personal token
 
     def get_url(self, method: str):
