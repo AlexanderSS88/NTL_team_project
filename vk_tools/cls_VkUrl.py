@@ -34,25 +34,6 @@ class VkUrl():
     def transform_param(param: dict):
         return ''.join([f'&{key}={value}' for key, value in param.items()])
 
-    def get_base_personal_data(self, user_id: str) -> dict:
-        """
-        Gets a user's data by user id
-        """
-        result = requests.get(self.get_url(method="users.get"),
-                              params=self.transform_param(
-                                  self.get_params(
-                                      fields='bdate,'
-                                             'sex,'
-                                             'city,'
-                                      # 'photo_400_orig,'
-                                             'interests,'
-                                             'music',
-                                      pdict={'user_ids': user_id})
-                              ), timeout=5)
-
-        time.sleep(0.3)
-        return result.json()
-
     def get_personal_data(self, user_id: str) -> dict:
         """
         Gets a user's data by user id
@@ -141,6 +122,7 @@ class VkUrl():
         time.sleep(0.3)
 
         result = result.json()
+        pprint(result)
         if not 'response' in result:
             pprint(result)
         else:

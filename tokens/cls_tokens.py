@@ -12,10 +12,7 @@ class Token:
         self.read_application_data()
 
     def read_tokens(self):
-        print(f'self.direct_name: {self.direct_name}')
         path = str(Path(pathlib.Path.cwd())) + '/' + self.direct_name + '/tokens.txt'
-
-        print(f'path: {path}')
 
         config = configparser.ConfigParser()
         config.read(path)
@@ -33,10 +30,7 @@ class Token:
         })
 
     def read_application_data(self):
-        print(f'self.direct_name: {self.direct_name}')
         path = str(Path(pathlib.Path.cwd())) + '/' + self.direct_name + '/application_data.ini'
-
-        print(f'path: {path}')
 
         config = configparser.ConfigParser()
         config.read(path)
