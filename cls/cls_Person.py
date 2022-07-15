@@ -23,7 +23,8 @@ class Person:
 
     # the base albums list, common for everybody
     album_list = ['wall', 'profile']
-    ё = []
+    photo_list = []
+    photo_id_list = []
 
     def __init__(self, user_id):
         self.user_id = user_id

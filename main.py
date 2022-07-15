@@ -94,6 +94,8 @@ if __name__ == '__main__':
                 user_id_4_photo = input("Input user id:\t")
                 user = Person(str(user_id_4_photo))
                 photos_list = user.get_photos_of_person(user_id_4_photo)
+                photos_id_list = user.photo_id_list
                 print(photos_list)
+                print(photos_id_list)
             case 'b':
                 print(bot_cycle())
