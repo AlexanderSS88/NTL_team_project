@@ -1,40 +1,13 @@
 import unittest
-from unittest import mock
 from parameterized import parameterized
-from tokens.cls_tokens import Token
 
 from cls.cls_DataBaseExchange import DataBaseExchange
-from cls.cls_DataBaseConnection import DataBaseConnection
-
-# This method will be used by the mock to replace requests.get
-def mocked_connection_execute(*args):
-    class MockResponse:
-        def __init__(self, db_return):
-            self.db_return = db_return
-
-        def response(self):
-            return self.db_return
-
-    print(f'args:\t{args}')
-
-    if args == "SELECT id FROM user_info WHERE age = 30 AND city = 'Москва';":
-        return MockResponse([1, 2])
-    # elif args[0] == 'https://api.vk.com/method/photos.get' \
-    #         and kwargs[
-    #     'params'] == '&access_token=vk_token&v=5.81&fields=&owner_id=125&album_id=profile&count=200&photo_sizes' \
-    #                  '=1&extended=1':
-    #     return MockResponse({"response": {"items": "value2"}}, 200)
-    # elif args[0] == 'https://api.vk.com/method/photos.getAlbums' \
-    #         and kwargs['params'] == '&access_token=vk_token&v=5.81&fields=&owner_id=125':
-    #     return MockResponse({'response': {'items': [{'id': 1000}]}}, 200)
-
-    return MockResponse(None)
 
 
 class TestDBFunctions(unittest.TestCase):
 
     def setUp(self):
-        self.db = DataBaseExchange(db_data_file_path='tokens_4_test')
+        self.db = DataBaseExchange(make_connection=False, db_data_file_path='tokens_4_test')
 
     @parameterized.expand(
         [
@@ -51,13 +24,43 @@ class TestDBFunctions(unittest.TestCase):
         self.assertMultiLineEqual(self.db.prepare_database_connection(),
                                   f'postgresql://postgres:password@localhost:5432/cours_w_DB')
 
-    # @mock.patch('cls.cls_DataBaseExchange')
-    # def test_get_candidates(self, Mock_create_tables):
-    #     connect = Mock_create_tables()
-    #     connect.DataBaseExchange.query_db.return_value = [1, 2]
-    #     data = self.db.create_tables()
-    #     self.assertListEqual(data, [1, 2])
+    def test_connection(self):
+        self.assertMultiLineEqual(self.db.connection.execute('execute'), 'execute')
 
-
-
-
+    @parameterized.expand(
+        [({'id': '1',
+         'first_name': 'Иван',
+         'last_name': 'Иванов',
+         'age': '25',
+         'sex': '2',
+         'city': 'Ёбург',
+         'url': 'https://vk.com/id1'},
+          """INSERT INTO user_info VALUES (
+                '1', 
+                'Иван', 
+                'Иванов', 
+                '25', 
+                '2', 
+                'Ёбург', 
+                'https://vk.com/id1');"""
+          ),
+         ({'id': '1',
+           'first_name': '$Иван$',
+           'last_name': '@Иванов@',
+           'age': '25',
+           'sex': '2',
+           'city': "Ё'бург&",
+           'url': 'https://vk.com/id1'},
+          """INSERT INTO user_info VALUES (
+                '1', 
+                'Иван', 
+                'Иванов', 
+                '25', 
+                '2', 
+                'Ёбург', 
+                'https://vk.com/id1');"""
+          )
+         ]
+     )
+    def test_add_user_data(self, user_dict, result):
+        self.assertMultiLineEqual(self.db.add_user_data(user_dict), result)
