@@ -22,7 +22,10 @@ def get_personal_data(user_id: int):
         print('Version for Database:')
         pprint(user_dict)
         data_base.add_user_data(user_dict)
-        # user.get_photos_of_person(user_id)
+
+        user.get_photos_of_person(user_id)
+        data_base.add_user_photos(user_dict, user.photo_list, user.photo_id_list)
+        data_base.add_user_interests(user_dict)
 
     else:
         print('The person data are not useful.')
@@ -93,8 +96,12 @@ if __name__ == '__main__':
             case 'p':
                 user_id_4_photo = input("Input user id:\t")
                 user = Person(str(user_id_4_photo))
-                photos_list = user.get_photos_of_person(user_id_4_photo)
-                photos_id_list = user.photo_id_list
+                # photos_list = user.get_photos_of_person(user_id_4_photo)
+                # photos_id_list = user.photo_id_list
+                # print(photos_list)
+                # print(photos_id_list)
+                photos_id_list, photos_list = data_base.get_photo_from_db(user_id_4_photo)
+                print('From DB:')
                 print(photos_list)
                 print(photos_id_list)
             case 'b':

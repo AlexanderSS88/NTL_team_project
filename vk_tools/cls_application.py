@@ -239,7 +239,10 @@ class Application:
 
             user = Person(next_person)
             self.write_msg(user)
-            self.write_msg(user.get_photos_of_person_4_attach(next_person))
+            # self.write_msg(user.get_photos_of_person_4_attach(next_person))
+            data_base = DataBaseExchange()
+            photos_id_list, photos_list = data_base.get_photo_from_db(user.user_id)
+            self.write_msg(photos_list)
 
             self.write_msg('Следующий?')
             if self.get_user_opinion() != 'Yes':

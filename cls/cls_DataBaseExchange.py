@@ -2,6 +2,7 @@ import sqlalchemy
 import re
 from cls.cls_DataBaseConnection import DataBaseConnection
 from sqlalchemy.exc import IntegrityError
+from pprint import pprint
 
 """
 Here collected all dialogs between program and database.
@@ -57,7 +58,7 @@ class DataBaseExchange(DataBaseConnection):
         """
         Create tables in database if there is are not existed
         """
-        sel = self.connection.execute("""
+        self.connection.execute("""
         CREATE TABLE IF NOT EXISTS user_info (
         id integer PRIMARY KEY,
         user_name varchar(40) NOT NULL,
@@ -68,6 +69,23 @@ class DataBaseExchange(DataBaseConnection):
         account_link varchar(80) NOT NULL
         );
         """)
+
+        self.connection.execute("""
+        CREATE TABLE IF NOT EXISTS photos (
+        id integer PRIMARY KEY,
+        photo_link varchar(300),
+        photo_id_user integer REFERENCES user_info(id)
+        );
+        """)
+
+        sel = self.connection.execute("""
+        CREATE TABLE IF NOT EXISTS interests(
+        id SERIAL PRIMARY KEY,
+        interest_name varchar(40) NOT NULL,
+        interest_id_user integer REFERENCES user_info(id)
+        );
+        """)
+
         return sel
 
     def get_candidates(self, min_age: int, max_age: int, city_name: str) -> list:
@@ -82,3 +100,86 @@ class DataBaseExchange(DataBaseConnection):
                 f"""SELECT id FROM user_info WHERE
                 age BETWEEN {min_age} AND {max_age}
                 AND city = '{city_name}';""").fetchall()]
+
+    def add_user_photos(self, user_data: dict, photo_list: list, photo_id_list: list):
+        """
+        Add a user data to database
+        :param user_data:
+        :return: None
+        """
+
+        # sel = self.connection.execute(
+        #     f"SELECT EXISTS(SELECT * FROM user_info WHERE id={user_data.get('id')});").fetchmany(1)
+
+        # if sel[0][0]:
+        #     print('This person was in DataBase. Personal data will be rewritten.')
+        #     self.connection.execute(f"DELETE FROM user_info WHERE id={user_data.get('id')};")
+
+        sel = ()
+
+        if len(photo_list) > 0:
+            for i in range(0, len(photo_list)):
+
+                try:
+                    sel = self.connection.execute(
+                        f"""INSERT INTO photos VALUES (
+                        '{photo_id_list[i-1]}', 
+                        '{photo_list[i-1]}', 
+                        '{user_data.get('id')}');"""
+                    )
+                    print(f"User photo {i} data recorded to DataBae.")
+                except sqlalchemy.exc.IntegrityError:
+                    print('This person data in DataBae yet.')
+
+        return sel
+
+    def add_user_interests(self, user_data: dict):
+        """
+        Add a user data to database
+        :param user_data:
+        :return: None
+        """
+
+        sel = ()
+
+        # sel = self.connection.execute(
+        #     f"SELECT EXISTS(SELECT * FROM user_info WHERE id={user_data.get('id')});").fetchmany(1)
+
+        # if sel[0][0]:
+        #     print('This person was in DataBase. Personal data will be rewritten.')
+        #     self.connection.execute(f"DELETE FROM user_info WHERE id={user_data.get('id')};")
+
+        for interest in user_data.get('interests'):
+            try:
+                sel = self.connection.execute(
+                    f"""INSERT INTO interests (interest_name, interest_id_user)  VALUES (
+                    '{self.normalize_user_data(interest)}', 
+                    '{user_data.get('id')}');"""
+                )
+                print(f"User {user_data.get('id')} data recorded to DataBae.")
+            except sqlalchemy.exc.IntegrityError:
+                print('This person data in DataBae yet.')
+
+        return sel
+
+    def get_photo_from_db(self, user_id):
+
+        sel = [self.connection.execute(
+        f"""
+        SELECT id, photo_link FROM photos WHERE photo_id_user = {user_id};
+        """
+        ).fetchall()]
+        pprint(sel)
+        print('item')
+
+        list_photo = []
+        list_photo_id = []
+
+        for item in sel[0]:
+            print(item)
+            list_photo_id.append(item[0])
+            list_photo.append(item[1])
+
+        return list_photo_id, list_photo
+
+
