@@ -198,7 +198,8 @@ class Person:
                 file_name = f"{photo['likes']['count']}.jpeg"
 
                 # Collect the list of files.
-                files_inf_list.append({'file_name': file_name,
+                files_inf_list.append({'id': photo['id'],
+                                       'file_name': file_name,
                                        'likes': photo['likes']['count'],
                                        'date': photo['date'],
                                        'url': max_photo['url'],
@@ -209,6 +210,8 @@ class Person:
 
         if len(files_inf_list) < qtt:
             qtt = len(files_inf_list)
+
+        pprint(files_inf_list[0])
 
         self.photo_list = [files_inf_list[i]['url'] for i in range(qtt)]
         self.photo_id_list = [files_inf_list[i]['id'] for i in range(qtt)]
