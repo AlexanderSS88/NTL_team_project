@@ -19,7 +19,7 @@ class DataBaseExchange(DataBaseConnection):
         :param user_data:
         :return: None
         """
-
+        sel = ()
         # sel = self.connection.execute(
         #     f"SELECT EXISTS(SELECT * FROM user_info WHERE id={user_data.get('id')});").fetchmany(1)
 
