@@ -4,6 +4,7 @@ from parameterized import parameterized
 from tokens.cls_tokens import Token
 
 from cls.cls_DataBaseExchange import DataBaseExchange
+from cls.cls_DataBaseConnection import DataBaseConnection
 
 # This method will be used by the mock to replace requests.get
 def mocked_connection_execute(*args):
@@ -32,7 +33,8 @@ def mocked_connection_execute(*args):
 
 class TestDBFunctions(unittest.TestCase):
 
-    db = DataBaseExchange(make_connection=False, db_data_file_path='tokens_4_test')
+    def setUp(self):
+        self.db = DataBaseExchange(db_data_file_path='tokens_4_test')
 
     @parameterized.expand(
         [
@@ -49,8 +51,10 @@ class TestDBFunctions(unittest.TestCase):
         self.assertMultiLineEqual(self.db.prepare_database_connection(),
                                   f'postgresql://postgres:password@localhost:5432/cours_w_DB')
 
-    # @mock.patch('cls.cls_DataBaseExchange.connection.execute', side_effect=mocked_connection_execute)
-    # def test_get_candidates(self, mock_get):
+    # @mock.patch('cls.cls_DataBaseExchange')
+    # def test_get_candidates(self, Mock_create_tables):
+    #     connect = Mock_create_tables()
+    #     connect.DataBaseExchange.query_db.return_value = [1, 2]
     #     data = self.db.create_tables()
     #     self.assertListEqual(data, [1, 2])
 

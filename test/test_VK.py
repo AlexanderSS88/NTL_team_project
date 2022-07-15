@@ -31,7 +31,9 @@ def mocked_requests_get(*args, **kwargs):
 
 
 class TestVKFunctions(unittest.TestCase):
-    vk = VkUrl(db_data_file_path='tokens_4_test')
+
+    def setUp(self):
+        self.vk = VkUrl(db_data_file_path='tokens_4_test')
 
     def test_get_url(self):
         self.assertMultiLineEqual(self.vk.get_url('users.get'), "https://api.vk.com/method/users.get")

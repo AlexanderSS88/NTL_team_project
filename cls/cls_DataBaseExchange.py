@@ -1,6 +1,7 @@
 import sqlalchemy
 import re
 from cls.cls_DataBaseConnection import DataBaseConnection
+from sqlalchemy.exc import OperationalError
 
 """
 Here collected all dialogs between program and database.
@@ -9,8 +10,11 @@ Here collected all dialogs between program and database.
 
 class DataBaseExchange(DataBaseConnection):
 
-    def __init__(self, db_data_file_path='tokens', make_connection=True):
-        super().__init__(make_connection=make_connection, db_data_file_path=db_data_file_path)
+    def __init__(self, db_data_file_path='tokens'):
+        super().__init__(db_data_file_path=db_data_file_path)
+
+    def query_db(self, message):
+        return self.connection.execute(message)
 
     def add_user_data(self, user_data: dict):
         """
@@ -19,15 +23,15 @@ class DataBaseExchange(DataBaseConnection):
         :return: None
         """
 
-        sel = self.connection.execute(
+        sel = self.query_db(
             f"SELECT EXISTS(SELECT * FROM user_info WHERE id={user_data.get('id')});").fetchmany(1)
 
         if sel[0][0]:
             print('This person was in DataBase. Personal data will be rewritten.')
-            self.connection.execute(f"DELETE FROM user_info WHERE id={user_data.get('id')};")
+            self.query_db(f"DELETE FROM user_info WHERE id={user_data.get('id')};")
 
         try:
-            self.connection.execute(
+            self.query_db(
                 f"""INSERT INTO user_info VALUES (
                 '{user_data.get('id')}', 
                 '{self.normalize_user_data(user_data.get('first_name'))}', 
@@ -54,7 +58,7 @@ class DataBaseExchange(DataBaseConnection):
         """
         Create tables in database if there is are not existed
         """
-        sel = self.connection.execute("""
+        sel = self.query_db("""
         CREATE TABLE IF NOT EXISTS user_info (
         id integer PRIMARY KEY,
         user_name varchar(40) NOT NULL,
@@ -67,7 +71,7 @@ class DataBaseExchange(DataBaseConnection):
         """)
         print(sel)
 
-        sel = self.connection.execute("""CREATE TABLE IF NOT EXISTS photos (
+        sel = self.query_db("""CREATE TABLE IF NOT EXISTS photos (
         id integer PRIMARY KEY,
         photo_link varchar(300),
         photo_id_user integer REFERENCES user_info(id)
@@ -75,7 +79,7 @@ class DataBaseExchange(DataBaseConnection):
         """)
         print(sel)
 
-        sel = self.connection.execute("""
+        sel = self.query_db("""
         CREATE TABLE IF NOT EXISTS interests(
         id integer PRIMARY KEY,
         interest_name varchar(40) NOT NULL,
@@ -87,12 +91,12 @@ class DataBaseExchange(DataBaseConnection):
     def get_candidates(self, min_age: int, max_age: int, city_name: str) -> list:
 
         if min_age == max_age:
-            return [item[0] for item in self.connection.execute(
+            return [item[0] for item in self.query_db(
                 f"""SELECT id FROM user_info WHERE
                         age = {min_age}
                         AND city = '{city_name}';""").fetchall()]
         else:
-            return [item[0] for item in self.connection.execute(
+            return [item[0] for item in self.query_db(
                 f"""SELECT id FROM user_info WHERE
                 age BETWEEN {min_age} AND {max_age}
                 AND city = '{city_name}';""").fetchall()]

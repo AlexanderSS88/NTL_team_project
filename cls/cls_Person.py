@@ -24,6 +24,7 @@ class Person:
     # the base albums list, common for everybody
     album_list = ['wall', 'profile']
     photo_list = []
+    photo_id_list = []
 
     def __init__(self, user_id):
         self.user_id = user_id
@@ -93,6 +94,7 @@ class Person:
         print(f'self.photo_list len {len(self.photo_list)}')
 
         return f"attachment({''.join([f'{url},{n_char}' for url in self.photo_list])})"
+
 
     def get_photos_of_person(self, user_id) -> list:
 
@@ -171,8 +173,7 @@ class Person:
                 interests = data_str.split('.')
         return interests
 
-    @staticmethod
-    def format_files_list(photo_list: list, qtt: int) -> list:
+    def format_files_list(self, photo_list: list, qtt: int) -> list:
         """
         Format a list of files_inf_list by template:
             [{
@@ -209,6 +210,7 @@ class Person:
         if len(files_inf_list) < qtt:
             qtt = len(files_inf_list)
 
-        files_inf_list = [files_inf_list[i]['url'] for i in range(qtt)]
+        self.photo_list = [files_inf_list[i]['url'] for i in range(qtt)]
+        self.photo_id_list = [files_inf_list[i]['id'] for i in range(qtt)]
 
-        return files_inf_list
+        return self.photo_list

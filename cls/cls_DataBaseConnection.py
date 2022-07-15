@@ -9,14 +9,17 @@ Here program takes database parameters from configuration file and make connecti
 
 
 class DataBaseConnection:
-    def __init__(self, make_connection: bool, db_data_file_path='tokens'):
+
+    def __init__(self, db_data_file_path='tokens'):
         self.db_data_file_path = db_data_file_path
         # it's not necessary to make database connections in some tests
-        if make_connection:
-            engine = sqlalchemy.create_engine(self.prepare_database_connection())
+        engine = sqlalchemy.create_engine(self.prepare_database_connection())
 
-            self.connection = engine.connect()
-            print(self.connection)
+        self.connection = engine.connect()
+
+        print(f'type(self.connection): {type(self.connection)}')
+
+        print(self.connection)
 
     def prepare_database_connection(self):
         token = Token(self.db_data_file_path)
