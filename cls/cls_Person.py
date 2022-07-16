@@ -211,7 +211,7 @@ class Person:
         if len(files_inf_list) < qtt:
             qtt = len(files_inf_list)
 
-        pprint(files_inf_list[0])
+        # pprint(files_inf_list[0])
 
         self.photo_list = [files_inf_list[i]['url'] for i in range(qtt)]
         self.photo_id_list = [files_inf_list[i]['id'] for i in range(qtt)]

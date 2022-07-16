@@ -81,7 +81,7 @@ class DataBaseExchange(DataBaseConnection):
         sel = self.connection.execute("""
         CREATE TABLE IF NOT EXISTS interests(
         id SERIAL PRIMARY KEY,
-        interest_name varchar(40) NOT NULL,
+        interest_name varchar(200) NOT NULL,
         interest_id_user integer REFERENCES user_info(id)
         );
         """)

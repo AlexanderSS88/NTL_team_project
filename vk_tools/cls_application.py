@@ -1,5 +1,5 @@
 import re
-from vk_api import VkApi
+from vk_api import VkApi, VkUpload
 from random import randrange
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from cls.cls_person_list_iteration import PersonListStack
@@ -36,6 +36,8 @@ class Application:
         else:
             self.vk_session = VkApi(token=self.GROUP_TOKEN, api_version=self.API_VERSION)
             self.vk = self.vk_session.get_api()
+            self.upload = VkUpload(self.vk_session)
+
 
             # To use Long Poll API
             self.longpoll = VkBotLongPoll(self.vk_session, group_id=self.GROUP_ID)
@@ -50,11 +52,21 @@ class Application:
         self.OWNER_ID = token.app_dict['APPLICATION']['OWNER_ID']
 
     # Send messages
-    def write_msg(self, message, user_id='default'):
+    # def write_msg(self, message, user_id='default'):
+    #     if user_id == 'default':
+    #         user_id = self.user_id
+    #     self.vk_session.method('messages.send',
+    #                            {'user_id': int(user_id), 'message': message, 'random_id': randrange(10 ** 7)})
+
+    def write_msg(self, message, user_id='default', attachment=''):
         if user_id == 'default':
             user_id = self.user_id
         self.vk_session.method('messages.send',
-                               {'user_id': int(user_id), 'message': message, 'random_id': randrange(10 ** 7)})
+                               {'user_id': int(user_id),
+                                'message': message,
+                                'random_id': randrange(10 ** 7),
+                                'attachment': attachment})
+
 
     # The new user dialog cycle
     def new_companion(self):
@@ -75,7 +87,6 @@ class Application:
 
                     for event2 in self.longpoll.listen():
                         if event2.type == VkBotEventType.MESSAGE_NEW:
-                            # pprint(event2.object.message)
 
                             if event2.obj.message['text'] == 'изыди':
                                 self.write_msg(user_id=companion_user.user_id, message="Как скажете.")
@@ -238,11 +249,20 @@ class Application:
             next_person = pers_st.get_next()
 
             user = Person(next_person)
-            self.write_msg(user)
             # self.write_msg(user.get_photos_of_person_4_attach(next_person))
+            # print(user.photo_id_list)
+
+
             data_base = DataBaseExchange()
             photos_id_list, photos_list = data_base.get_photo_from_db(user.user_id)
-            self.write_msg(photos_list)
+
+            attach = f"{''.join([f'photo{user.user_id}_{photo_id},' for photo_id in photos_list])}"[:-1]
+            print(f'attach: {attach}')
+            self.write_msg(user, attachment=attach)
+
+
+            # self.write_msg(photos_list)
+            # self.upload_photo(photos_id_list)
 
             self.write_msg('Следующий?')
             if self.get_user_opinion() != 'Yes':
