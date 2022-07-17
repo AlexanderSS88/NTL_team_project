@@ -67,11 +67,13 @@ class Person:
         else:
             return 'Error'
 
-    def get_photos_of_person(self) -> list:
+    def get_photos(self) -> list:
 
         # search another albums
+        print('search_albums')
         self.album_list.extend(self.vk.search_albums(user_id=self.user_id))
         # get a list of all photos from all albums
+        print('get a list of photos')
         self.photo_list = self.vk.get_photo_f_profile_by_album_list(user_id=self.user_id,
                                                                     album_name_list=self.album_list)
         # sort of photos by bigger likes quantity and take 3 best
@@ -84,8 +86,10 @@ class Person:
         n_char = '\n'
 
         # search another albums
+        print('search_albums')
         self.album_list.extend(self.vk.search_albums(user_id=user_id))
         # get a list of all photos from all albums
+        print('get a list of photos')
         self.photo_list = self.vk.get_photo_f_profile_by_album_list(user_id=user_id,
                                                                     album_name_list=self.album_list)
         # sort of photos by bigger likes quantity and take 3 best
@@ -99,8 +103,13 @@ class Person:
     def get_photos_of_person(self, user_id) -> list:
 
         # search another albums
+        print('search_albums')
+        print(user_id)
         self.album_list.extend(self.vk.search_albums(user_id=user_id))
+        print(self.album_list)
+
         # get a list of all photos from all albums
+        print('get a list of photos')
         self.photo_list = self.vk.get_photo_f_profile_by_album_list(user_id=user_id,
                                                                     album_name_list=self.album_list)
         # sort of photos by bigger likes quantity and take 3 best

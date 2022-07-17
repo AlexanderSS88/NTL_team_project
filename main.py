@@ -11,7 +11,7 @@ This function is separated to use for different persons in main.
 data_base = DataBaseExchange()
 
 
-def get_personal_data(user_id: int):
+def get_personal_data(user_id: str):
     user = Person(str(user_id))
     print()
 
@@ -23,12 +23,42 @@ def get_personal_data(user_id: int):
         pprint(user_dict)
         data_base.add_user_data(user_dict)
 
-        user.get_photos_of_person(user_id)
+        # user.get_photos_of_person(user.user_id)
+        # data_base.add_user_photos(user_dict, user.photo_list, user.photo_id_list)
+        # data_base.add_user_interests(user_dict)
+
+        print('Data from VK:')
+        photos_list_, photos_id_list_ = get_photo_list(user_id)
+        print(photos_list_)
+        print(photos_id_list_)
         data_base.add_user_photos(user_dict, user.photo_list, user.photo_id_list)
         data_base.add_user_interests(user_dict)
 
+        # get_personal_data(3)
+        #
+        # print('Data 2 from VK:')
+        # photos_list_, photos_id_list_ = get_photo_list(user_id)
+        # data_base.add_user_photos(user_dict, photos_list_, photos_id_list_)
+
+
     else:
         print('The person data are not useful.')
+
+def get_photo_list(user_id):
+    user = Person(user_id)
+    # print('Data from DB:')
+    # photos_id_list, photos_list = data_base.get_photo_from_db(user_id)
+    # print(photos_list)
+    # print(photos_id_list)
+
+    print('Data from VK:')
+    photos_list = user.get_photos_of_person(user_id)
+    photos_id_list = user.photo_id_list
+    print(photos_list)
+    print(photos_id_list)
+
+
+    return photos_list, photos_id_list
 
 
 def bot_cycle():
@@ -95,14 +125,17 @@ if __name__ == '__main__':
                 print(candidates_list)
             case 'p':
                 user_id_4_photo = input("Input user id:\t")
-                user = Person(str(user_id_4_photo))
+                get_photo_list(user_id_4_photo)
+                # user = Person(user_id_4_photo)
+                # print('Data from VK:')
                 # photos_list = user.get_photos_of_person(user_id_4_photo)
                 # photos_id_list = user.photo_id_list
                 # print(photos_list)
                 # print(photos_id_list)
-                photos_id_list, photos_list = data_base.get_photo_from_db(user_id_4_photo)
-                print('From DB:')
-                print(photos_list)
-                print(photos_id_list)
+                # print('Data from DB:')
+                # photos_id_list, photos_list = data_base.get_photo_from_db(user_id_4_photo)
+                # print('From DB:')
+                # print(photos_list)
+                # print(photos_id_list)
             case 'b':
                 print(bot_cycle())

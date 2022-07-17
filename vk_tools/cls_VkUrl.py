@@ -86,25 +86,26 @@ class VkUrl():
         Gets a user's photos data by user id in album_name_list
         """
         photos_list = []
-
         for album_name in album_name_list:
+            print(f'album_name: {album_name}')
             result = requests.get(self.get_url(method="photos.get"),
                                   params=self.transform_param(
                                       self.get_params(
                                           fields='',
                                           pdict={'owner_id': user_id,
-                                                 'album_id': album_name,
+                                                 'album_id': str(album_name),
                                                  'count': '200',
                                                  'photo_sizes': '1',
                                                  'extended': '1'})),
                                   timeout=5)
             time.sleep(0.3)
-
             if result.status_code == 200 and 'response' in result.json():
                 photos_list.append(result.json()['response']['items'])
-            else:
-                pprint(result.json())
-                return f"Error"
+
+
+            # else:
+            #     pprint(result.json())
+            #     return f"Error"
 
         return photos_list
 
@@ -119,6 +120,7 @@ class VkUrl():
                                       fields='',
                                       pdict={'owner_id': user_id})),
                               timeout=5)
+        # pprint(result.json())
         time.sleep(0.3)
 
         result = result.json()
