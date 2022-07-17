@@ -162,7 +162,7 @@ class DataBaseExchange(DataBaseConnection):
 
         sel = [self.connection.execute(
         f"""
-        SELECT id, photo_link FROM photos WHERE photo_id_user = {user_id};
+        SELECT id, photo_link FROM photos WHERE photo_id_user = '{user_id}';
         """
         ).fetchall()]
         pprint(sel)

@@ -13,6 +13,9 @@ class PersonListStack:
     def __init__(self, person_list):
         self.stack_list = person_list
 
+    def add_list(self, data_list):
+        self.stack_list.extend(data_list)
+
     def clean(self):
         self.stack_list.clear()
 

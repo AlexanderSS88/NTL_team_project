@@ -2,6 +2,8 @@ from pprint import pprint
 from cls.cls_Person import Person
 from cls.cls_DataBaseExchange import DataBaseExchange
 from vk_tools.cls_application import Application
+from vk_tools.cls_client_dialog import ClsClient
+from cls.cls_person_list_iteration import PersonListStack
 
 """
 Get user data by user id.
@@ -16,40 +18,23 @@ def get_personal_data(user_id: str):
     print()
 
     if user.data_are_good:
-        # print('Version for Bot:')
-        # print(user)
         user_dict = user.get_person_data()
         print('Version for Database:')
         pprint(user_dict)
         data_base.add_user_data(user_dict)
 
-        # user.get_photos_of_person(user.user_id)
-        # data_base.add_user_photos(user_dict, user.photo_list, user.photo_id_list)
-        # data_base.add_user_interests(user_dict)
-
         print('Data from VK:')
-        photos_list_, photos_id_list_ = get_photo_list(user_id)
+        photos_list_, photos_id_list_ = get_photo_list_from_VK(user_id)
         print(f'photos_list_: {photos_list_}')
         print(f'photos_id_list_: {photos_id_list_}')
         data_base.add_user_photos(user_dict, photos_list_, photos_id_list_)
         data_base.add_user_interests(user_dict)
-
-        # get_personal_data(3)
-        #
-        # print('Data 2 from VK:')
-        # photos_list_, photos_id_list_ = get_photo_list(user_id)
-        # data_base.add_user_photos(user_dict, photos_list_, photos_id_list_)
-
-
     else:
         print('The person data are not useful.')
 
-def get_photo_list(user_id):
+
+def get_photo_list_from_VK(user_id):
     user = Person(user_id)
-    # print('Data from DB:')
-    # photos_id_list, photos_list = data_base.get_photo_from_db(user_id)
-    # print(photos_list)
-    # print(photos_id_list)
 
     print('Data from VK:')
     photos_list = user.get_photos_of_person(user_id)
@@ -57,42 +42,152 @@ def get_photo_list(user_id):
     print(photos_list)
     print(photos_id_list)
 
+    return photos_list, photos_id_list
+
+
+def get_photo_list_from_DB(user_id):
+    # user = Person(user_id)
+    print('Data from DB:')
+    photos_id_list, photos_list = data_base.get_photo_from_db(user_id)
+    print(photos_list)
+    print(photos_id_list)
 
     return photos_list, photos_id_list
 
 
 def bot_cycle():
     bot = Application()
+    clients_dict = {}
 
     while True:
-        dialog = bot.new_companion()
+        new_id, message = bot.get_external_call()
 
-        # если клиент не против, можно начть новый цикл опроса
-        if 'Have dialog.' in dialog:
-            pers_list = bot.get_data_4_candidates_list()
-            print(f'pers_list: {pers_list}')
-            if 'Fail' in pers_list:
-                bot.write_msg('Может в следующий раз?')
-                break
-            if (len(pers_list)) == 0:
-                bot.write_msg(
-                    'Извини, никого не нашлось:(\nМожет в следующий раз?\nСпасибо что воспользовались нашим сервисом.')
-                break
+        if new_id not in clients_dict.keys():
+            bot.wellcome(new_id, message)
+            client = ClsClient(new_id)
+            clients_dict.setdefault(new_id)  # добавляем клиента в словарь
+            clients_dict[new_id] = {'dialog_status': 'wellcome'}  # спросили, хочешь знакомиться
+        else:
+            match clients_dict[new_id]['dialog_status']:
+                case 'wellcome':
+                    opinion = bot.get_user_opinion(new_id, message)  # ответ на "хочешь знакомиться"
+                    match opinion:
+                        case 'No':
+                            bot.write_msg(user_id=new_id,
+                                          message="Как знаешь.\nЕсли что, я тут, обращайся")
+                            clients_dict.pop(new_id)  # удалили клиента из списка, разговор окончен
+                        case 'Yes':
+                            bot.write_msg(user_id=new_id,
+                                          message="Теперь мне потребуются некоторые входные данные:\n"
+                                                  " - возрастной интервал кандидатов "
+                                                  "(минимальный и максимальный возраст);\n"
+                                                  " - город их проживания.\n"
+                                                  "Продолжим?")
 
-            bot.write_msg('Теперь посмотрим кого удалось отыскать.\n')
-            bot_person = bot.person_list_presentation(pers_list)
-            if bot_person == 'Complete':
-                bot.write_msg('Это были все кандидаты.\nСпасибо что воспользовались нашим сервисом.')
-                # break
-            elif bot_person == 'Canceled':
-                bot.write_msg('Может в следующий раз?\nСпасибо что воспользовались нашим сервисом.')
-                # break
-            elif bot_person == 'Stop':
-                return 'Canceled by User'
+                            clients_dict[new_id]['dialog_status'] = 'question#1'
 
-        # выход из программы
-        if 'Stop' in dialog:
-            return 'Canceled by User'
+                case 'question#1':
+                    opinion = bot.get_user_opinion(new_id, message)  # Продолжим?"
+                    match opinion:
+                        case 'No':
+                            bot.write_msg(user_id=new_id,
+                                          message="Как знаешь.\nЕсли что, я тут, обращайся")
+                            clients_dict.pop(new_id)  # удалили клиента из списка, разговор окончен
+                        case 'Yes':
+                            bot.write_msg(user_id=new_id,
+                                          message="Тогда приступим!\n"
+                                                  "Напиши минимальный возраст кандидата:")
+                            clients_dict[new_id]['dialog_status'] = 'question#2'
+                case 'question#2':
+                    min_age = message
+                    if bot.is_age_valid(min_age):
+                        clients_dict[new_id].setdefault('candidates_data')
+                        clients_dict[new_id]['candidates_data'] = {'min_age': min_age}
+                        clients_dict[new_id]['dialog_status'] = 'question#3'
+                        bot.write_msg(user_id=new_id,
+                                      message="Напиши максимальный возраст кандидата:")
+                    else:
+                        bot.write_msg(user_id=new_id,
+                                      message="Извини, с возрастом что-то не так...")
+                case 'question#3':
+                    max_age = message
+                    if bot.is_age_valid(max_age):
+                        clients_dict[new_id]['candidates_data'].setdefault('max_age', max_age)
+
+                        # проверяем, если возраст перепутан
+                        if clients_dict[new_id]['candidates_data']['min_age'] > \
+                                clients_dict[new_id]['candidates_data']['max_age']:
+                            clients_dict[new_id]['candidates_data']['min_age'], \
+                            clients_dict[new_id]['candidates_data']['max_age'] = \
+                                clients_dict[new_id]['candidates_data']['max_age'], \
+                                clients_dict[new_id]['candidates_data']['min_age']
+
+                        clients_dict[new_id]['dialog_status'] = 'question#4'
+                        bot.write_msg(user_id=new_id,
+                                      message="Напиши город, где живёт кандидат:")
+                    else:
+                        bot.write_msg(user_id=new_id,
+                                      message="Извини, с возрастом что-то не так...")
+                case 'question#4':
+                    clients_dict[new_id]['candidates_data'].setdefault('city', message)
+                    bot.write_msg(user_id=new_id,
+                                  message="Теперь посмотрим кого удалось отыскать.")
+
+                    # data_base = DataBaseExchange()
+
+                    candidates_list = data_base.get_candidates(
+                        min_age=int(clients_dict[new_id]['candidates_data']['min_age']),
+                        max_age=int(clients_dict[new_id]['candidates_data']['max_age']),
+                        city_name=clients_dict[new_id]['candidates_data']['city'])
+
+                    if candidates_list == 0:
+                        bot.write_msg(user_id=new_id,
+                                      message='Извини, никого не нашлось:(\nМожет в следующий раз?\nСпасибо что воспользовались нашим сервисом.')
+                        clients_dict.pop(new_id)  # удалили клиента из списка, разговор окончен
+                    else:
+                        # clients_dict[new_id][candidates_list].add_list(clients_list)
+
+                        # print(candidates_list)
+
+                        clients_dict[new_id].setdefault('candidates_list', candidates_list)
+
+                        candidate_id = clients_dict[new_id]['candidates_list'][-1]
+                        clients_dict[new_id]['candidates_list'].pop()
+                        candidate = Person(candidate_id)
+
+                        photos_id_list, photos_list = data_base.get_photo_from_db(candidate.user_id)
+                        attach = f"{''.join([f'photo{candidate.user_id}_{photo_id},' for photo_id in photos_id_list])}"[
+                                 :-1]
+                        bot.write_msg(user_id=new_id, message=candidate, attachment=attach)
+                        clients_dict[new_id]['dialog_status'] = 'presentation'
+                        bot.write_msg(user_id=new_id, message='Следующий?')
+                case 'presentation':
+                    opinion = bot.get_user_opinion(new_id, message)  # Продолжим?"
+                    match opinion:
+                        case 'No':
+                            bot.write_msg(user_id=new_id,
+                                          message="Как знаешь.\nЕсли что, я тут, обращайся")
+                            clients_dict.pop(new_id)  # удалили клиента из списка, разговор окончен
+                        case 'Yes':
+                            if clients_dict[new_id]['candidates_list'] == []:
+                                bot.write_msg(user_id=new_id,
+                                              message='Извини, больше никого не нашлось:(\n'
+                                                      'Может в следующий раз?\n'
+                                                      'Спасибо что воспользовались нашим сервисом.')
+                                clients_dict.pop(new_id)  # удалили клиента из списка, разговор окончен
+                            else:
+                                candidate_id = clients_dict[new_id]['candidates_list'][-1]
+                                clients_dict[new_id]['candidates_list'].pop()
+                                candidate = Person(candidate_id)
+
+                                photos_id_list, photos_list = data_base.get_photo_from_db(candidate.user_id)
+                                # print(f'photos_id_list: {photos_id_list}')
+                                attach = f"{''.join([f'photo{candidate.user_id}_{photo_id},' for photo_id in photos_id_list])}"[
+                                         :-1]
+                                # print(f'attach: {attach}')
+                                bot.write_msg(user_id=new_id, message=candidate, attachment=attach)
+                                clients_dict[new_id]['dialog_status'] = 'presentation'
+                                bot.write_msg(user_id=new_id, message='Следующий?')
 
 
 if __name__ == '__main__':
@@ -125,17 +220,6 @@ if __name__ == '__main__':
                 print(candidates_list)
             case 'p':
                 user_id_4_photo = input("Input user id:\t")
-                get_photo_list(user_id_4_photo)
-                # user = Person(user_id_4_photo)
-                # print('Data from VK:')
-                # photos_list = user.get_photos_of_person(user_id_4_photo)
-                # photos_id_list = user.photo_id_list
-                # print(photos_list)
-                # print(photos_id_list)
-                # print('Data from DB:')
-                # photos_id_list, photos_list = data_base.get_photo_from_db(user_id_4_photo)
-                # print('From DB:')
-                # print(photos_list)
-                # print(photos_id_list)
+                get_photo_list_from_DB(user_id_4_photo)
             case 'b':
                 print(bot_cycle())
