@@ -73,7 +73,7 @@ class VkUrl():
                                              'extended': '1'})),
                               timeout=5)
 
-        time.sleep(0.3)
+        time.sleep(0.1)
 
         if result.status_code == 200 and 'response' in result.json():
             return result.json()['response']['items']
@@ -98,7 +98,7 @@ class VkUrl():
                                                  'photo_sizes': '1',
                                                  'extended': '1'})),
                                   timeout=5)
-            time.sleep(0.3)
+            time.sleep(0.1)
             if result.status_code == 200 and 'response' in result.json():
                 photos_list.append(result.json()['response']['items'])
 
@@ -121,7 +121,7 @@ class VkUrl():
                                       pdict={'owner_id': user_id})),
                               timeout=5)
         # pprint(result.json())
-        time.sleep(0.3)
+        time.sleep(0.1)
 
         result = result.json()
         if not 'response' in result:

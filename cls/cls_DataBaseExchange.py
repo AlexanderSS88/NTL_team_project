@@ -108,13 +108,6 @@ class DataBaseExchange(DataBaseConnection):
         :return: None
         """
 
-        # sel = self.connection.execute(
-        #     f"SELECT EXISTS(SELECT * FROM user_info WHERE id={user_data.get('id')});").fetchmany(1)
-
-        # if sel[0][0]:
-        #     print('This person was in DataBase. Personal data will be rewritten.')
-        #     self.connection.execute(f"DELETE FROM user_info WHERE id={user_data.get('id')};")
-
         sel = ()
 
         if len(photo_list) > 0:
@@ -129,7 +122,10 @@ class DataBaseExchange(DataBaseConnection):
                     )
                     print(f"User photo {i} data recorded to DataBae.")
                 except sqlalchemy.exc.IntegrityError:
-                    print('This person data in DataBae yet.')
+                    print('This person photo_list in DataBae yet.')
+
+        else:
+            print('Error: The photo_list is empty!')
 
         return sel
 

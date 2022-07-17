@@ -29,9 +29,9 @@ def get_personal_data(user_id: str):
 
         print('Data from VK:')
         photos_list_, photos_id_list_ = get_photo_list(user_id)
-        print(photos_list_)
-        print(photos_id_list_)
-        data_base.add_user_photos(user_dict, user.photo_list, user.photo_id_list)
+        print(f'photos_list_: {photos_list_}')
+        print(f'photos_id_list_: {photos_id_list_}')
+        data_base.add_user_photos(user_dict, photos_list_, photos_id_list_)
         data_base.add_user_interests(user_dict)
 
         # get_personal_data(3)
