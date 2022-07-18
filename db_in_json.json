@@ -1,0 +1,32 @@
+{
+   "1": {
+      "first_name": "Павел",
+      "last_name": "Дуров",
+      "id": "1",
+      "url": "https://vk.com/id1",
+      "age": 38,
+      "sex": 2,
+      "city": "Ленинград",
+      "city_id": 2,
+      "interests": [],
+      "photos_list": [],
+      "photos_id_list": [
+         288668576,
+         263219656,
+         263219735
+      ]
+   },
+   "9": {
+      "first_name": "Настя",
+      "last_name": "Васильева",
+      "id": "9",
+      "url": "https://vk.com/id9",
+      "age": 21,
+      "sex": 1,
+      "city": "Лобня",
+      "city_id": 8162,
+      "interests": [],
+      "photos_list": [],
+      "photos_id_list": []
+   }
+}
