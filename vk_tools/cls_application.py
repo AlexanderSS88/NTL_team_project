@@ -2,15 +2,8 @@ import re
 from vk_api import VkApi, VkUpload
 from random import randrange
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
-from cls.cls_person_list_iteration import PersonListStack
-
-from pprint import pprint
-
 from cls.cls_Person import Person
-from cls.cls_DataBaseExchange import DataBaseExchange
 from tokens.cls_tokens import Token
-
-
 
 
 class Application:
@@ -81,12 +74,7 @@ class Application:
             self.write_msg(user_id=companion_user.user_id, message=message_bad)
 
     def get_user_opinion(self, user_id, message):
-        # if message['text'] == 'изыди':
-        #     self.write_msg(user_id=companion_user.user_id, message="Как скажете.")
-        #     return 'Canceled by user.'
         if re.findall(self.pattern_no, message, flags=re.IGNORECASE):
-            # message_no = "Как знаешь.\nЕсли что, я тут, обращайся"
-            # self.write_msg(user_id=user_id, message=message_no)
             return 'No'
         elif re.findall(self.pattern_yes, message, flags=re.IGNORECASE):
             self.write_msg(user_id=user_id, message='Ok')

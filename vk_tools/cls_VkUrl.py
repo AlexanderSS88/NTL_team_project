@@ -114,7 +114,6 @@ class VkUrl():
         Gets albums list.
         """
         album_list = []
-        # album_list.clear()
         result = requests.get(self.get_url(method="photos.getAlbums"),
                               params=self.transform_param(
                                   self.get_params(

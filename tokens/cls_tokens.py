@@ -43,7 +43,6 @@ class Token:
             'OWNER_ID': config['APPLICATION']['OWNER_ID']
         })
         self.app_dict.setdefault('GROUP_DATA', {'GROUP_ID': config['GROUP_DATA']['group_id']})
-        # [API_DATA]
 
         self.app_dict.setdefault('API_DATA', {
             'API_VERSION': config['API_DATA']['API_VERSION'],

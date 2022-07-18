@@ -116,8 +116,8 @@ class DataBaseExchange(DataBaseConnection):
                 try:
                     sel = self.connection.execute(
                         f"""INSERT INTO photos VALUES (
-                        '{photo_id_list[i-1]}', 
-                        '{photo_list[i-1]}', 
+                        '{photo_id_list[i - 1]}', 
+                        '{photo_list[i - 1]}', 
                         '{user_data.get('id')}');"""
                     )
                     print(f"User photo {i} data recorded to DataBae.")
@@ -138,13 +138,6 @@ class DataBaseExchange(DataBaseConnection):
 
         sel = ()
 
-        # sel = self.connection.execute(
-        #     f"SELECT EXISTS(SELECT * FROM user_info WHERE id={user_data.get('id')});").fetchmany(1)
-
-        # if sel[0][0]:
-        #     print('This person was in DataBase. Personal data will be rewritten.')
-        #     self.connection.execute(f"DELETE FROM user_info WHERE id={user_data.get('id')};")
-
         for interest in user_data.get('interests'):
             try:
                 sel = self.connection.execute(
@@ -161,9 +154,9 @@ class DataBaseExchange(DataBaseConnection):
     def get_photo_from_db(self, user_id):
 
         sel = [self.connection.execute(
-        f"""
-        SELECT id, photo_link FROM photos WHERE photo_id_user = '{user_id}';
-        """
+            f"""
+            SELECT id, photo_link FROM photos WHERE photo_id_user = '{user_id}';
+            """
         ).fetchall()]
         pprint(sel)
         print('item')
@@ -177,5 +170,3 @@ class DataBaseExchange(DataBaseConnection):
             list_photo.append(item[1])
 
         return list_photo_id, list_photo
-
-

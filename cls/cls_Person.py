@@ -100,10 +100,7 @@ class Person:
         # sort of photos by bigger likes quantity and take 3 best
         self.photo_list = self.format_files_list(self.photo_list, self.photo_quantity)
 
-        print(f'self.photo_list len {len(self.photo_list)}')
-
         return f"attachment({''.join([f'{url},{n_char}' for url in self.photo_list])})"
-
 
     def get_photos_of_person(self, user_id) -> list:
 
@@ -226,8 +223,6 @@ class Person:
 
         if len(files_inf_list) < qtt:
             qtt = len(files_inf_list)
-
-        # pprint(files_inf_list[0])
 
         self.photo_list = [files_inf_list[i]['url'] for i in range(qtt)]
         self.photo_id_list = [files_inf_list[i]['id'] for i in range(qtt)]

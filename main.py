@@ -2,8 +2,6 @@ from pprint import pprint
 from cls.cls_Person import Person
 from cls.cls_DataBaseExchange import DataBaseExchange
 from vk_tools.cls_application import Application
-from vk_tools.cls_client_dialog import ClsClient
-from cls.cls_person_list_iteration import PersonListStack
 
 """
 Get user data by user id.
@@ -64,7 +62,6 @@ def bot_cycle():
 
         if new_id not in clients_dict.keys():
             bot.wellcome(new_id, message)
-            client = ClsClient(new_id)
             clients_dict.setdefault(new_id)  # добавляем клиента в словарь
             clients_dict[new_id] = {'dialog_status': 'wellcome'}  # спросили, хочешь знакомиться
         else:
@@ -115,8 +112,8 @@ def bot_cycle():
                         clients_dict[new_id]['candidates_data'].setdefault('max_age', max_age)
 
                         # проверяем, если возраст перепутан
-                        if clients_dict[new_id]['candidates_data']['min_age'] > \
-                                clients_dict[new_id]['candidates_data']['max_age']:
+                        if int(clients_dict[new_id]['candidates_data']['min_age']) > \
+                                int(clients_dict[new_id]['candidates_data']['max_age']):
                             clients_dict[new_id]['candidates_data']['min_age'], \
                             clients_dict[new_id]['candidates_data']['max_age'] = \
                                 clients_dict[new_id]['candidates_data']['max_age'], \
@@ -133,8 +130,6 @@ def bot_cycle():
                     bot.write_msg(user_id=new_id,
                                   message="Теперь посмотрим кого удалось отыскать.")
 
-                    # data_base = DataBaseExchange()
-
                     candidates_list = data_base.get_candidates(
                         min_age=int(clients_dict[new_id]['candidates_data']['min_age']),
                         max_age=int(clients_dict[new_id]['candidates_data']['max_age']),
@@ -142,7 +137,8 @@ def bot_cycle():
 
                     if candidates_list == 0:
                         bot.write_msg(user_id=new_id,
-                                      message='Извини, никого не нашлось:(\nМожет в следующий раз?\nСпасибо что воспользовались нашим сервисом.')
+                                      message='Извини, никого не нашлось:(\nМожет в следующий раз?'
+                                              '\nСпасибо что воспользовались нашим сервисом.')
                         clients_dict.pop(new_id)  # удалили клиента из списка, разговор окончен
                     else:
                         # clients_dict[new_id][candidates_list].add_list(clients_list)
@@ -156,8 +152,14 @@ def bot_cycle():
                         candidate = Person(candidate_id)
 
                         photos_id_list, photos_list = data_base.get_photo_from_db(candidate.user_id)
+
+                        if len(photos_id_list) == 0:
+                            print('No photo in DataBase. Look at photos on VK.')
+                            photos_list, photos_id_list = get_photo_list_from_VK(candidate.user_id)
+
                         attach = f"{''.join([f'photo{candidate.user_id}_{photo_id},' for photo_id in photos_id_list])}"[
                                  :-1]
+                        print(f'attach: {attach}')
                         bot.write_msg(user_id=new_id, message=candidate, attachment=attach)
                         clients_dict[new_id]['dialog_status'] = 'presentation'
                         bot.write_msg(user_id=new_id, message='Следующий?')
@@ -181,10 +183,14 @@ def bot_cycle():
                                 candidate = Person(candidate_id)
 
                                 photos_id_list, photos_list = data_base.get_photo_from_db(candidate.user_id)
-                                # print(f'photos_id_list: {photos_id_list}')
+
+                                if len(photos_id_list) == 0:
+                                    print('No photo in DataBase. Look at photos on VK.')
+                                    photos_list, photos_id_list = get_photo_list_from_VK(candidate.user_id)
+
                                 attach = f"{''.join([f'photo{candidate.user_id}_{photo_id},' for photo_id in photos_id_list])}"[
                                          :-1]
-                                # print(f'attach: {attach}')
+                                print(f'attach: {attach}')
                                 bot.write_msg(user_id=new_id, message=candidate, attachment=attach)
                                 clients_dict[new_id]['dialog_status'] = 'presentation'
                                 bot.write_msg(user_id=new_id, message='Следующий?')
