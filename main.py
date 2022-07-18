@@ -8,12 +8,12 @@ Get user data by user id.
 This function is separated to use for different persons in main.
 """
 
-data_base = DataBaseExchange()
-
 
 def get_personal_data(user_id: str):
     user = Person(str(user_id))
     print()
+
+    data_base = DataBaseExchange()
 
     if user.data_are_good:
         user_dict = user.get_person_data()
@@ -44,7 +44,7 @@ def get_photo_list_from_VK(user_id):
 
 
 def get_photo_list_from_DB(user_id):
-    # user = Person(user_id)
+    data_base = DataBaseExchange()
     print('Data from DB:')
     photos_id_list, photos_list = data_base.get_photo_from_db(user_id)
     print(photos_list)
@@ -130,6 +130,8 @@ def bot_cycle():
                     bot.write_msg(user_id=new_id,
                                   message="Теперь посмотрим кого удалось отыскать.")
 
+                    data_base = DataBaseExchange()
+
                     candidates_list = data_base.get_candidates(
                         min_age=int(clients_dict[new_id]['candidates_data']['min_age']),
                         max_age=int(clients_dict[new_id]['candidates_data']['max_age']),
@@ -141,26 +143,13 @@ def bot_cycle():
                                               '\nСпасибо что воспользовались нашим сервисом.')
                         clients_dict.pop(new_id)  # удалили клиента из списка, разговор окончен
                     else:
-                        # clients_dict[new_id][candidates_list].add_list(clients_list)
-
-                        # print(candidates_list)
-
                         clients_dict[new_id].setdefault('candidates_list', candidates_list)
 
                         candidate_id = clients_dict[new_id]['candidates_list'][-1]
                         clients_dict[new_id]['candidates_list'].pop()
-                        candidate = Person(candidate_id)
 
-                        photos_id_list, photos_list = data_base.get_photo_from_db(candidate.user_id)
+                        bot.person_presentation(new_id, candidate_id)
 
-                        if len(photos_id_list) == 0:
-                            print('No photo in DataBase. Look at photos on VK.')
-                            photos_list, photos_id_list = get_photo_list_from_VK(candidate.user_id)
-
-                        attach = f"{''.join([f'photo{candidate.user_id}_{photo_id},' for photo_id in photos_id_list])}"[
-                                 :-1]
-                        print(f'attach: {attach}')
-                        bot.write_msg(user_id=new_id, message=candidate, attachment=attach)
                         clients_dict[new_id]['dialog_status'] = 'presentation'
                         bot.write_msg(user_id=new_id, message='Следующий?')
                 case 'presentation':
@@ -180,24 +169,16 @@ def bot_cycle():
                             else:
                                 candidate_id = clients_dict[new_id]['candidates_list'][-1]
                                 clients_dict[new_id]['candidates_list'].pop()
-                                candidate = Person(candidate_id)
 
-                                photos_id_list, photos_list = data_base.get_photo_from_db(candidate.user_id)
+                                bot.person_presentation(new_id, candidate_id)
 
-                                if len(photos_id_list) == 0:
-                                    print('No photo in DataBase. Look at photos on VK.')
-                                    photos_list, photos_id_list = get_photo_list_from_VK(candidate.user_id)
-
-                                attach = f"{''.join([f'photo{candidate.user_id}_{photo_id},' for photo_id in photos_id_list])}"[
-                                         :-1]
-                                print(f'attach: {attach}')
-                                bot.write_msg(user_id=new_id, message=candidate, attachment=attach)
                                 clients_dict[new_id]['dialog_status'] = 'presentation'
                                 bot.write_msg(user_id=new_id, message='Следующий?')
 
 
 if __name__ == '__main__':
 
+    data_base = DataBaseExchange()
     data_base.create_tables()
 
     while True:

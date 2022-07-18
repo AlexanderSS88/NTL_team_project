@@ -5,6 +5,8 @@ from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from cls.cls_Person import Person
 from tokens.cls_tokens import Token
 
+from cls.cls_DataBaseExchange import DataBaseExchange
+
 
 class Application:
     user_id = ()
@@ -89,3 +91,29 @@ class Application:
             return True
         else:
             return False
+
+    def person_presentation(self, user_id, candidate_id):
+        candidate = Person(candidate_id)
+        data_base = DataBaseExchange()
+
+        photos_id_list, photos_list = data_base.get_photo_from_db(candidate.user_id)
+
+        if len(photos_id_list) == 0:
+            print('No photo in DataBase. Look at photos on VK.')
+            photos_list, photos_id_list = self.get_photo_list_from_VK(candidate.user_id)
+
+        attach = f"{''.join([f'photo{candidate.user_id}_{photo_id},' for photo_id in photos_id_list])}"[
+                 :-1]
+        print(f'attach: {attach}')
+        self.write_msg(user_id=user_id, message=candidate, attachment=attach)
+
+    def get_photo_list_from_VK(self, user_id):
+        user = Person(user_id)
+
+        print('Data from VK:')
+        photos_list = user.get_photos_of_person(user_id)
+        photos_id_list = user.photo_id_list
+        print(photos_list)
+        print(photos_id_list)
+
+        return photos_list, photos_id_list
