@@ -22,7 +22,8 @@ class Person:
     age = int
 
     # the base albums list, common for everybody
-    album_list = ['wall', 'profile']
+    base_album_list = ['wall', 'profile']
+    album_list = []
     photo_list = []
     photo_id_list = []
 
@@ -71,6 +72,8 @@ class Person:
 
         # search another albums
         print('search_albums')
+        self.album_list.clear()
+        self.album_list.extend(self.base_album_list)
         self.album_list.extend(self.vk.search_albums(user_id=self.user_id))
         # get a list of all photos from all albums
         print('get a list of photos')
@@ -87,6 +90,8 @@ class Person:
 
         # search another albums
         print('search_albums')
+        self.album_list.clear()
+        self.album_list.extend(self.base_album_list)
         self.album_list.extend(self.vk.search_albums(user_id=user_id))
         # get a list of all photos from all albums
         print('get a list of photos')
@@ -105,6 +110,8 @@ class Person:
         # search another albums
         print('search_albums')
         print(user_id)
+        self.album_list.clear()
+        self.album_list.extend(self.base_album_list)
         self.album_list.extend(self.vk.search_albums(user_id=user_id))
         print(self.album_list)
 

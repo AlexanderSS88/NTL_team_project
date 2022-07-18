@@ -24,10 +24,10 @@ def get_personal_data(user_id: str):
         data_base.add_user_data(user_dict)
 
         print('Data from VK:')
-        photos_list_, photos_id_list_ = get_photo_list_from_VK(user_id)
-        print(f'photos_list_: {photos_list_}')
-        print(f'photos_id_list_: {photos_id_list_}')
-        data_base.add_user_photos(user_dict, photos_list_, photos_id_list_)
+        photos_list, photos_id_list = get_photo_list_from_VK(user_id)
+        print(f'photos_list_: {photos_list}')
+        print(f'photos_id_list_: {photos_id_list}')
+        data_base.add_user_photos(user_dict, photos_list, photos_id_list)
         data_base.add_user_interests(user_dict)
     else:
         print('The person data are not useful.')
