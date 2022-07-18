@@ -1,11 +1,7 @@
 from pprint import pprint
 from datetime import datetime
 from vk_tools.cls_VkUrl import VkUrl
-
-import pathlib
-from pathlib import Path
-
-from tokens.cls_tokens import Token
+import re
 
 """
 Class to describe user person.
@@ -43,8 +39,8 @@ class Person:
         if self.test_response(self.pers_data_json):
 
             personal_dict = self.pers_data_json['response'][0]
-            self.first_name = personal_dict['first_name']
-            self.last_name = personal_dict['last_name']
+            self.first_name = self.normalize_user_data(personal_dict['first_name'])
+            self.last_name = self.normalize_user_data(personal_dict['last_name'])
             # get person age
             self.age = self.get_age(personal_dict)
             self.sex = personal_dict.get('sex')
@@ -67,6 +63,15 @@ class Person:
                    f"\nhttps://vk.com/id{self.user_id}"
         else:
             return 'Error'
+
+    @staticmethod
+    def normalize_user_data(data_str: str):
+        """
+        Solve some word problems before add data to database.
+        :param data_str:
+        :return: fixed string
+        """
+        return re.sub("[$|@|&|'|*|ó]", "", data_str)
 
     def get_photos(self) -> list:
 
@@ -133,6 +138,8 @@ class Person:
         if self.city_name is None:
             self.data_are_good = False
             self.city_name = 'Unknown'
+        else:
+            self.city_name= self.normalize_user_data(self.city_name)
 
         self.city_id = city_dict.get('id')
         if self.city_id is None:

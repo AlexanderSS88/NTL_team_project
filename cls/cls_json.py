@@ -17,7 +17,7 @@ class Add2Json():
 
         second_json = {}
 
-        with open(self.file_name) as f:
+        with open(self.file_name, encoding="utf-8", errors="ignore") as f:
             second_json = json.load(f)
             print('\nsecond_json1:')
             pprint(second_json)
@@ -31,7 +31,10 @@ class Add2Json():
             print('\nsecond_json2:')
             pprint(second_json)
 
-            with open(self.file_name, "w") as f2:
-                json.dump(second_json, f2, ensure_ascii=False, indent=3)
+            try:
+                with open(self.file_name, "w", encoding="utf-8") as f2:
+                    json.dump(second_json, f2, ensure_ascii=False, indent=3)
+            except UnicodeDecodeError:
+                print("Codec can't decode some byte. Data wasn't recorded in json.")
 
             print('User data saved in json.')
