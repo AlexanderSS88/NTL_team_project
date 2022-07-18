@@ -24,9 +24,9 @@ class DataBaseConnection:
 
             self.connection = engine.connect()
 
-            print(f'type(self.connection): {type(self.connection)}')
-
-            print(self.connection)
+            # print(f'type(self.connection): {type(self.connection)}')
+            #
+            # print(self.connection)
 
     def prepare_database_connection(self):
         token = Token(self.db_data_file_path)

@@ -1,7 +1,9 @@
 from pprint import pprint
+import time
 from cls.cls_Person import Person
 from cls.cls_DataBaseExchange import DataBaseExchange
 from vk_tools.cls_application import Application
+from cls.cls_json import Add2Json
 
 """
 Get user data by user id.
@@ -9,7 +11,7 @@ This function is separated to use for different persons in main.
 """
 
 
-def get_personal_data(user_id: str):
+def get_personal_data(user_id: str, write_2_json: str):
     user = Person(str(user_id))
     print()
 
@@ -26,7 +28,19 @@ def get_personal_data(user_id: str):
         print(f'photos_list_: {photos_list}')
         print(f'photos_id_list_: {photos_id_list}')
         data_base.add_user_photos(user_dict, photos_list, photos_id_list)
-        data_base.add_user_interests(user_dict)
+        # data_base.add_user_interests(user_dict)
+
+        if write_2_json == 'y':
+            user_dict.setdefault('photos_id_list', photos_id_list)
+            print('\nVersion for json:')
+            pprint(user_dict)
+            print()
+
+            add_jeson = Add2Json('db_in_json.json')
+            add_jeson.add_2_json(user_id, user_dict)
+        else:
+            print('User data saved in DataBase only.')
+
     else:
         print('The person data are not useful.')
 
@@ -194,9 +208,12 @@ if __name__ == '__main__':
             case 's':
                 start_id = input("Input start user id for scan:\t")
                 last_id = input("Input last user id for scan:\t")
+                write_2_json = input("Should program write data to json file? (y/n):\t")
+
                 for vk_id in range(int(start_id), int(last_id)):
                     print(f'vk_id: {vk_id}')
-                    get_personal_data(vk_id)
+                    get_personal_data(vk_id, write_2_json)
+                    time.sleep(0.7)
             case 'c':
                 min_ege = input("Input min age of candidate:\t")
                 max_age = input("Input max age of candidate:\t")
