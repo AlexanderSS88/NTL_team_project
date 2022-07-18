@@ -88,12 +88,19 @@ def bot_cycle():
                                           message="Как знаешь.\nЕсли что, я тут, обращайся")
                             clients_dict.pop(new_id)  # удалили клиента из списка, разговор окончен
                         case 'Yes':
-                            bot.write_msg(user_id=new_id,
-                                          message="Теперь мне потребуются некоторые входные данные:\n"
-                                                  " - возрастной интервал кандидатов "
-                                                  "(минимальный и максимальный возраст);\n"
-                                                  " - город их проживания.\n"
-                                                  "Продолжим?")
+                            # bot.write_msg(user_id=new_id,
+                            #               message="Теперь мне потребуются некоторые входные данные:\n"
+                            #                       " - возрастной интервал кандидатов "
+                            #                       "(минимальный и максимальный возраст);\n"
+                            #                       " - город их проживания.\n"
+                            #                       "Продолжим?")
+
+                            bot.ask_user_yes_no(user_id=new_id,
+                                                message="Теперь мне потребуются некоторые входные данные:\n"
+                                                        " - возрастной интервал кандидатов "
+                                                        "(минимальный и максимальный возраст);\n"
+                                                        " - город их проживания.\n"
+                                                        "Продолжим?")
 
                             clients_dict[new_id]['dialog_status'] = 'question#1'
 
@@ -158,36 +165,65 @@ def bot_cycle():
                         clients_dict.pop(new_id)  # удалили клиента из списка, разговор окончен
                     else:
                         clients_dict[new_id].setdefault('candidates_list', candidates_list)
+                        clients_dict[new_id].setdefault('favorite_list', [])
 
                         candidate_id = clients_dict[new_id]['candidates_list'][-1]
+
+                        clients_dict[new_id].setdefault('current_candidate', candidate_id)
+
                         clients_dict[new_id]['candidates_list'].pop()
 
                         bot.person_presentation(new_id, candidate_id)
 
+                        bot.ask_user_about_candidate(user_id=new_id,
+                                                     message='Что скажешь?')
+
                         clients_dict[new_id]['dialog_status'] = 'presentation'
-                        bot.write_msg(user_id=new_id, message='Следующий?')
+                        # bot.write_msg(user_id=new_id, message='Следующий?')
                 case 'presentation':
-                    opinion = bot.get_user_opinion(new_id, message)  # Продолжим?"
-                    match opinion:
-                        case 'No':
-                            bot.write_msg(user_id=new_id,
-                                          message="Как знаешь.\nЕсли что, я тут, обращайся")
-                            clients_dict.pop(new_id)  # удалили клиента из списка, разговор окончен
-                        case 'Yes':
-                            if clients_dict[new_id]['candidates_list'] == []:
+                    # opinion = bot.get_user_opinion(new_id, message)  # Продолжим?"
+                    match message:
+                        case 'add_to_favor':
+                            clients_dict[new_id]['favorite_list'].append(clients_dict[new_id]['current_candidate'])
+                        case 'complete': #
+
+                            if clients_dict[new_id]['favorite_list'] == []:
                                 bot.write_msg(user_id=new_id,
-                                              message='Извини, больше никого не нашлось:(\n'
+                                              message="Как знаешь.\nЕсли что, я тут, обращайся")
+                            else:
+                                bot.write_msg(user_id=new_id,
+                                              message="Давай посмотрим, кого ты выбрал:")
+                                for favorite in clients_dict[new_id]['favorite_list']:
+                                    bot.person_presentation(new_id, favorite)
+
+                            clients_dict.pop(new_id)  # удалили клиента из списка, разговор окончен
+
+                        case 'next':
+                            if clients_dict[new_id]['candidates_list'] == []:
+
+                                if clients_dict[new_id]['favorite_list'] == []:
+                                    bot.write_msg(user_id=new_id,
+                                                  message='Извини, больше никого не нашлось:(\n'
                                                       'Может в следующий раз?\n'
                                                       'Спасибо что воспользовались нашим сервисом.')
+                                else:
+                                    bot.write_msg(user_id=new_id,
+                                                  message="Давай посмотрим, кого ты выбрал:")
+                                    for favorite in clients_dict[new_id]['favorite_list']:
+                                        bot.person_presentation(new_id, favorite)
+                                bot.write_msg(user_id=new_id,
+                                              message='Спасибо что воспользовались нашим сервисом.')
                                 clients_dict.pop(new_id)  # удалили клиента из списка, разговор окончен
                             else:
                                 candidate_id = clients_dict[new_id]['candidates_list'][-1]
+                                clients_dict[new_id]['current_candidate'] = candidate_id
                                 clients_dict[new_id]['candidates_list'].pop()
 
                                 bot.person_presentation(new_id, candidate_id)
 
                                 clients_dict[new_id]['dialog_status'] = 'presentation'
-                                bot.write_msg(user_id=new_id, message='Следующий?')
+                                bot.ask_user_about_candidate(user_id=new_id,
+                                                             message='Что скажешь?')
 
 
 if __name__ == '__main__':
