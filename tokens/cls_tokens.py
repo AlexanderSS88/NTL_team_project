@@ -37,9 +37,7 @@ class Token:
 
         self.app_dict.setdefault('APPLICATION', {
             'GROUP_ID': config['APPLICATION']['GROUP_ID'],
-            # 'GROUP_TOKEN': config['APPLICATION']['GROUP_TOKEN'],
             'API_VERSION': config['APPLICATION']['API_VERSION'],
-            # 'APPLICATION_TOKEN': config['APPLICATION']['APPLICATION_TOKEN'],
             'OWNER_ID': config['APPLICATION']['OWNER_ID']
         })
         self.app_dict.setdefault('GROUP_DATA', {'GROUP_ID': config['GROUP_DATA']['group_id']})

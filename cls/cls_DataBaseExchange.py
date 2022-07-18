@@ -21,12 +21,6 @@ class DataBaseExchange(DataBaseConnection):
         :return: None
         """
         sel = ()
-        # sel = self.connection.execute(
-        #     f"SELECT EXISTS(SELECT * FROM user_info WHERE id={user_data.get('id')});").fetchmany(1)
-
-        # if sel[0][0]:
-        #     print('This person was in DataBase. Personal data will be rewritten.')
-        #     self.connection.execute(f"DELETE FROM user_info WHERE id={user_data.get('id')};")
 
         try:
             sel = self.connection.execute(

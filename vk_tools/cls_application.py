@@ -49,7 +49,6 @@ class Application:
 
     def get_external_call(self):
         for event in self.longpoll.listen():
-            print('new_companion cycle')
             if event.type == VkBotEventType.MESSAGE_NEW:
                 companion_user = Person(event.object.message['from_id'])
                 print(f'companion_user: {companion_user.user_id}')
@@ -110,10 +109,7 @@ class Application:
     def get_photo_list_from_VK(self, user_id):
         user = Person(user_id)
 
-        print('Data from VK:')
         photos_list = user.get_photos_of_person(user_id)
         photos_id_list = user.photo_id_list
-        print(photos_list)
-        print(photos_id_list)
 
         return photos_list, photos_id_list

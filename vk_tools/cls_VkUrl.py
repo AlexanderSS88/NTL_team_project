@@ -102,11 +102,6 @@ class VkUrl():
             if result.status_code == 200 and 'response' in result.json():
                 photos_list.append(result.json()['response']['items'])
 
-
-            # else:
-            #     pprint(result.json())
-            #     return f"Error"
-
         return photos_list
 
     def search_albums(self, user_id: str) -> list:
