@@ -208,11 +208,13 @@ class Person:
         """
         files_inf_list = list()
 
-        if 'Error' in photo_list:
+        if 'Error' in photo_list or photo_list == []:
             return files_inf_list
 
         for item in photo_list:
             for photo in item:
+                if photo['sizes'] == []:
+                    continue
                 max_photo = photo['sizes'][-1]
 
                 file_name = f"{photo['likes']['count']}.jpeg"
