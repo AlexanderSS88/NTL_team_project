@@ -187,8 +187,7 @@ def bot_cycle(from_json=False):
                     match message:
                         case 'add_to_favor':
                             clients_dict[new_id]['favorite_list'].append(clients_dict[new_id]['current_candidate'])
-                        case 'complete':  #
-
+                        case 'complete':
                             if clients_dict[new_id]['favorite_list'] == []:
                                 bot.write_msg(user_id=new_id,
                                               message="Как знаешь.\nЕсли что, я тут, обращайся")
@@ -205,6 +204,19 @@ def bot_cycle(from_json=False):
                                         bot.person_presentation(new_id, favorite)
 
                             clients_dict.pop(new_id)  # удалили клиента из списка, разговор окончен
+                        case 'open_favor':
+                            bot.write_msg(user_id=new_id,
+                                          message="Давай посмотрим, кого ты выбрал:")
+                            for favorite in clients_dict[new_id]['favorite_list']:
+                                # bot.person_presentation(new_id, favorite)
+                                if from_json:
+                                    print("Get data from json.")
+                                    bot.person_presentation_f_json(new_id, favorite)
+                                else:
+                                    print("Get data from DataBase.")
+                                    bot.person_presentation(new_id, favorite)
+                            bot.ask_user_after_favor(user_id=new_id,
+                                                         message='Продолжим?')
 
                         case 'next':
                             if clients_dict[new_id]['candidates_list'] == []:

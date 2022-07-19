@@ -128,8 +128,24 @@ class Application:
         settings = dict(one_time=False, inline=True)
         menu_1 = VkKeyboard(**settings)
         menu_1.add_callback_button(label='В избранное', color=VkKeyboardColor.POSITIVE, payload={"type": "add_to_favor"})
-
+        menu_1.add_callback_button(label='Откртыть избранных', color=VkKeyboardColor.PRIMARY,
+                                   payload={"type": "open_favor"})
         menu_1.add_line()
+        menu_1.add_callback_button(label='Следующий', color=VkKeyboardColor.PRIMARY,
+                                   payload={"type": "next"})
+        menu_1.add_callback_button(label='Закончить', color=VkKeyboardColor.NEGATIVE,
+                                   payload={"type": "complete"})
+
+        self.vk.messages.send(user_id=user_id, random_id=randrange(10 ** 7),
+                              peer_id=user_id, keyboard=menu_1.get_keyboard(),
+                              message=message)
+
+    def ask_user_after_favor(self, message, user_id='default'):
+        if user_id == 'default':
+            user_id = self.user_id
+        settings = dict(one_time=False, inline=True)
+        menu_1 = VkKeyboard(**settings)
+
         menu_1.add_callback_button(label='Следующий', color=VkKeyboardColor.PRIMARY,
                                    payload={"type": "next"})
         menu_1.add_callback_button(label='Закончить', color=VkKeyboardColor.NEGATIVE,
