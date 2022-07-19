@@ -8,3 +8,6 @@ user_data, photo_list = add_jeson.get_candidate_data_fron_json(2321)
 
 print(f'user_data: {user_data}')
 print(f'photo_list: {photo_list}')
+print(f"{user_data['first_name']} " \
+                   f"{user_data['last_name']}" \
+                   f"\n{user_data['url']}")

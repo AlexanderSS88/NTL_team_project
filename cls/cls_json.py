@@ -1,5 +1,4 @@
 import json
-from pprint import pprint
 
 
 class Add2Json:
@@ -45,8 +44,6 @@ class Add2Json:
     def get_candidate_data_fron_json(self, user_id):
         with open(self.file_name, encoding="utf-8", errors="ignore") as f:
             data_json = json.load(f)
-            print('\ndata_json:')
-            pprint(data_json)
 
         return data_json[str(user_id)], data_json[str(user_id)]['photos_id_list']
 

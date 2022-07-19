@@ -7,7 +7,7 @@ from cls.cls_Person import Person
 from tokens.cls_tokens import Token
 
 from cls.cls_DataBaseExchange import DataBaseExchange
-from pprint import pprint
+from cls.cls_json import Add2Json
 
 class Application:
     user_id = ()
@@ -50,16 +50,14 @@ class Application:
 
     def get_external_call(self):
         for event in self.longpoll.listen():
-            print('event')
             print(f'event.type: {event.type}')
             if event.type == VkBotEventType.MESSAGE_NEW:
                 companion_user = Person(event.object.message['from_id'])
+                print(f'companion_user: {companion_user}')
                 return companion_user.user_id, event.obj.message['text']
             elif event.type == VkBotEventType.MESSAGE_EVENT:
-                print('event.object')
-                pprint(event.object)
                 companion_user = Person(event.object['user_id'])
-                print(f'companion_user: {companion_user}')
+                print(f'companion_user: {companion_user.user_id}')
                 return companion_user.user_id, event.object.payload.get('type')
 
     def write_msg(self, message, user_id='default', attachment=''):
@@ -99,8 +97,7 @@ class Application:
         settings = dict(one_time=False, inline=True)
         menu_1 = VkKeyboard(**settings)
         menu_1.add_callback_button(label='В избранное', color=VkKeyboardColor.POSITIVE, payload={"type": "add_to_favor"})
-        # menu_1.add_callback_button(label='Открыть избранных', color=VkKeyboardColor.PRIMARY,
-        #                            payload={"type": "open_favor"})
+
         menu_1.add_line()
         menu_1.add_callback_button(label='Следующий', color=VkKeyboardColor.PRIMARY,
                                    payload={"type": "next"})
@@ -140,8 +137,25 @@ class Application:
 
         attach = f"{''.join([f'photo{candidate.user_id}_{photo_id},' for photo_id in photos_id_list])}"[
                  :-1]
-        print(f'attach: {attach}')
         self.write_msg(user_id=user_id, message=candidate, attachment=attach)
+
+    def person_presentation_f_json(self, user_id, candidate_id):
+
+        add_jeson = Add2Json('db_in_json.json')
+
+        user_data, photos_id_list = add_jeson.get_candidate_data_fron_json(candidate_id)
+
+        message = f"{user_data['first_name']} " \
+                   f"{user_data['last_name']}" \
+                   f"\n{user_data['url']}"
+
+        if len(photos_id_list) == 0:
+            print('No photo in json. Look at photos on VK.')
+            photos_list, photos_id_list = self.get_photo_list_from_VK(candidate_id)
+
+        attach = f"{''.join([f'photo{candidate_id}_{photo_id},' for photo_id in photos_id_list])}"[
+                 :-1]
+        self.write_msg(user_id=user_id, message=message, attachment=attach)
 
     def get_photo_list_from_VK(self, user_id):
         user = Person(user_id)

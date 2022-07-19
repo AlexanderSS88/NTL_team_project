@@ -23,23 +23,18 @@ def get_personal_data(user_id: str, write_2_json: str):
         pprint(user_dict)
         data_base.add_user_data(user_dict)
 
-        print('Data from VK:')
+        print('Take data from VK.')
         photos_list, photos_id_list = get_photo_list_from_VK(user_id)
-        print(f'photos_list_: {photos_list}')
-        print(f'photos_id_list_: {photos_id_list}')
         data_base.add_user_photos(user_dict, photos_list, photos_id_list)
-        # data_base.add_user_interests(user_dict)
 
         if write_2_json == 'y':
             user_dict.setdefault('photos_id_list', photos_id_list)
-            print('\nVersion for json:')
-            pprint(user_dict)
-            print()
+            print('\nPerson data saved in json file')
 
             add_jeson = Add2Json('db_in_json.json')
             add_jeson.add_2_json(user_id, user_dict)
         else:
-            print('User data saved in DataBase only.')
+            print('Person data in DataBase only.')
 
     else:
         print('The person data are not useful.')
@@ -48,26 +43,22 @@ def get_personal_data(user_id: str, write_2_json: str):
 def get_photo_list_from_VK(user_id):
     user = Person(user_id)
 
-    print('Data from VK:')
+    print('Get data from VK:')
     photos_list = user.get_photos_of_person(user_id)
     photos_id_list = user.photo_id_list
-    print(photos_list)
-    print(photos_id_list)
 
     return photos_list, photos_id_list
 
 
 def get_photo_list_from_DB(user_id):
     data_base = DataBaseExchange()
-    print('Data from DB:')
+    print('Get data from DB:')
     photos_id_list, photos_list = data_base.get_photo_from_db(user_id)
-    print(photos_list)
-    print(photos_id_list)
 
     return photos_list, photos_id_list
 
 
-def bot_cycle():
+def bot_cycle(from_json= False):
     bot = Application()
     clients_dict = {}
 
@@ -88,13 +79,6 @@ def bot_cycle():
                                           message="Как знаешь.\nЕсли что, я тут, обращайся")
                             clients_dict.pop(new_id)  # удалили клиента из списка, разговор окончен
                         case 'Yes':
-                            # bot.write_msg(user_id=new_id,
-                            #               message="Теперь мне потребуются некоторые входные данные:\n"
-                            #                       " - возрастной интервал кандидатов "
-                            #                       "(минимальный и максимальный возраст);\n"
-                            #                       " - город их проживания.\n"
-                            #                       "Продолжим?")
-
                             bot.ask_user_yes_no(user_id=new_id,
                                                 message="Теперь мне потребуются некоторые входные данные:\n"
                                                         " - возрастной интервал кандидатов "
@@ -151,12 +135,22 @@ def bot_cycle():
                     bot.write_msg(user_id=new_id,
                                   message="Теперь посмотрим кого удалось отыскать.")
 
-                    data_base = DataBaseExchange()
+                    if from_json:
+                        print("Get data from json.")
+                        add_jeson = Add2Json('db_in_json.json')
 
-                    candidates_list = data_base.get_candidates(
-                        min_age=int(clients_dict[new_id]['candidates_data']['min_age']),
-                        max_age=int(clients_dict[new_id]['candidates_data']['max_age']),
-                        city_name=clients_dict[new_id]['candidates_data']['city'])
+                        candidates_list = add_jeson.get_candidates_from_json(
+                            min_age=int(clients_dict[new_id]['candidates_data']['min_age']),
+                            max_age=int(clients_dict[new_id]['candidates_data']['max_age']),
+                            city_name=clients_dict[new_id]['candidates_data']['city'])
+                    else:
+                        print("Get data from DataBase.")
+                        data_base = DataBaseExchange()
+
+                        candidates_list = data_base.get_candidates(
+                            min_age=int(clients_dict[new_id]['candidates_data']['min_age']),
+                            max_age=int(clients_dict[new_id]['candidates_data']['max_age']),
+                            city_name=clients_dict[new_id]['candidates_data']['city'])
 
                     if candidates_list == 0:
                         bot.write_msg(user_id=new_id,
@@ -173,7 +167,12 @@ def bot_cycle():
 
                         clients_dict[new_id]['candidates_list'].pop()
 
-                        bot.person_presentation(new_id, candidate_id)
+                        if from_json:
+                            print("Get data from json.")
+                            bot.person_presentation_f_json(new_id, candidate_id)
+                        else:
+                            print("Get data from DataBase.")
+                            bot.person_presentation(new_id, candidate_id)
 
                         bot.ask_user_about_candidate(user_id=new_id,
                                                      message='Что скажешь?')
@@ -194,7 +193,13 @@ def bot_cycle():
                                 bot.write_msg(user_id=new_id,
                                               message="Давай посмотрим, кого ты выбрал:")
                                 for favorite in clients_dict[new_id]['favorite_list']:
-                                    bot.person_presentation(new_id, favorite)
+                                    # bot.person_presentation(new_id, favorite)
+                                    if from_json:
+                                        print("Get data from json.")
+                                        bot.person_presentation_f_json(new_id, favorite)
+                                    else:
+                                        print("Get data from DataBase.")
+                                        bot.person_presentation(new_id, favorite)
 
                             clients_dict.pop(new_id)  # удалили клиента из списка, разговор окончен
 
@@ -210,7 +215,12 @@ def bot_cycle():
                                     bot.write_msg(user_id=new_id,
                                                   message="Давай посмотрим, кого ты выбрал:")
                                     for favorite in clients_dict[new_id]['favorite_list']:
-                                        bot.person_presentation(new_id, favorite)
+                                        if from_json:
+                                            print("Get data from json.")
+                                            bot.person_presentation_f_json(new_id, favorite)
+                                        else:
+                                            print("Get data from DataBase.")
+                                            bot.person_presentation(new_id, favorite)
                                 bot.write_msg(user_id=new_id,
                                               message='Спасибо что воспользовались нашим сервисом.')
                                 clients_dict.pop(new_id)  # удалили клиента из списка, разговор окончен
@@ -219,7 +229,13 @@ def bot_cycle():
                                 clients_dict[new_id]['current_candidate'] = candidate_id
                                 clients_dict[new_id]['candidates_list'].pop()
 
-                                bot.person_presentation(new_id, candidate_id)
+                                # bot.person_presentation(new_id, candidate_id)
+                                if from_json:
+                                    print("Get data from json.")
+                                    bot.person_presentation_f_json(new_id, candidate_id)
+                                else:
+                                    print("Get data from DataBase.")
+                                    bot.person_presentation(new_id, candidate_id)
 
                                 clients_dict[new_id]['dialog_status'] = 'presentation'
                                 bot.ask_user_about_candidate(user_id=new_id,
@@ -262,4 +278,9 @@ if __name__ == '__main__':
                 user_id_4_photo = input("Input user id:\t")
                 get_photo_list_from_DB(user_id_4_photo)
             case 'b':
-                print(bot_cycle())
+                data_source = input("Take data from DataBase (any key) or from json file (j)?:\t")
+                if data_source == 'j':
+                    print(bot_cycle(from_json= True))
+                else:
+                    print(bot_cycle())
+
