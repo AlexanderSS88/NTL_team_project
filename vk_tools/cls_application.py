@@ -55,10 +55,20 @@ class Application:
         self.APPLICATION_TOKEN = token.app_dict['APPLICATION_TOKENS']['APPLICATION_TOKEN']
         self.OWNER_ID = token.app_dict['APPLICATION']['OWNER_ID']
 
-    def delete_messages(self):
+    def delete_messages(self,user_id='default'):
+        if user_id == 'default':
+            user_id = self.user_id
         print(f'Delete messages: {self.message_id_list}')
-        self.vk.messages.delete(delete_for_all=1, message_ids=self.message_id_list)
-        self.message_id_list.clear()
+
+        mess = self.vk.messages.getHistory(user_id=user_id, count=200, offset=0)['items']
+        ids_messages = []
+        for element in mess:
+            if element['text'] == "Теперь посмотрим кого удалось отыскать.":
+                break
+            else:
+                ids_messages.append(str(element['id']))
+        ids_messages = ','.join(ids_messages)
+        self.vk.messages.delete(delete_for_all=1, message_ids=ids_messages)
 
     def get_external_call(self):
         for event in self.longpoll.listen():
@@ -77,17 +87,17 @@ class Application:
                 return companion_user.user_id, event.obj.message['text'], 'text'
             elif event.type == VkBotEventType.MESSAGE_EVENT:
                 companion_user = Person(event.object['user_id'])
-                if event.object.payload.get('type') == 'next':
-
-                    mess = self.vk.messages.getHistory(user_id=companion_user.user_id, count=200, offset=0)['items']
-                    ids_messages = []
-                    for element in mess:
-                        if element['text'] == "Теперь посмотрим кого удалось отыскать.":
-                            break
-                        else:
-                            ids_messages.append(str(element['id']))
-                    ids_messages = ','.join(ids_messages)
-                    self.vk.messages.delete(delete_for_all=1, message_ids=ids_messages)
+                # if event.object.payload.get('type') == 'next':
+                #
+                #     mess = self.vk.messages.getHistory(user_id=companion_user.user_id, count=200, offset=0)['items']
+                #     ids_messages = []
+                #     for element in mess:
+                #         if element['text'] == "Теперь посмотрим кого удалось отыскать.":
+                #             break
+                #         else:
+                #             ids_messages.append(str(element['id']))
+                #     ids_messages = ','.join(ids_messages)
+                #     self.vk.messages.delete(delete_for_all=1, message_ids=ids_messages)
 
                 return companion_user.user_id, event.object.payload.get('type'), 'button'
 

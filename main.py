@@ -219,6 +219,7 @@ def bot_cycle(from_json=False):
                                                          message='Продолжим?')
 
                         case 'next':
+                            bot.delete_messages(new_id)
                             if clients_dict[new_id]['candidates_list'] == []:
 
                                 if clients_dict[new_id]['favorite_list'] == []:
