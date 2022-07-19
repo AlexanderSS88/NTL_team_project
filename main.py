@@ -58,7 +58,7 @@ def get_photo_list_from_DB(user_id):
     return photos_list, photos_id_list
 
 
-def bot_cycle(from_json= False):
+def bot_cycle(from_json=False):
     bot = Application()
     clients_dict = {}
 
@@ -184,7 +184,7 @@ def bot_cycle(from_json= False):
                     match message:
                         case 'add_to_favor':
                             clients_dict[new_id]['favorite_list'].append(clients_dict[new_id]['current_candidate'])
-                        case 'complete': #
+                        case 'complete':  #
 
                             if clients_dict[new_id]['favorite_list'] == []:
                                 bot.write_msg(user_id=new_id,
@@ -209,8 +209,8 @@ def bot_cycle(from_json= False):
                                 if clients_dict[new_id]['favorite_list'] == []:
                                     bot.write_msg(user_id=new_id,
                                                   message='Извини, больше никого не нашлось:(\n'
-                                                      'Может в следующий раз?\n'
-                                                      'Спасибо что воспользовались нашим сервисом.')
+                                                          'Может в следующий раз?\n'
+                                                          'Спасибо что воспользовались нашим сервисом.')
                                 else:
                                     bot.write_msg(user_id=new_id,
                                                   message="Давай посмотрим, кого ты выбрал:")
@@ -244,9 +244,6 @@ def bot_cycle(from_json= False):
 
 if __name__ == '__main__':
 
-    data_base = DataBaseExchange()
-    data_base.create_tables()
-
     while True:
         command = input("Please choose the command: \n"
                         "'s'-scan VKontakte users to add to DataBase,\n"
@@ -258,6 +255,9 @@ if __name__ == '__main__':
             case 'q':
                 break
             case 's':
+                data_base = DataBaseExchange()
+                data_base.create_tables()
+
                 start_id = input("Input start user id for scan:\t")
                 last_id = input("Input last user id for scan:\t")
                 write_2_json = input("Should program write data to json file? (y/n):\t")
@@ -267,6 +267,8 @@ if __name__ == '__main__':
                     get_personal_data(vk_id, write_2_json)
                     time.sleep(0.7)
             case 'c':
+                data_base = DataBaseExchange()
+
                 min_ege = input("Input min age of candidate:\t")
                 max_age = input("Input max age of candidate:\t")
                 city = input("Input the city name:\t")
@@ -280,7 +282,6 @@ if __name__ == '__main__':
             case 'b':
                 data_source = input("Take data from DataBase (any key) or from json file (j)?:\t")
                 if data_source == 'j':
-                    print(bot_cycle(from_json= True))
+                    print(bot_cycle(from_json=True))
                 else:
                     print(bot_cycle())
-
