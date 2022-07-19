@@ -161,8 +161,6 @@ def bot_cycle(from_json=False):
                         clients_dict[new_id].setdefault('candidates_list', candidates_list)
                         clients_dict[new_id].setdefault('favorite_list', [])
 
-                        print(f"candidates_list: {clients_dict[new_id]['candidates_list']}")
-
                         candidate_id = clients_dict[new_id]['candidates_list'][-1]
 
                         clients_dict[new_id].setdefault('current_candidate', candidate_id)
