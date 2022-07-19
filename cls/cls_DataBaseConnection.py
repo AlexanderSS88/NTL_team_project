@@ -1,5 +1,3 @@
-import pathlib
-from pathlib import Path
 import sqlalchemy
 from tokens.cls_tokens import Token
 
@@ -23,10 +21,6 @@ class DataBaseConnection:
             engine = sqlalchemy.create_engine(self.prepare_database_connection())
 
             self.connection = engine.connect()
-
-            # print(f'type(self.connection): {type(self.connection)}')
-            #
-            # print(self.connection)
 
     def prepare_database_connection(self):
         token = Token(self.db_data_file_path)

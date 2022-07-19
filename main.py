@@ -63,7 +63,7 @@ def bot_cycle(from_json=False):
     clients_dict = {}
 
     while True:
-        new_id, message = bot.get_external_call()
+        new_id, message, event_type = bot.get_external_call()
 
         if new_id not in clients_dict.keys():
             bot.wellcome(new_id, message)
@@ -180,6 +180,8 @@ def bot_cycle(from_json=False):
                         clients_dict[new_id]['dialog_status'] = 'presentation'
                         # bot.write_msg(user_id=new_id, message='Следующий?')
                 case 'presentation':
+                    if event_type == 'text':
+                        message = bot.check_user_opinion_in_presentation(message, new_id)
                     # opinion = bot.get_user_opinion(new_id, message)  # Продолжим?"
                     match message:
                         case 'add_to_favor':

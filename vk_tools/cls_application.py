@@ -21,10 +21,27 @@ class Application:
     CALLBACK_TYPES = ['show_snackbar', 'open_link', 'open_app']
 
     pattern_hi = "(прив)|(хай)|(здаров)|(салам)|(здравст)|(добр..)|(салют)|(ку)|(hi)|(ghbd)|(\[fq)"
-    pattern_no = "(не)|(нет)|(нехочу)|(не хочу)|(no)|(ne)|(not)"
-    pattern_yes = "(давай)|(да)|(ок)|(хорош)|(соглас)|(добро)|(ладно)|(yes)|(lf)|(yep)|(замётано)"
+    pattern_no = "(не)|(нет)|(нехочу)|(не хочу)|(no)|(ne)|(not)|(n)"
+    pattern_yes = "(давай)|(да)|(ок)|(хорош)|(соглас)|(добро)|(ладно)|(yes)|(lf)|(yep)|(замётано)|(y)"
+    pattern_next = "(следующий)|(next)|(давай ещё)"
+    pattern_favorite = "(нравится)|(добавить в избранное)|(прикольно)|(выбираю)|(favorite)|(to favorites)|(add)"
+    pattern_end = "(нет)|(хватит)|(заканчивай)|(хрень)|(end)|(quit)|(esqape)|(escape)|(q)|(esc)"
 
     flag_stop = False
+
+    def check_user_opinion_in_presentation(self, message, user_id='default'):
+        if user_id == 'default':
+            user_id = self.user_id
+        if re.findall(self.pattern_favorite, message, flags=re.IGNORECASE):
+            return 'add_to_favor'
+        elif re.findall(self.pattern_end, message, flags=re.IGNORECASE):
+            return 'complete'
+        elif re.findall(self.pattern_next, message, flags=re.IGNORECASE):
+            return 'next'
+        else:
+            message_bad = 'Извини, не понял. Повтори пожалуйста.'
+            self.write_msg(user_id=user_id, message=message_bad)
+
 
     def __init__(self, db_data_file_path='/tokens/application_data.ini'):
         self.take_application_data(db_data_file_path)
@@ -54,11 +71,11 @@ class Application:
             if event.type == VkBotEventType.MESSAGE_NEW:
                 companion_user = Person(event.object.message['from_id'])
                 print(f'companion_user: {companion_user}')
-                return companion_user.user_id, event.obj.message['text']
+                return companion_user.user_id, event.obj.message['text'], 'text'
             elif event.type == VkBotEventType.MESSAGE_EVENT:
                 companion_user = Person(event.object['user_id'])
                 print(f'companion_user: {companion_user.user_id}')
-                return companion_user.user_id, event.object.payload.get('type')
+                return companion_user.user_id, event.object.payload.get('type'), 'button'
 
     def write_msg(self, message, user_id='default', attachment=''):
         if user_id == 'default':
