@@ -152,7 +152,7 @@ def bot_cycle(from_json=False):
                             max_age=int(clients_dict[new_id]['candidates_data']['max_age']),
                             city_name=clients_dict[new_id]['candidates_data']['city'])
 
-                    if candidates_list == 0:
+                    if len(candidates_list) == 0:
                         bot.write_msg(user_id=new_id,
                                       message='Извини, никого не нашлось:(\nМожет в следующий раз?'
                                               '\nСпасибо что воспользовались нашим сервисом.')
@@ -160,6 +160,8 @@ def bot_cycle(from_json=False):
                     else:
                         clients_dict[new_id].setdefault('candidates_list', candidates_list)
                         clients_dict[new_id].setdefault('favorite_list', [])
+
+                        print(f"candidates_list: {clients_dict[new_id]['candidates_list']}")
 
                         candidate_id = clients_dict[new_id]['candidates_list'][-1]
 
