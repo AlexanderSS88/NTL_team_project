@@ -77,7 +77,18 @@ class Application:
                 return companion_user.user_id, event.obj.message['text'], 'text'
             elif event.type == VkBotEventType.MESSAGE_EVENT:
                 companion_user = Person(event.object['user_id'])
-                print(f'companion_user: {companion_user.user_id}')
+                if event.object.payload.get('type') == 'next':
+
+                    mess = self.vk.messages.getHistory(user_id=companion_user.user_id, count=200, offset=0)['items']
+                    ids_messages = []
+                    for element in mess:
+                        if element['text'] == "Теперь посмотрим кого удалось отыскать.":
+                            break
+                        else:
+                            ids_messages.append(str(element['id']))
+                    ids_messages = ','.join(ids_messages)
+                    self.vk.messages.delete(delete_for_all=1, message_ids=ids_messages)
+
                 return companion_user.user_id, event.object.payload.get('type'), 'button'
 
     def write_msg(self, message, user_id='default', attachment=''):
