@@ -158,6 +158,7 @@ def bot_cycle(from_json=False):
                                               '\nСпасибо что воспользовались нашим сервисом.')
                         clients_dict.pop(new_id)  # удалили клиента из списка, разговор окончен
                     else:
+                        # bot.delete_messages() # !!!!!
                         clients_dict[new_id].setdefault('candidates_list', candidates_list)
                         clients_dict[new_id].setdefault('favorite_list', [])
 

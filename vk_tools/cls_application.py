@@ -9,6 +9,8 @@ from tokens.cls_tokens import Token
 from cls.cls_DataBaseExchange import DataBaseExchange
 from cls.cls_json import Add2Json
 
+from pprint import pprint
+
 class Application:
     user_id = ()
 
@@ -29,19 +31,7 @@ class Application:
 
     flag_stop = False
 
-    def check_user_opinion_in_presentation(self, message, user_id='default'):
-        if user_id == 'default':
-            user_id = self.user_id
-        if re.findall(self.pattern_favorite, message, flags=re.IGNORECASE):
-            return 'add_to_favor'
-        elif re.findall(self.pattern_end, message, flags=re.IGNORECASE):
-            return 'complete'
-        elif re.findall(self.pattern_next, message, flags=re.IGNORECASE):
-            return 'next'
-        else:
-            message_bad = 'Извини, не понял. Повтори пожалуйста.'
-            self.write_msg(user_id=user_id, message=message_bad)
-
+    message_id_list = []
 
     def __init__(self, db_data_file_path='/tokens/application_data.ini'):
         self.take_application_data(db_data_file_path)
@@ -65,9 +55,22 @@ class Application:
         self.APPLICATION_TOKEN = token.app_dict['APPLICATION_TOKENS']['APPLICATION_TOKEN']
         self.OWNER_ID = token.app_dict['APPLICATION']['OWNER_ID']
 
+    def delete_messages(self):
+        print(f'Delete messages: {self.message_id_list}')
+        self.vk.messages.delete(delete_for_all=1, message_ids=self.message_id_list)
+        self.message_id_list.clear()
+
     def get_external_call(self):
         for event in self.longpoll.listen():
             print(f'event.type: {event.type}')
+            print(f'event.object: {event.object}')
+            pprint(event.object)
+            if event.type == VkBotEventType.MESSAGE_REPLY:
+                self.message_id_list.append(event.object['conversation_message_id'])
+            if event.type == VkBotEventType.MESSAGE_EVENT:
+                self.message_id_list.append(event.object['conversation_message_id'])
+            if event.type == VkBotEventType.MESSAGE_NEW:
+                self.message_id_list.append(event.obj.message['conversation_message_id'])
             if event.type == VkBotEventType.MESSAGE_NEW:
                 companion_user = Person(event.object.message['from_id'])
                 print(f'companion_user: {companion_user}')
@@ -131,6 +134,19 @@ class Application:
         elif re.findall(self.pattern_yes, message, flags=re.IGNORECASE):
             self.write_msg(user_id=user_id, message='Ok')
             return 'Yes'
+        else:
+            message_bad = 'Извини, не понял. Повтори пожалуйста.'
+            self.write_msg(user_id=user_id, message=message_bad)
+
+    def check_user_opinion_in_presentation(self, message, user_id='default'):
+        if user_id == 'default':
+            user_id = self.user_id
+        if re.findall(self.pattern_favorite, message, flags=re.IGNORECASE):
+            return 'add_to_favor'
+        elif re.findall(self.pattern_end, message, flags=re.IGNORECASE):
+            return 'complete'
+        elif re.findall(self.pattern_next, message, flags=re.IGNORECASE):
+            return 'next'
         else:
             message_bad = 'Извини, не понял. Повтори пожалуйста.'
             self.write_msg(user_id=user_id, message=message_bad)
