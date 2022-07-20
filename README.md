@@ -6,9 +6,9 @@
 
 
 
-####Токен пользователя можно получить по ссылке https://oauth.vk.com/authorize?client_id=8116853&scope=wall,offline&redirect_uri=https://cosmio.io/api/vkinder/api.php&display=page&v=5.24&response_type=token
+#### Токен пользователя можно получить по ссылке https://oauth.vk.com/authorize?client_id=8116853&scope=wall,offline&redirect_uri=https://cosmio.io/api/vkinder/api.php&display=page&v=5.24&response_type=token
 
-####Токены следует собрать в файле "tokens.txt" в формате:
+#### Токены следует собрать в файле "tokens.txt" в формате:
 
     [TOKENS]
     vk_token =
@@ -16,7 +16,7 @@
     [PASSWORDS]
     db_passw =
 
-####Основные данные для работы приложения содержатся в файле "application_data.ini":
+#### Основные данные для работы приложения содержатся в файле "application_data.ini":
     [APPLICATION]
     GROUP_ID = 214414105
     API_VERSION = 5.131
@@ -37,10 +37,9 @@
 
 ### Цель проекта
 
-Цель проекта
 Разработать программу-бота для взаимодействия с базами данных социальной сети. Бот будет предлагать различные варианты людей для знакомств в социальной сети Вконтакте в виде диалога с пользователем.
 
-###Выполнены задачи:
+### Выполнены задачи:
 * Спроектирована база данных для программы
 * Создано сообщество ВК https://vk.com/club214414105 c подключенным ботом
 * Разработана программа-бота на Python с алгоритмом:
