@@ -1,12 +1,23 @@
 
 
-# Командный проект по курсу «Профессиональная работа с Python»
+### Командный проект по курсу «Профессиональная работа с Python»
+### NTL_Dating
 
-## NTL_Dating
+# VKinder
+
+**VKinder**- *бот для поиска людей на платформе [VKontakte](https://vk.com/)* 
+
+## Начало работы
+Для запуска программы нужен установленный Python версии не ниже 3.10
+
+В целях защиты прав пользователей платформа приложений [Api VK](https://dev.vk.com) требует запуска требует использование ключей доступа- токенов. Вопрос   
 
 
+## Использование
+Всевозможностипоиспользованиюописанывофициальнойдокументации.
 
-#### Токен пользователя можно получить по ссылке https://oauth.vk.com/authorize?client_id=8116853&scope=wall,offline&redirect_uri=https://cosmio.io/api/vkinder/api.php&display=page&v=5.24&response_type=token
+## Токены
+#### [Токен пользователя можно получить по ссылке](https://oauth.vk.com/authorize?client_id=8116853&scope=wall,offline&redirect_uri=https://cosmio.io/api/vkinder/api.php&display=page&v=5.24&response_type=token)
 
 #### Токены следует собрать в файле "tokens.txt" в формате:
 
