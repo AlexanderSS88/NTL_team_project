@@ -1,4 +1,3 @@
-from pprint import pprint
 from datetime import datetime
 from vk_tools.cls_VkUrl import VkUrl
 import re
@@ -111,11 +110,9 @@ class Person:
 
         # search another albums
         print('search_albums')
-        print(user_id)
         self.album_list.clear()
         self.album_list.extend(self.base_album_list)
         self.album_list.extend(self.vk.search_albums(user_id=user_id))
-        print(self.album_list)
 
         # get a list of all photos from all albums
         print('get a list of photos')
@@ -139,7 +136,7 @@ class Person:
             self.data_are_good = False
             self.city_name = 'Unknown'
         else:
-            self.city_name= self.normalize_user_data(self.city_name)
+            self.city_name = self.normalize_user_data(self.city_name)
 
         self.city_id = city_dict.get('id')
         if self.city_id is None:
@@ -208,12 +205,12 @@ class Person:
         """
         files_inf_list = list()
 
-        if 'Error' in photo_list or photo_list == []:
+        if 'Error' in photo_list or not photo_list:
             return files_inf_list
 
         for item in photo_list:
             for photo in item:
-                if photo['sizes'] == []:
+                if not photo['sizes']:
                     continue
                 max_photo = photo['sizes'][-1]
 

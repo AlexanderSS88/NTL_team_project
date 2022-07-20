@@ -2,7 +2,6 @@ import sqlalchemy
 import re
 from cls.cls_DataBaseConnection import DataBaseConnection
 from sqlalchemy.exc import IntegrityError
-from pprint import pprint
 
 """
 Here collected all dialogs between program and database.
@@ -153,14 +152,11 @@ class DataBaseExchange(DataBaseConnection):
             SELECT id, photo_link FROM photos WHERE photo_id_user = '{user_id}';
             """
         ).fetchall()]
-        pprint(sel)
-        print('item')
 
         list_photo = []
         list_photo_id = []
 
         for item in sel[0]:
-            print(item)
             list_photo_id.append(item[0])
             list_photo.append(item[1])
 

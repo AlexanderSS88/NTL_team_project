@@ -46,4 +46,3 @@ class Add2Json:
             data_json = json.load(f)
 
         return data_json[str(user_id)], data_json[str(user_id)]['photos_id_list']
-

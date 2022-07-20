@@ -9,12 +9,12 @@ This is the VKontakte API communication class
 """
 
 
-class VkUrl():
+class VkUrl:
     url_ = "https://api.vk.com/method/"
 
     def __init__(self, db_data_file_path='tokens'):
         token = Token(db_data_file_path)
-        self.token = token.app_dict['TOKENS']['vk_token'] # personal token
+        self.token = token.app_dict['TOKENS']['vk_token']  # personal token
 
     def get_url(self, method: str):
         """
@@ -34,7 +34,7 @@ class VkUrl():
     def transform_param(param: dict):
         return ''.join([f'&{key}={value}' for key, value in param.items()])
 
-    def get_personal_data(self, user_id: str) -> dict:
+    def get_personal_data(self, user_id: str) -> dict | str:
         """
         Gets a user's data by user id
         """
@@ -119,7 +119,7 @@ class VkUrl():
         time.sleep(0.3)
 
         result = result.json()
-        if not 'response' in result:
+        if 'response' not in result:
             pprint(result)
         else:
             for items in result['response']['items']:
