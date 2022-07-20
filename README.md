@@ -17,7 +17,7 @@
 
 
 ## Использование
-Всевозможностипоиспользованиюописанывофициальнойдокументации.
+Всевозможности по использованию описаны вофициальной документации.
 
 ## <a name = "Tokens">Токены
 #### [Токен пользователя можно получить по ссылке](https://oauth.vk.com/authorize?client_id=8116853&scope=wall,offline&redirect_uri=https://cosmio.io/api/vkinder/api.php&display=page&v=5.24&response_type=token)
