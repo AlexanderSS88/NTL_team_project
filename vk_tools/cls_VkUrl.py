@@ -37,6 +37,8 @@ class VkUrl:
     def get_personal_data(self, user_id: str) -> dict | str:
         """
         Gets a user's data by user id
+        :param user_id: user identification number
+        :return: requests result json()
         """
         result = requests.get(self.get_url(method="users.get"),
                               params=self.transform_param(
@@ -58,9 +60,11 @@ class VkUrl:
             return f"Error"
 
     def get_photo_f_profile(self, user_id: str, album_name: str) -> dict | str:
-
         """
         Gets a user's photos data by user id
+        :param user_id: user identification number
+        :param album_name: photos album name
+        :return: requests result json()
         """
         result = requests.get(self.get_url(method="photos.get"),
                               params=self.transform_param(
@@ -84,6 +88,10 @@ class VkUrl:
     def get_photo_f_profile_by_album_list(self, user_id: str, album_name_list: list) -> list | str:
         """
         Gets a user's photos data by user id in album_name_list
+        :param user_id: user identification number
+        :param album_name_list: list of photos album names
+        :return: depends of request result:
+                requests result json() or list of photos
         """
         photos_list = []
         for album_name in album_name_list:
@@ -107,6 +115,9 @@ class VkUrl:
     def search_albums(self, user_id: str) -> list:
         """
         Gets albums list.
+        :param user_id: user identification number
+        :return: depends of request result:
+                requests result json() or list of photos album names
         """
         album_list = []
         result = requests.get(self.get_url(method="photos.getAlbums"),
