@@ -1,6 +1,7 @@
 from cls.cls_DataBaseExchange import DataBaseExchange
 from cls.cls_json import Add2Json
 
+
 def bot_cycle(self, from_json=False):
     clients_dict = {}
 
@@ -93,21 +94,22 @@ def bot_cycle(self, from_json=False):
                             min_age=int(clients_dict[new_id]['candidates_data']['min_age']),
                             max_age=int(clients_dict[new_id]['candidates_data']['max_age']),
                             city_name=clients_dict[new_id]['candidates_data']['city'])
-
+                    # Если никого не нашлось
                     if len(candidates_list) == 0:
                         self.write_msg(user_id=new_id,
                                        message='Извини, никого не нашлось:(\nМожет в следующий раз?'
                                                '\nСпасибо что воспользовались нашим сервисом.')
                         clients_dict.pop(new_id)  # удалили клиента из списка, разговор окончен
                     else:
-                        # bot.delete_messages() # !!!!!
+                        # собираем список кандидатов
                         clients_dict[new_id].setdefault('candidates_list', candidates_list)
                         clients_dict[new_id].setdefault('favorite_list', [])
 
+                        # по типу стека достаём последнего кандидата
                         candidate_id = clients_dict[new_id]['candidates_list'][-1]
-
+                        # создаём переменную текущего кандидата, вдруг он попадёт в избранное!
                         clients_dict[new_id].setdefault('current_candidate', candidate_id)
-
+                        # удаляем этого кандидата из стека
                         clients_dict[new_id]['candidates_list'].pop()
 
                         if from_json:
@@ -117,27 +119,33 @@ def bot_cycle(self, from_json=False):
                             print("Get data from DataBase.")
                             self.person_presentation(new_id, candidate_id)
 
+                        # спрашиваем мнение пользователя об кандидате:
+                        # в избранное,
+                        # посомтреть избранное,
+                        # следующий,
+                        # закончить
                         self.ask_user_about_candidate(user_id=new_id,
                                                       message='Что скажешь?')
 
                         clients_dict[new_id]['dialog_status'] = 'presentation'
-                        # bot.write_msg(user_id=new_id, message='Следующий?')
+
                 case 'presentation':
-                    if event_type == 'text':
+                    if event_type == 'text': # Продолжим?"
                         message = self.check_user_opinion_in_presentation(message, new_id)
-                    # opinion = bot.get_user_opinion(new_id, message)  # Продолжим?"
+                    # смотрим что ответил пользователь
                     match message:
-                        case 'add_to_favor':
+                        case 'add_to_favor': # добавить в избранное
                             clients_dict[new_id]['favorite_list'].append(clients_dict[new_id]['current_candidate'])
-                        case 'complete':
+                        case 'complete': # завершить
                             if not clients_dict[new_id]['favorite_list']:
                                 self.write_msg(user_id=new_id,
                                                message="Как знаешь.\nЕсли что, я тут, обращайся")
                             else:
+                                # выводим список избранных
                                 self.write_msg(user_id=new_id,
                                                message="Давай посмотрим, кого ты выбрал:")
                                 for favorite in clients_dict[new_id]['favorite_list']:
-                                    # bot.person_presentation(new_id, favorite)
+                                    # для каждого идентификатора избранного получаем данные
                                     if from_json:
                                         print("Get data from json.")
                                         self.person_presentation_f_json(new_id, favorite)
@@ -146,11 +154,11 @@ def bot_cycle(self, from_json=False):
                                         self.person_presentation(new_id, favorite)
 
                             clients_dict.pop(new_id)  # удалили клиента из списка, разговор окончен
-                        case 'open_favor':
+                        case 'open_favor': # выводим избранных
                             self.write_msg(user_id=new_id,
                                            message="Давай посмотрим, кого ты выбрал:")
                             for favorite in clients_dict[new_id]['favorite_list']:
-                                # bot.person_presentation(new_id, favorite)
+                                # для каждого идентификатора избранного получаем данные
                                 if from_json:
                                     print("Get data from json.")
                                     self.person_presentation_f_json(new_id, favorite)
@@ -162,8 +170,9 @@ def bot_cycle(self, from_json=False):
 
                         case 'next':
                             self.delete_messages(new_id)
-                            if not clients_dict[new_id]['candidates_list']:
 
+                            #  Если список иссяк
+                            if not clients_dict[new_id]['candidates_list']:
                                 if not clients_dict[new_id]['favorite_list']:
                                     self.write_msg(user_id=new_id,
                                                    message='Извини, больше никого не нашлось:(\n'

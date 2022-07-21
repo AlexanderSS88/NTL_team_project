@@ -5,6 +5,11 @@ from cls.cls_Person import Person
 
 
 def wellcome(self, user_id, message):
+    """
+    Start of user dialog
+    :param user_id: user identification number
+    :param message: user message text
+    """
     companion_user = Person(user_id)
     if re.findall(self.pattern_hi, message, flags=re.IGNORECASE):
         message = f"Здаров, коль не шутишь! {companion_user.first_name}, " \
@@ -16,6 +21,11 @@ def wellcome(self, user_id, message):
 
 
 def ask_user_yes_no(self, message, user_id='default'):
+    """
+    Ask user opinion: "yes" or "no".
+    :param message:  message text
+    :param user_id: user identification number
+    """
     if user_id == 'default':
         user_id = self.user_id
     settings = dict(one_time=False, inline=True)
@@ -29,6 +39,11 @@ def ask_user_yes_no(self, message, user_id='default'):
 
 
 def ask_user_about_candidate(self, message, user_id='default'):
+    """
+    Ask user opinion about candidate: "to favorite", "show favorites list", "next" or "complete".
+    :param message:  message text
+    :param user_id: user identification number
+    """
     if user_id == 'default':
         user_id = self.user_id
     settings = dict(one_time=False, inline=True)
@@ -49,6 +64,11 @@ def ask_user_about_candidate(self, message, user_id='default'):
 
 
 def ask_user_after_favor(self, message, user_id='default'):
+    """
+    Ask user opinion after favorites presentation: "next" or "complete".
+    :param message:  message text
+    :param user_id: user identification number
+    """
     if user_id == 'default':
         user_id = self.user_id
     settings = dict(one_time=False, inline=True)
@@ -65,6 +85,12 @@ def ask_user_after_favor(self, message, user_id='default'):
 
 
 def get_user_opinion(self, user_id, message):
+    """
+    Check user opinion ("yes" or "no") by corresponding patterns.
+    :param message:  message text
+    :param user_id: user identification number
+    :return: string 'Yes' or 'No' depends of result
+    """
     if re.findall(self.pattern_no, message, flags=re.IGNORECASE):
         return 'No'
     elif re.findall(self.pattern_yes, message, flags=re.IGNORECASE):
@@ -76,6 +102,12 @@ def get_user_opinion(self, user_id, message):
 
 
 def check_user_opinion_in_presentation(self, message, user_id='default'):
+    """
+    Check user opinion ("add_to_favor", "complete" or "next") by corresponding patterns.
+    :param message:  message text
+    :param user_id: user identification number
+    :return: some string depends of result
+    """
     if user_id == 'default':
         user_id = self.user_id
     if re.findall(self.pattern_favorite, message, flags=re.IGNORECASE):
@@ -90,6 +122,12 @@ def check_user_opinion_in_presentation(self, message, user_id='default'):
 
 
 def check_user_opinion_(self, message):
+    """
+    Check user opinion ("add_to_favor", "complete" or "next") by corresponding patterns.
+    :param message:  message text
+    :param user_id: user identification number
+    :return: some string depends of result
+    """
     if re.findall(self.pattern_favorite, message, flags=re.IGNORECASE):
         return 'add_to_favor'
     elif re.findall(self.pattern_end, message, flags=re.IGNORECASE):

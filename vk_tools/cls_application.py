@@ -16,6 +16,7 @@ from vk_tools.bot_cycle import bot_cycle
 from vk_tools.speak_with_user import wellcome, ask_user_yes_no, ask_user_about_candidate, ask_user_after_favor
 from vk_tools.speak_with_user import get_user_opinion, check_user_opinion_in_presentation, check_user_opinion_
 
+
 # Connection external modules to class
 @add_functions_as_methods(bot_cycle, wellcome, ask_user_yes_no, ask_user_about_candidate, ask_user_after_favor,
                           get_user_opinion, check_user_opinion_in_presentation, check_user_opinion_)
@@ -43,7 +44,7 @@ class Application:
 
     def __init__(self, db_data_file_path='/tokens/application_data.ini'):
 
-        self.take_application_data() # get security and application data
+        self.take_application_data()  # get security and application data
 
         if len(self.GROUP_ID) == 0:
             print(f'Error read {db_data_file_path}')
@@ -56,6 +57,9 @@ class Application:
             self.longpoll = VkBotLongPoll(self.vk_session, group_id=self.GROUP_ID)
 
     def take_application_data(self):
+        """
+        Get security and application data from class Token
+        """
 
         token = Token()
         self.GROUP_ID = token.app_dict['APPLICATION']['GROUP_ID']
@@ -65,6 +69,10 @@ class Application:
         self.OWNER_ID = token.app_dict['APPLICATION']['OWNER_ID']
 
     def delete_messages(self, user_id='default'):
+        """
+        Cleans dialog
+        :param user_id: user identification number
+        """
         if user_id == 'default':
             user_id = self.user_id
         print(f'Delete messages: {self.message_id_list}')
@@ -84,6 +92,14 @@ class Application:
             print("Messages can not be deleted.")
 
     def get_external_call(self):
+        """
+        Listening users connections to application
+        :return: companion_user.user_id: user identification number,
+                event.obj.message['text']: text of user message,
+                'text' or 'button' depends of event type
+
+        """
+
         for event in self.longpoll.listen():
             if event.type == VkBotEventType.MESSAGE_REPLY:
                 self.message_id_list.append(event.object['conversation_message_id'])
@@ -101,6 +117,12 @@ class Application:
                 return companion_user.user_id, event.object.payload.get('type'), 'button'
 
     def write_msg(self, message, user_id='default', attachment=''):
+        """
+        Writes messages to user dialog
+        :param message: text of message
+        :param user_id: user identification number
+        :param attachment: String of parameters to show user photos
+        """
         if user_id == 'default':
             user_id = self.user_id
         self.vk_session.method('messages.send',
@@ -111,12 +133,20 @@ class Application:
 
     @staticmethod
     def is_age_valid(user_answer: str):
+        """
+        Just checks if user gave an age adequate for next search
+        """
         if user_answer.isdigit() and 0 < int(user_answer) <= 120:
             return True
         else:
             return False
 
     def person_presentation(self, user_id, candidate_id):
+        """
+        Outputs some candidate data from DatBase to present
+        :param user_id: user identification number
+        :param candidate_id: identification of other person, whose data user pretend to get
+        """
         candidate = Person(candidate_id)
         data_base = DataBaseExchange()
 
@@ -131,7 +161,11 @@ class Application:
         self.write_msg(user_id=user_id, message=candidate, attachment=attach)
 
     def person_presentation_f_json(self, user_id, candidate_id):
-
+        """
+        Outputs some candidate data from json storage file to present
+        :param user_id: user identification number
+        :param candidate_id: identification of other person, whose data user pretend to get
+        """
         add_jeson = Add2Json('db_in_json.json')
 
         user_data, photos_id_list = add_jeson.get_candidate_data_fron_json(candidate_id)
@@ -150,6 +184,12 @@ class Application:
 
     @staticmethod
     def get_photo_list_from_vk(user_id):
+        """
+        Gets user photo from VK by user identification number
+        :param user_id:user identification number
+        :return: photos_list: list of photos,
+                 photos_id_list: list of photos identification numbers
+        """
         user = Person(user_id)
 
         photos_list = user.get_photos_of_person(user_id)
@@ -158,6 +198,11 @@ class Application:
         return photos_list, photos_id_list
 
     def get_personal_data(self, user_id: str, write_2_json: str):
+        """
+        Get account data from VK by an identification number
+        :param user_id: account identification number
+        :param write_2_json: 'y'- if user pretend to save dato to json
+        """
         user = Person(str(user_id))
         print()
 
@@ -187,6 +232,12 @@ class Application:
 
     @staticmethod
     def get_photo_list_from_db(user_id):
+        """
+        Gets user photo from DataBase by user identification number
+        :param user_id: user identification number
+        :return: photos_list: list of photos,
+                 photos_id_list: list of photos identification numbers
+        """
         data_base = DataBaseExchange()
         print('Get data from DB:')
         photos_id_list, photos_list = data_base.get_photo_from_db(user_id)
