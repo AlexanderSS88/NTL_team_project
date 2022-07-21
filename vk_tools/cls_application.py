@@ -17,7 +17,7 @@ from vk_tools.speak_with_user import wellcome, ask_user_yes_no, ask_user_about_c
 from vk_tools.speak_with_user import get_user_opinion, check_user_opinion_in_presentation, check_user_opinion_
 
 
-# Connection external modules to class
+# Connection of external modules to class
 @add_functions_as_methods(bot_cycle, wellcome, ask_user_yes_no, ask_user_about_candidate, ask_user_after_favor,
                           get_user_opinion, check_user_opinion_in_presentation, check_user_opinion_)
 class Application:
