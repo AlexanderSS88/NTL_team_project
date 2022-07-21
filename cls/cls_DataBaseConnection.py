@@ -26,7 +26,10 @@ class DataBaseConnection:
             self.connection = engine.connect()
 
     def prepare_database_connection(self):
-        # take DataBase parameters from class Token
+        """
+        take DataBase parameters from class Token
+        :return: engine
+        """
         token = Token(self.db_data_file_path)
 
         user_name = token.app_dict['DATABASE']['user_name']

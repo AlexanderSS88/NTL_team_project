@@ -3,6 +3,10 @@ from cls.cls_json import Add2Json
 
 
 def bot_cycle(self, from_json=False):
+    """
+    This is the base VK bot cycle.
+    :param from_json: use json storage file of not
+    """
     clients_dict = {}
 
     while True:
