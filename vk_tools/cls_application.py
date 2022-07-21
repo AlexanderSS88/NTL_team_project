@@ -60,7 +60,6 @@ class Application:
         """
         Get security and application data from class Token
         """
-
         token = Token()
         self.GROUP_ID = token.app_dict['APPLICATION']['GROUP_ID']
         self.GROUP_TOKEN = token.app_dict['APPLICATION_TOKENS']['GROUP_TOKEN']
@@ -99,7 +98,6 @@ class Application:
                 'text' or 'button' depends of event type
 
         """
-
         for event in self.longpoll.listen():
             if event.type == VkBotEventType.MESSAGE_REPLY:
                 self.message_id_list.append(event.object['conversation_message_id'])
@@ -168,7 +166,7 @@ class Application:
         """
         add_jeson = Add2Json('db_in_json.json')
 
-        user_data, photos_id_list = add_jeson.get_candidate_data_fron_json(candidate_id)
+        user_data, photos_id_list = add_jeson.get_candidate_data_from_json(candidate_id)
 
         message = f"{user_data['first_name']} " \
                   f"{user_data['last_name']}" \

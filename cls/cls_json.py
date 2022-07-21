@@ -3,6 +3,8 @@ import json
 """
 Class for interaction with json data storage file
 """
+
+
 class Add2Json:
 
     def __init__(self, file_name):
@@ -55,7 +57,7 @@ class Add2Json:
 
         return candidate_list
 
-    def get_candidate_data_fron_json(self, user_id):
+    def get_candidate_data_from_json(self, user_id):
         """
         Get user data from json storage file
         :param user_id: user identification number
