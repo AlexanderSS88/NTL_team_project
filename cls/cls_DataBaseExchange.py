@@ -16,8 +16,7 @@ class DataBaseExchange(DataBaseConnection):
     def add_user_data(self, user_data: dict):
         """
         Add a user data to database
-        :param user_data:
-        :return: None
+        :param user_data: the user data dictionary
         """
         sel = ()
 
@@ -83,7 +82,13 @@ class DataBaseExchange(DataBaseConnection):
         return sel
 
     def get_candidates(self, min_age: int, max_age: int, city_name: str) -> list:
-
+        """
+        Get list of candidates identification numbers from DataBase by user age and user city
+        :param min_age:
+        :param max_age:
+        :param city_name:
+        :return: list of candidates id
+        """
         if min_age == max_age:
             return [item[0] for item in self.connection.execute(
                 f"""SELECT id FROM user_info WHERE
@@ -98,8 +103,8 @@ class DataBaseExchange(DataBaseConnection):
     def add_user_photos(self, user_data: dict, photo_list: list, photo_id_list: list):
         """
         Add a user data to database
-        :param user_data:
-        :return: None
+        :param user_data: the user data dictionary
+        :return: Database select request
         """
 
         sel = ()
@@ -126,8 +131,8 @@ class DataBaseExchange(DataBaseConnection):
     def add_user_interests(self, user_data: dict):
         """
         Add a user data to database
-        :param user_data:
-        :return: None
+        :param user_data: the user data dictionary
+        :return: Database select request
         """
 
         sel = ()
@@ -146,6 +151,12 @@ class DataBaseExchange(DataBaseConnection):
         return sel
 
     def get_photo_from_db(self, user_id):
+        """
+        Take data of user photoa from DataBase
+        :param user_id: user identification number
+        :return: list_photo_id: list of photos  identification numbers,
+                list_photo: list of photos URLs
+        """
 
         sel = [self.connection.execute(
             f"""

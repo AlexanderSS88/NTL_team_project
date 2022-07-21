@@ -7,6 +7,9 @@ Here program takes database parameters from configuration file and make connecti
 
 
 class MkConnection:
+    """
+    The mock patch for tests
+    """
     def execute(self, message):
         return message
 
@@ -18,11 +21,12 @@ class DataBaseConnection:
         self.db_data_file_path = db_data_file_path
         # it's not necessary to make database connections in some tests
         if make_connection:
+            # Connect to DataBase
             engine = sqlalchemy.create_engine(self.prepare_database_connection())
-
             self.connection = engine.connect()
 
     def prepare_database_connection(self):
+        # take DataBase parameters from class Token
         token = Token(self.db_data_file_path)
 
         user_name = token.app_dict['DATABASE']['user_name']
