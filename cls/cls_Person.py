@@ -53,7 +53,7 @@ class Person:
 
     def __str__(self):
         """
-        :return: the person information for bot
+        :return: the person information stirng for bot or 'Error' depends of read result
         """
 
         if self.successful_read:
@@ -73,6 +73,10 @@ class Person:
         return re.sub("[$|@|&|'|*|ó]", "", data_str)
 
     def get_photos(self) -> list:
+        """
+        Get list of person fron VK
+        :return: list of photos
+        """
 
         # search another albums
         print('search_albums')
@@ -89,6 +93,10 @@ class Person:
         return self.photo_list
 
     def get_photos_of_person_4_attach(self, user_id) -> str:
+        """
+        Get list of person fron VK
+        :return: stirng, format for application attachment
+        """
 
         n_char = '\n'
 
@@ -107,6 +115,11 @@ class Person:
         return f"attachment({''.join([f'{url},{n_char}' for url in self.photo_list])})"
 
     def get_photos_of_person(self, user_id) -> list:
+        """
+        Get list of person fron VK
+        :param user_id: user identification number
+        :return: list of photos
+        """
 
         # search another albums
         print('search_albums')
@@ -124,6 +137,10 @@ class Person:
         return self.photo_list
 
     def get_city(self, pers_data_json: dict):
+        """
+        Check if person city name is wrong
+        :param pers_data_json: dictionary of person data
+        """
         city_dict = pers_data_json.get('city')
         if city_dict is None:
             self.city_name = 'Unknown'
@@ -167,6 +184,8 @@ class Person:
     def get_age(self, pers_data_json: dict):
         """
         Calculate Age from date of birth
+        :param pers_data_json: dictionary of person data
+        :return: -1 if pers_data_json.get('bdate') is wtong
         """
         data_str = pers_data_json.get('bdate')
         if data_str is not None:
@@ -183,6 +202,11 @@ class Person:
 
     @staticmethod
     def get_interests(pers_data_json: dict) -> list:
+        """
+        Take user interests from user data
+        :param pers_data_json: dictionary of person data
+        :return: user interests list
+        """
         data_str = pers_data_json.get('interests')
         interests = []
         if data_str is not None:
