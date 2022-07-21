@@ -186,7 +186,7 @@ class Application:
     def get_photo_list_from_vk(user_id):
         """
         Gets user photo from VK by user identification number
-        :param user_id:user identification number
+        :param user_id: user identification number
         :return: photos_list: list of photos,
                  photos_id_list: list of photos identification numbers
         """
