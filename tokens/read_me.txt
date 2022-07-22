@@ -2,10 +2,10 @@ This is the folder for your tokens.
 
 Токены следует собрать в файле "tokens.txt" в формате:
     [TOKENS]
-    vk_token =
-    vk_bot_token =
+    vk_token = токен Вконтакте
+    vk_bot_token = токен приложения
     [PASSWORDS]
-    db_passw =
+    db_passw = пароль для базы данных
 
 Основные данные для работы приложения содержатся в файле "application_data.ini":
     [APPLICATION]
@@ -21,8 +21,8 @@ This is the folder for your tokens.
     APP_ID='8213519'
     OWNER_ID='571567527'
     [DATABASE]
-    user_name = postgres
-    port = 5432
-    database_name = cours_w_DB
-    host = localhost
+    user_name = postgres: имя пользователя базы данных
+    port = 5432: порт, данное значение присваивается по-умолчению
+    database_name = cours_w_DB: имя вашей базы данных
+    host = localhost- для локальной базы
 
