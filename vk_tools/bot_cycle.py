@@ -114,8 +114,6 @@ def bot_cycle(self, from_json=False):
                         # создаём переменную текущего кандидата, вдруг он попадёт в избранное!
                         clients_dict[new_id].setdefault('current_candidate', candidate_id)
 
-                        # clients_dict[new_id]['candidates_list'].pop()
-
                         if from_json:
                             print("Get data from json.")
                             self.person_presentation_f_json(new_id, candidate_id)
