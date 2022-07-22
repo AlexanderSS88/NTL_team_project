@@ -110,11 +110,11 @@ def bot_cycle(self, from_json=False):
                         clients_dict[new_id].setdefault('favorite_list', [])
 
                         # по типу стека достаём последнего кандидата
-                        candidate_id = clients_dict[new_id]['candidates_list'][-1]
+                        candidate_id = clients_dict[new_id]['candidates_list'].pop() # удаляем этого кандидата из стека
                         # создаём переменную текущего кандидата, вдруг он попадёт в избранное!
                         clients_dict[new_id].setdefault('current_candidate', candidate_id)
-                        # удаляем этого кандидата из стека
-                        clients_dict[new_id]['candidates_list'].pop()
+
+                        # clients_dict[new_id]['candidates_list'].pop()
 
                         if from_json:
                             print("Get data from json.")
@@ -196,9 +196,8 @@ def bot_cycle(self, from_json=False):
                                                message='Спасибо что воспользовались нашим сервисом.')
                                 clients_dict.pop(new_id)  # удалили клиента из списка, разговор окончен
                             else:
-                                candidate_id = clients_dict[new_id]['candidates_list'][-1]
+                                candidate_id = clients_dict[new_id]['candidates_list'].pop()
                                 clients_dict[new_id]['current_candidate'] = candidate_id
-                                clients_dict[new_id]['candidates_list'].pop()
 
                                 # bot.person_presentation(new_id, candidate_id)
                                 if from_json:
