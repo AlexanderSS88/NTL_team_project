@@ -6,16 +6,7 @@ Here program takes database parameters from configuration file and make connecti
 """
 
 
-class MkConnection:
-    """
-    The mock patch for tests
-    """
-    def execute(self, message):
-        return message
-
-
 class DataBaseConnection:
-    connection = MkConnection()
 
     def __init__(self, make_connection: bool, db_data_file_path='tokens'):
         self.db_data_file_path = db_data_file_path

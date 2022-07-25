@@ -50,8 +50,8 @@ def bot_cycle(self, from_json=False):
                 case 'question#2':
                     min_age = message
                     if self.is_age_valid(min_age):
-                        clients_dict[new_id].setdefault('candidates_data')
-                        clients_dict[new_id]['candidates_data'] = {'min_age': min_age}
+                        clients_dict[new_id].setdefault('candidates_data', ({'min_age': min_age}))
+                        # clients_dict[new_id]['candidates_data']= {'min_age': min_age}
                         clients_dict[new_id]['dialog_status'] = 'question#3'
                         self.write_msg(user_id=new_id,
                                        message="Напиши максимальный возраст кандидата:")
