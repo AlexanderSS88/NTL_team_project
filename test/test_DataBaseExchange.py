@@ -23,4 +23,3 @@ class TestDBFunctions(unittest.TestCase):
     def test_prepare_database_connection(self):
         self.assertMultiLineEqual(self.db.prepare_database_connection(),
                                   f'postgresql://postgres:password@localhost:5432/cours_w_DB')
-

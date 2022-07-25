@@ -1,6 +1,5 @@
 import unittest
 from unittest import mock
-from pprint import pprint
 
 from vk_tools.cls_VkUrl import VkUrl
 
@@ -56,18 +55,22 @@ class TestVKFunctions(unittest.TestCase):
     def test_get_personal_data(self, mock_get):
         json_data = self.vk.get_personal_data('125')
         self.assertEqual(json_data, {"response": "value1"})
+        print(mock_get)
 
     @mock.patch('vk_tools.cls_VkUrl.requests.get', side_effect=mocked_requests_get)
     def test_get_photo_f_profile(self, mock_get):
         json_data = self.vk.get_photo_f_profile('125', 'profile')
         self.assertEqual(json_data, "value2")
+        print(mock_get)
 
     @mock.patch('vk_tools.cls_VkUrl.requests.get', side_effect=mocked_requests_get)
     def test_get_photo_f_profile_by_album_list(self, mock_get):
         json_data = self.vk.get_photo_f_profile_by_album_list('125', ['profile'])
         self.assertListEqual(json_data, ["value2"])
+        print(mock_get)
 
     @mock.patch('vk_tools.cls_VkUrl.requests.get', side_effect=mocked_requests_get)
     def test_search_albums(self, mock_get):
         json_data = self.vk.search_albums('125')
         self.assertListEqual(json_data, [1000])
+        print(mock_get)

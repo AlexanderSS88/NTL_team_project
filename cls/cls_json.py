@@ -18,8 +18,6 @@ class Add2Json:
         """
         user_json = {user_id: user_dict}
 
-        second_json = {}
-
         with open(self.file_name, encoding="utf-8", errors="ignore") as f:
             second_json = json.load(f)
 

@@ -21,6 +21,7 @@ class Person:
     album_list = []
     photo_list = []
     photo_id_list = []
+    pers_data_json = {}
 
     def __init__(self, user_id):
         self.user_id = user_id
@@ -37,7 +38,7 @@ class Person:
 
         if self.test_response(self.pers_data_json):
 
-            personal_dict = self.pers_data_json['response'][0]
+            personal_dict = dict(self.pers_data_json['response'][0])
             self.first_name = self.normalize_user_data(personal_dict['first_name'])
             self.last_name = self.normalize_user_data(personal_dict['last_name'])
             # get person age
@@ -55,10 +56,10 @@ class Person:
         """
         :return: the person information stirng for bot or 'Error' depends of read result
         """
-
+        response_dict = dict(self.pers_data_json['response'][0])
         if self.successful_read:
-            return f"{self.pers_data_json['response'][0]['first_name']} " \
-                   f"{self.pers_data_json['response'][0]['last_name']}" \
+            return f"{response_dict['first_name']} " \
+                   f"{response_dict['last_name']}" \
                    f"\nhttps://vk.com/id{self.user_id}"
         else:
             return 'Error'
@@ -168,8 +169,9 @@ class Person:
         :return: the person information in short dictionary
         """
         if self.successful_read:
-            return {'first_name': self.pers_data_json['response'][0]['first_name'],
-                    'last_name': self.pers_data_json['response'][0]['last_name'],
+            response_dict = dict(self.pers_data_json['response'][0])
+            return {'first_name': response_dict['first_name'],
+                    'last_name': response_dict['last_name'],
                     'id': self.user_id,
                     'url': f'https://vk.com/id{self.user_id}',
                     'age': self.age,

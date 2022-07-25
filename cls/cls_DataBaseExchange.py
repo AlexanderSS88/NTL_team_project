@@ -45,7 +45,7 @@ class DataBaseExchange(DataBaseConnection):
         :return: fixed string
         """
         # return re.sub('[\0\200-\377]', '', data_str)
-        return re.sub("[$|@|&|'|*|ó]", "", data_str)
+        return re.sub(r"[$|@|&|'|*|ó]", "", data_str)
 
     def create_tables(self):
         """
@@ -104,6 +104,8 @@ class DataBaseExchange(DataBaseConnection):
         """
         Add a user data to database
         :param user_data: the user data dictionary
+        :param photo_list: list
+        :param photo_id_list: list
         :return: Database select request
         """
 
