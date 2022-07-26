@@ -45,7 +45,7 @@ class DataBaseExchange(DataBaseConnection):
         :return: fixed string
         """
         # return re.sub('[\0\200-\377]', '', data_str)
-        return re.sub(r"[$|@|&|'|*|ó]", "", data_str)
+        return re.sub(r"[$@&'*ó]", "", data_str)
 
     def create_tables(self):
         """
