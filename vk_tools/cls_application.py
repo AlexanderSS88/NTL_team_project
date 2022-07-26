@@ -15,11 +15,12 @@ from vk_tools.speak_with_user import wellcome, \
 from vk_tools.speak_with_user import get_user_opinion, \
     check_user_opinion_in_presentation, check_user_opinion_
 
-
 """Connection of external modules to class"""
-@add_functions_as_methods(check_user_opinion_in_presentation,wellcome,
+
+
+@add_functions_as_methods(check_user_opinion_in_presentation, wellcome,
                           ask_user_about_candidate, ask_user_yes_no,
-                          get_user_opinion,ask_user_after_favor, bot_cycle,
+                          get_user_opinion, ask_user_after_favor, bot_cycle,
                           check_user_opinion_)
 class Application:
     user_id = ()
@@ -114,11 +115,11 @@ class Application:
         if user_id == 'default':
             user_id = self.user_id
         self.vk_session.method('messages.send', {
-                                                 'user_id': int(user_id),
-                                                 'message': message,
-                                                 'random_id': randrange(10 ** 7),
-                                                 'attachment': attachment
-                                                }
+            'user_id': int(user_id),
+            'message': message,
+            'random_id': randrange(10 ** 7),
+            'attachment': attachment
+        }
                                )
 
     @staticmethod
@@ -142,7 +143,7 @@ class Application:
             print('No photo in DataBase. Look at photos on VK.')
             photos_list, photos_id_list = self.get_photo_list_from_vk(candidate.user_id)
         attach = f"""{''.join([f'photo{candidate.user_id}_{photo_id},'
-                 for photo_id in photos_id_list])}"""[:-1]
+                               for photo_id in photos_id_list])}"""[:-1]
         self.write_msg(user_id=user_id, message=candidate, attachment=attach)
 
     def person_presentation_f_json(self, user_id, candidate_id):
@@ -159,8 +160,8 @@ class Application:
         if len(photos_id_list) == 0:
             print('No photo in json. Look at photos on VK.')
             photos_list, photos_id_list = self.get_photo_list_from_vk(candidate_id)
-        attach = f"""{''.join([f'photo{candidate_id}_{photo_id},' 
-                      for photo_id in photos_id_list])}"""[:-1]
+        attach = f"""{''.join([f'photo{candidate_id}_{photo_id},'
+                               for photo_id in photos_id_list])}"""[:-1]
         self.write_msg(user_id=user_id, message=message, attachment=attach)
 
     @staticmethod
