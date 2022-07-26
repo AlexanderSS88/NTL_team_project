@@ -69,7 +69,7 @@ def bot_cycle(self, from_json=False):
                 case 'question#3':
                     max_age = message
                     if self.is_age_valid(max_age):
-                        clients_dict[new_id]['candidates_data'].setdefault('max_age', max_age)
+                        clients_dict[new_id]['candidates_data']['max_age'] = max_age
 
                         # проверяем, если возраст перепутан
                         if int(clients_dict[new_id]['candidates_data']['min_age']) > \
@@ -86,7 +86,7 @@ def bot_cycle(self, from_json=False):
                         self.write_msg(user_id=new_id,
                                        message="Извини, с возрастом что-то не так...")
                 case 'question#4':
-                    clients_dict[new_id]['candidates_data'].setdefault('city', message)
+                    clients_dict[new_id]['candidates_data']['city'] = message
                     self.write_msg(user_id=new_id,
                                    message="Теперь посмотрим кого удалось отыскать.")
 
