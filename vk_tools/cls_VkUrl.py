@@ -90,7 +90,7 @@ class VkUrl:
         Gets a user's photos data by user id in album_name_list
         :param user_id: user identification number
         :param album_name_list: list of photos album names
-        :return: depends of request result:
+        :return: up request result:
                 requests result json() or list of photos
         """
         photos_list = []

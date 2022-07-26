@@ -132,7 +132,7 @@ class DataBaseExchange(DataBaseConnection):
         return sel
 
     def get_photo_from_db(self, user_id):
-        """Take data of user photoa from DataBase param:
+        """Take data of user photo from DataBase param:
         user_id: user identification number
         return: list_photo_id: list of photos  identification numbers,
         list_photo: list of photos URLs

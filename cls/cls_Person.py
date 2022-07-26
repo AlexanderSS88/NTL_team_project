@@ -45,7 +45,7 @@ class Person:
 
     def __str__(self):
         """return:
-        the person information stirng for bot or 'Error' depends of read result
+        the person information string for bot or 'Error' up read result
         """
         response_dict = dict(self.pers_data_json['response'][0])
         if self.successful_read:
@@ -64,7 +64,7 @@ class Person:
         return re.sub("[$@&'*ó]", "", data_str)
 
     def get_photos(self) -> list:
-        """Get list of person fron VK return: list of photos"""
+        """Get list of person from VK return: list of photos"""
         # search another albums
         print('search_albums')
         self.album_list.clear()
@@ -79,8 +79,8 @@ class Person:
         return self.photo_list
 
     def get_photos_of_person_4_attach(self, user_id) -> str:
-        """Get list of person fron VK
-        return: stirng, format for application attachment
+        """Get list of person from VK
+        return: string, format for application attachment
         """
         n_char = '\n'
         # search another albums
@@ -97,7 +97,7 @@ class Person:
         return f"attachment({''.join([f'{url},{n_char}' for url in self.photo_list])})"
 
     def get_photos_of_person(self, user_id) -> list:
-        """Get list of person fron VK
+        """Get list of person from VK
         param user_id: user identification number
         return: list of photos
         """
@@ -158,9 +158,9 @@ class Person:
     def get_age(self, pers_data_json: dict):
         """Calculate Age from date of birth
         param pers_data_json: dictionary of person data
-        return: -1 if pers_data_json.get('bdate') is wrong
+        return: -1 if pers_data_json.get('b date') is wrong
         """
-        data_str = pers_data_json.get('bdate')
+        data_str = pers_data_json.get('b date')
         if data_str is not None:
             try:
                 data_ = datetime.strptime(data_str, '%d.%m.%Y')

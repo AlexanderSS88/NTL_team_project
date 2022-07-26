@@ -13,4 +13,3 @@ class NewUser:
         self.candidates_list = []
         self.favorite_list = []
         self.current_candidate = 0
-
