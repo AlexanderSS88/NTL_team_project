@@ -69,7 +69,6 @@ class Application:
         """Cleans dialog: param user_id: user identification number"""
         if user_id == 'default':
             user_id = self.user_id
-        print(f'Delete messages: {self.message_id_list}')
         mess = self.vk.messages.getHistory(user_id=user_id,
                                            count=200, offset=0)['items']
         ids_messages = []
