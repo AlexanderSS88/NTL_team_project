@@ -48,10 +48,18 @@ def bot_cycle(self, from_json=False):
                                                    "Напиши минимальный возраст кандидата:")
                             clients_dict[new_id]['dialog_status'] = 'question#2'
                 case 'question#2':
+                    candidates_data_dict = {
+                        'min_age': 0,
+                        'max_age': 0,
+                        'city': ()
+                    }
+                    clients_dict[new_id].setdefault('candidates_data', candidates_data_dict)
+                    # clients_dict[new_id]['candidates_data'] = candidates_data_dict
+
                     min_age = message
                     if self.is_age_valid(min_age):
-                        clients_dict[new_id].setdefault('candidates_data')
-                        clients_dict[new_id]['candidates_data'] = {'min_age': min_age}
+
+                        clients_dict[new_id]['candidates_data']['min_age'] = min_age
                         clients_dict[new_id]['dialog_status'] = 'question#3'
                         self.write_msg(user_id=new_id,
                                        message="Напиши максимальный возраст кандидата:")
@@ -110,7 +118,7 @@ def bot_cycle(self, from_json=False):
                         clients_dict[new_id].setdefault('favorite_list', [])
 
                         # по типу стека достаём последнего кандидата
-                        candidate_id = clients_dict[new_id]['candidates_list'].pop() # удаляем этого кандидата из стека
+                        candidate_id = clients_dict[new_id]['candidates_list'].pop()  # удаляем этого кандидата из стека
                         # создаём переменную текущего кандидата, вдруг он попадёт в избранное!
                         clients_dict[new_id].setdefault('current_candidate', candidate_id)
 
@@ -132,13 +140,13 @@ def bot_cycle(self, from_json=False):
                         clients_dict[new_id]['dialog_status'] = 'presentation'
 
                 case 'presentation':
-                    if event_type == 'text': # Продолжим?"
+                    if event_type == 'text':  # Продолжим?"
                         message = self.check_user_opinion_in_presentation(message, new_id)
                     # смотрим что ответил пользователь
                     match message:
-                        case 'add_to_favor': # добавить в избранное
+                        case 'add_to_favor':  # добавить в избранное
                             clients_dict[new_id]['favorite_list'].append(clients_dict[new_id]['current_candidate'])
-                        case 'complete': # завершить
+                        case 'complete':  # завершить
                             if not clients_dict[new_id]['favorite_list']:
                                 self.write_msg(user_id=new_id,
                                                message="Как знаешь.\nЕсли что, я тут, обращайся")
@@ -156,7 +164,7 @@ def bot_cycle(self, from_json=False):
                                         self.person_presentation(new_id, favorite)
 
                             clients_dict.pop(new_id)  # удалили клиента из списка, разговор окончен
-                        case 'open_favor': # выводим избранных
+                        case 'open_favor':  # выводим избранных
                             self.write_msg(user_id=new_id,
                                            message="Давай посмотрим, кого ты выбрал:")
                             for favorite in clients_dict[new_id]['favorite_list']:
