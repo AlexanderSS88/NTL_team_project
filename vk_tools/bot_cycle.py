@@ -49,11 +49,13 @@ def bot_cycle(self, from_json=False):
                             clients_dict[new_id]['dialog_status'] = 'question#2'
                 case 'question#2':
                     candidates_data_dict = {
-                        'min_age': 0,
-                        'max_age': 0,
-                        'city': ()
+                        'candidates_data': {
+                            'min_age': 0,
+                            'max_age': 0,
+                            'city': ()
+                        }
                     }
-                    clients_dict[new_id].setdefault('candidates_data', candidates_data_dict)
+                    clients_dict[new_id] |= candidates_data_dict
                     # clients_dict[new_id]['candidates_data'] = candidates_data_dict
 
                     min_age = message
