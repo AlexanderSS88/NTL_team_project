@@ -1,6 +1,5 @@
 import unittest
 from unittest import mock
-
 from vk_tools.cls_VkUrl import VkUrl
 
 
@@ -14,18 +13,18 @@ def mocked_requests_get(*args, **kwargs):
         def json(self):
             return self.json_data
 
-    if args[0] == 'https://api.vk.com/method/users.get' \
-            and kwargs['params'] == '&access_token=vk_token&v=5.81&fields=bdate,sex,city,interests,music&user_ids=125':
+    if args[0] == 'https://api.vk.com/method/users.get' and \
+            kwargs['params'] == '&access_token=vk_token&v=5.81&fields=' \
+                                'bdate,sex,city,interests,music&user_ids=125':
         return MockResponse({"response": "value1"}, 200)
-    elif args[0] == 'https://api.vk.com/method/photos.get' \
-            and kwargs[
-        'params'] == '&access_token=vk_token&v=5.81&fields=&owner_id=125&album_id=profile&count=200&photo_sizes' \
-                     '=1&extended=1':
+    elif args[0] == 'https://api.vk.com/method/photos.get' and \
+            kwargs['params'] == '&access_token=vk_token&v=5.81&fields=&owner_id=' \
+                                '125&album_id=profile&count=200&photo_sizes=1&extended=1':
         return MockResponse({"response": {"items": "value2"}}, 200)
-    elif args[0] == 'https://api.vk.com/method/photos.getAlbums' \
-            and kwargs['params'] == '&access_token=vk_token&v=5.81&fields=&owner_id=125':
+    elif args[0] == 'https://api.vk.com/method/photos.getAlbums' and \
+            kwargs['params'] == '&access_token=vk_token&v=' \
+                                '5.81&fields=&owner_id=125':
         return MockResponse({'response': {'items': [{'id': 1000}]}}, 200)
-
     return MockResponse(None, 404)
 
 
@@ -35,21 +34,29 @@ class TestVKFunctions(unittest.TestCase):
         self.vk = VkUrl(db_data_file_path='tokens_4_test')
 
     def test_get_url(self):
-        self.assertMultiLineEqual(self.vk.get_url('users.get'), "https://api.vk.com/method/users.get")
+        self.assertMultiLineEqual(self.vk.get_url('users.get'),
+                                  "https://api.vk.com/method/users.get")
 
     def test_get_params(self):
-        self.assertDictEqual(self.vk.get_params(fields='bdate,city',
-                                                pdict={'user_ids': '125'}), {'access_token': 'vk_token',
-                                                                             'v': '5.81',
-                                                                             'fields': 'bdate,city',
-                                                                             'user_ids': '125'})
+        self.assertDictEqual(
+            self.vk.get_params(
+                fields='bdate,city',
+                pdict={'user_ids': '125'}), {
+                'access_token': 'vk_token',
+                'v': '5.81',
+                'fields': 'bdate,city',
+                'user_ids': '125'
+            }
+        )
 
     def test_transform_param(self):
-        self.assertMultiLineEqual(self.vk.transform_param({'access_token': 'vk_token',
-                                                           'v': '5.81',
-                                                           'fields': 'bdate,city',
-                                                           'user_ids': '125'}),
-                                  '&access_token=vk_token&v=5.81&fields=bdate,city&user_ids=125')
+        self.assertMultiLineEqual(self.vk.transform_param(
+            {'access_token': 'vk_token',
+             'v': '5.81',
+             'fields': 'bdate,city',
+             'user_ids': '125'
+             }),
+            '&access_token=vk_token&v=5.81&fields=bdate,city&user_ids=125')
 
     @mock.patch('vk_tools.cls_VkUrl.requests.get', side_effect=mocked_requests_get)
     def test_get_personal_data(self, mock_get):

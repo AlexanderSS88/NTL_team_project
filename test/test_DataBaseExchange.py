@@ -1,6 +1,5 @@
 import unittest
 from parameterized import parameterized
-
 from cls.cls_DataBaseExchange import DataBaseExchange
 
 

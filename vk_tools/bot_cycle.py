@@ -7,7 +7,7 @@ def bot_cycle(self, from_json=False):
     This is the base VK bot cycle.
     :param from_json: use json storage file of not
     """
-    clients_dict = dict()
+    clients_dict = {}
 
     while True:
         new_id, message, event_type = self.get_external_call()
@@ -16,8 +16,6 @@ def bot_cycle(self, from_json=False):
             self.wellcome(new_id, message)
             clients_dict.setdefault(new_id)  # добавляем клиента в словарь
             clients_dict[new_id] = {'dialog_status': 'wellcome'}  # спросили, хочешь знакомиться
-            clients_dict[new_id].setdefault('candidates_data')
-            # clients_dict[new_id]['candidates_data']={'min_age': 0, }
         else:
             match clients_dict[new_id]['dialog_status']:
                 case 'wellcome':
@@ -52,8 +50,8 @@ def bot_cycle(self, from_json=False):
                 case 'question#2':
                     min_age = message
                     if self.is_age_valid(min_age):
-                        clients_dict[new_id]['candidates_data'].setdefault('min_age', min_age)
-                        # clients_dict[new_id]['candidates_data']= {'min_age': min_age}
+                        clients_dict[new_id].setdefault('candidates_data')
+                        clients_dict[new_id]['candidates_data'] = {'min_age': min_age}
                         clients_dict[new_id]['dialog_status'] = 'question#3'
                         self.write_msg(user_id=new_id,
                                        message="Напиши максимальный возраст кандидата:")

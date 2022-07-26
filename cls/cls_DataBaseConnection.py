@@ -1,8 +1,8 @@
 import sqlalchemy
 from tokens.cls_tokens import Token
 
-"""
-Here program takes database parameters from configuration file and make connection.
+"""Here program takes database parameters from configuration 
+file and make connection.
 """
 
 
@@ -13,20 +13,17 @@ class DataBaseConnection:
         # it's not necessary to make database connections in some tests
         if make_connection:
             # Connect to DataBase
-            engine = sqlalchemy.create_engine(self.prepare_database_connection())
+            engine = sqlalchemy.create_engine(
+                self.prepare_database_connection())
             self.connection = engine.connect()
 
     def prepare_database_connection(self):
-        """
-        take DataBase parameters from class Token
-        :return: engine
-        """
+        """take DataBase parameters from class Token return: engine"""
         token = Token(self.db_data_file_path)
-
         user_name = token.app_dict['DATABASE']['user_name']
         port = token.app_dict['DATABASE']['port']
         database_name = token.app_dict['DATABASE']['database_name']
         host = token.app_dict['DATABASE']['host']
         user_pass_word = token.app_dict['PASSWORDS']['db_passw']
-
-        return f'postgresql://{user_name}:{user_pass_word}@{host}:{port}/{database_name}'
+        return f'postgresql://{user_name}:{user_pass_word}@{host}' \
+               f':{port}/{database_name}'

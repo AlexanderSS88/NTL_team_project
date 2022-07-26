@@ -17,18 +17,16 @@ if __name__ == '__main__':
                 break
             case 's':
                 data_base = DataBaseExchange()
+                bot = Application()
                 data_base.create_tables()
-
                 start_id = input("Input start user id for scan:\t")
                 last_id = input("Input last user id for scan:\t")
                 write_2_json = input("Should program write data to json file? (y/n):\t")
-
                 for vk_id in range(int(start_id), int(last_id)):
-                    bot.get_personal_data(vk_id, write_2_json)
+                    bot.get_personal_data(str(vk_id), write_2_json)
                     time.sleep(0.7)
             case 'c':
                 data_base = DataBaseExchange()
-
                 min_ege = input("Input min age of candidate:\t")
                 max_age = input("Input max age of candidate:\t")
                 city = input("Input the city name:\t")
@@ -37,6 +35,7 @@ if __name__ == '__main__':
                                                            city_name=city)
                 print(candidates_list)
             case 'p':
+                bot = Application()
                 user_id_4_photo = input("Input user id:\t")
                 photos_list, photos_id_list = bot.get_photo_list_from_db(user_id_4_photo)
                 print(f'photos_id_list: {photos_id_list}')
@@ -44,7 +43,8 @@ if __name__ == '__main__':
                 pprint(photos_list)
             case 'b':
                 bot = Application()
-                data_source = input("Take data from DataBase (any key) or from json file (j)?:\t")
+                data_source = input("Take data from DataBase (any key) "
+                                    "or from json file (j)?:\t")
                 if data_source == 'j':
                     print(bot.bot_cycle(from_json=True))
                 else:
