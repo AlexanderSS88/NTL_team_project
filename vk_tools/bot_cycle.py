@@ -1,4 +1,4 @@
-# from cls.cls_DataBaseExchange import DataBaseExchange
+from cls.cls_DataBaseExchange import DataBaseExchange
 # from cls.cls_json import Add2Json
 from vk_tools.cls_new_user import NewUser
 from cls.cls_Person import Person
@@ -10,6 +10,7 @@ def bot_cycle(self):
     :param self
     """
     clients_dict = {}
+    db = DataBaseExchange()
 
     while True:
         new_id, message, event_type = self.get_external_call()
@@ -103,7 +104,10 @@ def bot_cycle(self):
                         clients_dict.pop(new_id)  # удалили клиента из списка, разговор окончен
                     else:
                         # собираем список кандидатов
-                        clients_dict[new_id].candidates_list.extend(candidates_list)
+                        for candidate in candidates_list:
+                            # проверяем, если показывали этого кандидата для данного пользователя
+                            if db.check_candidate(user_id=new_id, candidate_id=candidate):
+                                clients_dict[new_id].candidates_list.append(candidate)
 
                         # по типу стека достаём последнего кандидата
                         candidate_id = clients_dict[new_id].candidates_list.pop()  # удаляем этого кандидата из стека
@@ -129,7 +133,13 @@ def bot_cycle(self):
                     match message:
                         case 'add_to_favor':  # добавить в избранное
                             clients_dict[new_id].favorite_list.append(clients_dict[new_id].current_candidate)
+                            db.add_candidate(user_id=new_id,
+                                             candidate_id=clients_dict[new_id].current_candidate,
+                                             in_favorites=True)
                         case 'complete':  # завершить
+                            db.add_candidate(user_id=new_id,
+                                             candidate_id=clients_dict[new_id].current_candidate,
+                                             in_favorites=False)
                             if not clients_dict[new_id].favorite_list:
                                 self.write_msg(user_id=new_id,
                                                message="Как знаешь.\nЕсли что, я тут, обращайся")
@@ -155,6 +165,9 @@ def bot_cycle(self):
                                                       message='Продолжим?')
 
                         case 'next':
+                            db.add_candidate(user_id=new_id,
+                                             candidate_id=clients_dict[new_id].current_candidate,
+                                             in_favorites=False)
                             self.delete_messages(new_id)
 
                             #  Если список иссяк

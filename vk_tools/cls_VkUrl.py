@@ -46,7 +46,6 @@ class VkUrl:
                                       fields='bdate,'
                                              'sex,'
                                              'city,'
-                                      # 'photo_400_orig,'
                                              'interests,'
                                              'music',
                                       pdict={'user_ids': user_id})
@@ -152,7 +151,6 @@ class VkUrl:
                                       fields='bdate,'
                                              'sex,'
                                              'city,'
-                                      # 'photo_400_orig,'
                                              'interests,'
                                              'music',
                                       pdict={'count': '1000',
