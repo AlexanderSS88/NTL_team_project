@@ -6,7 +6,7 @@ from cls.cls_Person import Person
 
 def bot_cycle(self):
     """
-    This is the base VK bot cycle.
+    This is the base VK bot cycle
     :param self
     """
     clients_dict = {}
@@ -106,8 +106,11 @@ def bot_cycle(self):
                         # собираем список кандидатов
                         for candidate in candidates_list:
                             # проверяем, если показывали этого кандидата для данного пользователя
-                            if db.check_candidate(user_id=new_id, candidate_id=candidate):
+                            if not db.check_candidate(user_id=new_id, candidate_id=candidate):
+                                print(f"Candidate {candidate} added to list.")
                                 clients_dict[new_id].candidates_list.append(candidate)
+                            else:
+                                print("Skip known candidate.")
 
                         # по типу стека достаём последнего кандидата
                         candidate_id = clients_dict[new_id].candidates_list.pop()  # удаляем этого кандидата из стека
@@ -118,7 +121,7 @@ def bot_cycle(self):
 
                         # спрашиваем мнение пользователя об кандидате:
                         # в избранное,
-                        # посомтреть избранное,
+                        # посмотреть избранное,
                         # следующий,
                         # закончить
                         self.ask_user_about_candidate(user_id=new_id,

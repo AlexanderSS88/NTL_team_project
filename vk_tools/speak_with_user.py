@@ -26,8 +26,8 @@ def wellcome(self, user_id, message):
 
 def ask_user_yes_no(self, message, user_id='default'):
     """
-    Ask user opinion: "yes" or "no".
-    :param self
+    Ask user opinion: "yes" or "no"
+    :param self: class self
     :param message:  message text
     :param user_id: user identification number
     """
@@ -45,7 +45,7 @@ def ask_user_yes_no(self, message, user_id='default'):
 
 def ask_user_about_candidate(self, message, user_id='default'):
     """
-    Ask user opinion about candidate: "to favorite", "show favorites list", "next" or "complete".
+    Ask user opinion about candidate: "to favorite", "show favorites list", "next" or "complete"
     :param self
     :param message:  message text
     :param user_id: user identification number
@@ -71,7 +71,7 @@ def ask_user_about_candidate(self, message, user_id='default'):
 
 def ask_user_after_favor(self, message, user_id='default'):
     """
-    Ask user opinion after favorites presentation: "next" or "complete".
+    Ask user opinion after favorites presentation: "next" or "complete"
     :param self
     :param message:  message text
     :param user_id: user identification number
@@ -93,11 +93,11 @@ def ask_user_after_favor(self, message, user_id='default'):
 
 def get_user_opinion(self, user_id, message):
     """
-    Check user opinion ("yes" or "no") by corresponding patterns.
+    Check user opinion ("yes" or "no") by corresponding patterns
     :param self
     :param message:  message text
     :param user_id: user identification number
-    :return: string 'Yes' or 'No' depends of result
+    :return: string 'Yes' or 'No' up to result
     """
     if re.findall(self.pattern_no, message, flags=re.IGNORECASE):
         return 'No'
@@ -111,11 +111,11 @@ def get_user_opinion(self, user_id, message):
 
 def check_user_opinion_in_presentation(self, message, user_id='default'):
     """
-    Check user opinion ("add_to_favor", "complete" or "next") by corresponding patterns.
+    Check user opinion ("add_to_favor", "complete" or "next") by corresponding patterns
     :param self
     :param message:  message text
     :param user_id: user identification number
-    :return: some string depends of result
+    :return: some string up to result
     """
     if user_id == 'default':
         user_id = self.user_id
@@ -132,10 +132,10 @@ def check_user_opinion_in_presentation(self, message, user_id='default'):
 
 def check_user_opinion_(self, message):
     """
-    Check user opinion ("add_to_favor", "complete" or "next") by corresponding patterns.
+    Check user opinion ("add_to_favor", "complete" or "next") by corresponding patterns
     :param self
     :param message:  message text
-    :return: some string depends of result
+    :return: some string up to result
     """
     if re.findall(self.pattern_favorite, message, flags=re.IGNORECASE):
         return 'add_to_favor'

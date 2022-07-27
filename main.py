@@ -12,4 +12,3 @@ if __name__ == '__main__':
             case 'b':
                 bot = Application()
                 print(bot.bot_cycle())
-

@@ -1,12 +1,9 @@
 from random import randrange
-from pprint import pprint
 import vk_api.exceptions
 from vk_api import VkApi, VkUpload
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from cls.cls_Person import Person
 from tokens.cls_tokens import Token
-from cls.cls_DataBaseExchange import DataBaseExchange
-from cls.cls_json import Add2Json
 # This class divided by three modules
 from vk_tools.Lib import add_functions_as_methods
 from vk_tools.bot_cycle import bot_cycle
@@ -31,8 +28,7 @@ class Application:
     APPLICATION_TOKEN = ()
     OWNER_ID = ()
     CALLBACK_TYPES = ['show_snackbar', 'open_link', 'open_app']
-    pattern_hi = "(прив)|(хай)|(здаров)|(салам)|(здравст)|(добр..)" \
-                 "|(салют)|(ку)|(hi)|(ghbd)|(\[fq)"
+    pattern_hi = "(прив)|(хай)|(здаров)|(салам)|(здравст)|(добр..)|(салют)|(ку)|(hi)|(ghbd)"
     pattern_no = "(не)|(нет)|(нехочу)|(не хочу)|(no)|(ne)|(not)|(n)"
     pattern_yes = "(давай)|(да)|(ок)|(хорош)|(соглас)|(добро)" \
                   "|(ладно)|(yes)|(lf)|(yep)|(замётано)|(y)"
@@ -129,40 +125,6 @@ class Application:
         else:
             return False
 
-    def person_presentation(self, user_id, candidate_id):
-        """Outputs some candidate data from DatBase to present param:
-        user_id: user identification number
-        candidate_id: identification of other person,
-        whose data user pretend to get
-        """
-        candidate = Person(candidate_id)
-        data_base = DataBaseExchange()
-        photos_id_list, photos_list = data_base.get_photo_from_db(candidate.user_id)
-        if len(photos_id_list) == 0:
-            print('No photo in DataBase. Look at photos on VK.')
-            photos_list, photos_id_list = self.get_photo_list_from_vk(candidate.user_id)
-        attach = f"""{''.join([f'photo{candidate.user_id}_{photo_id},'
-                               for photo_id in photos_id_list])}"""[:-1]
-        self.write_msg(user_id=user_id, message=candidate, attachment=attach)
-
-    def person_presentation_f_json(self, user_id, candidate_id):
-        """Outputs some candidate data from json storage file to present param:
-        user_id: user identification number
-        candidate_id: identification of other person,
-        whose data user pretend to get
-        """
-        add_jeson = Add2Json('db_in_json.json')
-        user_data, photos_id_list = add_jeson.get_candidate_data_from_json(candidate_id)
-        message = f"{user_data['first_name']} " \
-                  f"{user_data['last_name']}" \
-                  f"\n{user_data['url']}"
-        if len(photos_id_list) == 0:
-            print('No photo in json. Look at photos on VK.')
-            photos_list, photos_id_list = self.get_photo_list_from_vk(candidate_id)
-        attach = f"""{''.join([f'photo{candidate_id}_{photo_id},'
-                               for photo_id in photos_id_list])}"""[:-1]
-        self.write_msg(user_id=user_id, message=message, attachment=attach)
-
     def person_presentation_f_vk(self, user_id, candidate_id):
         """Outputs some candidate data from json storage file to present param:
         user_id: user identification number
@@ -191,42 +153,4 @@ class Application:
         user = Person(user_id)
         photos_list = user.get_photos_of_person(user_id)
         photos_id_list = user.photo_id_list
-        return photos_list, photos_id_list
-
-    def get_personal_data(self, user_id: str, write_2_json: str):
-        """Get account data from VK by an identification number:
-        param user_id: account identification number
-        param write_2_json: 'y'- if user pretend to save dato to json
-        """
-        user = Person(str(user_id))
-        print()
-        data_base = DataBaseExchange()
-        if user.data_are_good:
-            user_dict = user.get_person_data()
-            print('Version for Database:')
-            pprint(user_dict)
-            data_base.add_user_data(user_dict)
-            print('Take data from VK.')
-            photos_list, photos_id_list = self.get_photo_list_from_vk(user_id)
-            data_base.add_user_photos(user_dict, photos_list, photos_id_list)
-            if write_2_json == 'y':
-                user_dict.setdefault('photos_id_list', photos_id_list)
-                print('\nPerson data saved in json file')
-                add_jeson = Add2Json('db_in_json.json')
-                add_jeson.add_2_json(user_id, user_dict)
-            else:
-                print('Person data in DataBase only.')
-        else:
-            print('The person data are not useful.')
-
-    @staticmethod
-    def get_photo_list_from_db(user_id):
-        """Gets user photo from DataBase by user identification number:
-        param user_id: user identification number
-        return photos_list: list of photos,
-        photos_id_list: list of photos identification numbers
-        """
-        data_base = DataBaseExchange()
-        print('Get data from DB:')
-        photos_id_list, photos_list = data_base.get_photo_from_db(user_id)
         return photos_list, photos_id_list

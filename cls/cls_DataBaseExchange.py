@@ -67,12 +67,16 @@ class DataBaseExchange(DataBaseConnection):
         :param last_name:
         :return:
         """
-        sel = self.connection.execute(
-            f"""INSERT INTO user_data VALUES (
-                        '{user_id}', 
-                        '{self.normalize_user_data(first_name)}', 
-                        '{self.normalize_user_data(last_name)}');"""
-        )
+        sel = ()
+        try:
+            sel = self.connection.execute(
+                f"""INSERT INTO user_data VALUES (
+                            '{user_id}', 
+                            '{self.normalize_user_data(first_name)}', 
+                            '{self.normalize_user_data(last_name)}');"""
+            )
+        except sqlalchemy.exc.IntegrityError:
+            print('This person was in DataBae yet.')
         return sel
 
     def add_candidate(self, user_id, candidate_id, in_favorites=False):
@@ -99,4 +103,4 @@ class DataBaseExchange(DataBaseConnection):
         sel = self.connection.execute(f"""SELECT EXISTS(SELECT * FROM candidates
                     WHERE user_id = '{user_id}' AND candidate_id ={candidate_id});"""
                                       ).fetchall()
-        return sel
+        return sel[0][0]

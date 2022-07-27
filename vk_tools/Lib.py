@@ -5,6 +5,7 @@ Decorator for class Application
 
 def add_functions_as_methods(*functions):
     """
+    add function
     :param functions: list of functions
     :return: decorator
     """
