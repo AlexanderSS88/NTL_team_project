@@ -45,6 +45,9 @@ def bot_cycle(self):
                             self.write_msg(user_id=new_id,
                                            message="Как знаешь.\nЕсли что, я тут, обращайся")
                             clients_dict.pop(new_id)  # удалили клиента из списка, разговор окончен
+                            self.write_msg(user_id=new_id,
+                                           message='Как скажешь.\n'
+                                                   '\nСпасибо что воспользовались нашим сервисом.')
                         case 'Yes':
                             self.write_msg(user_id=new_id,
                                            message="Тогда приступим!\n"
@@ -137,7 +140,12 @@ def bot_cycle(self):
                                 for favorite in clients_dict[new_id].favorite_list:
                                     self.person_presentation_f_vk(new_id, favorite)
 
+                            self.write_msg(user_id=new_id,
+                                           message='Это все!\n'
+                                                   '\nСпасибо что воспользовались нашим сервисом.')
+
                             clients_dict.pop(new_id)  # удалили клиента из списка, разговор окончен
+
                         case 'open_favor':  # выводим избранных
                             self.write_msg(user_id=new_id,
                                            message="Давай посмотрим, кого ты выбрал:")
