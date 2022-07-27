@@ -1,6 +1,7 @@
 from datetime import datetime
 from vk_tools.cls_VkUrl import VkUrl
 import re
+from pprint import pprint
 
 """Class to describe user person."""
 
@@ -223,3 +224,19 @@ class Person:
         self.photo_list = [files_inf_list[i]['url'] for i in range(qtt)]
         self.photo_id_list = [files_inf_list[i]['id'] for i in range(qtt)]
         return self.photo_list
+
+    def get_thousand_users(self, city_name: str, min_age: str, max_age: str) -> list:
+        vk = VkUrl()
+        users_json = vk.get_thousand_users(city_name=city_name, age_min=min_age, age_max=max_age)
+
+        person_list = []
+
+        # pprint(users_json)
+        pprint(users_json['response']['items'])
+
+        if self.test_response(self.pers_data_json):
+            for person in users_json['response']['items']:
+                person_list.append(person['id'])
+
+            # return [person['count'] for person in users_json['response']]
+        return person_list

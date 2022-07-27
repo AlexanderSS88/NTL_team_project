@@ -1,13 +1,13 @@
-from cls.cls_DataBaseExchange import DataBaseExchange
-from cls.cls_json import Add2Json
+# from cls.cls_DataBaseExchange import DataBaseExchange
+# from cls.cls_json import Add2Json
 from vk_tools.cls_new_user import NewUser
+from cls.cls_Person import Person
 
 
-def bot_cycle(self, from_json=False):
+def bot_cycle(self):
     """
     This is the base VK bot cycle.
     :param self
-    :param from_json: use json storage file of not
     """
     clients_dict = {}
 
@@ -86,22 +86,12 @@ def bot_cycle(self, from_json=False):
                     self.write_msg(user_id=new_id,
                                    message="Теперь посмотрим кого удалось отыскать.")
 
-                    if from_json:
-                        print("Get data from json.")
-                        add_jeson = Add2Json('db_in_json.json')
+                    pers = Person('1')
+                    candidates_list = pers.get_thousand_users(
+                        min_age=clients_dict[new_id].candidates_data['min_age'],
+                        max_age=clients_dict[new_id].candidates_data['max_age'],
+                        city_name=clients_dict[new_id].candidates_data['city'])
 
-                        candidates_list = add_jeson.get_candidates_from_json(
-                            min_age=int(clients_dict[new_id].candidates_data['min_age']),
-                            max_age=int(clients_dict[new_id].candidates_data['max_age']),
-                            city_name=clients_dict[new_id].candidates_data['city'])
-                    else:
-                        print("Get data from DataBase.")
-                        data_base = DataBaseExchange()
-
-                        candidates_list = data_base.get_candidates(
-                            min_age=int(clients_dict[new_id].candidates_data['min_age']),
-                            max_age=int(clients_dict[new_id].candidates_data['max_age']),
-                            city_name=clients_dict[new_id].candidates_data['city'])
                     # Если никого не нашлось
                     if len(candidates_list) == 0:
                         self.write_msg(user_id=new_id,
@@ -117,12 +107,7 @@ def bot_cycle(self, from_json=False):
                         # создаём переменную текущего кандидата, вдруг он попадёт в избранное!
                         clients_dict[new_id].current_candidate = candidate_id
 
-                        if from_json:
-                            print("Get data from json.")
-                            self.person_presentation_f_json(new_id, candidate_id)
-                        else:
-                            print("Get data from DataBase.")
-                            self.person_presentation(new_id, candidate_id)
+                        self.person_presentation_f_vk(new_id, candidate_id)
 
                         # спрашиваем мнение пользователя об кандидате:
                         # в избранное,
@@ -150,26 +135,14 @@ def bot_cycle(self, from_json=False):
                                 self.write_msg(user_id=new_id,
                                                message="Давай посмотрим, кого ты выбрал:")
                                 for favorite in clients_dict[new_id].favorite_list:
-                                    # для каждого идентификатора избранного получаем данные
-                                    if from_json:
-                                        print("Get data from json.")
-                                        self.person_presentation_f_json(new_id, favorite)
-                                    else:
-                                        print("Get data from DataBase.")
-                                        self.person_presentation(new_id, favorite)
+                                    self.person_presentation_f_vk(new_id, favorite)
 
                             clients_dict.pop(new_id)  # удалили клиента из списка, разговор окончен
                         case 'open_favor':  # выводим избранных
                             self.write_msg(user_id=new_id,
                                            message="Давай посмотрим, кого ты выбрал:")
                             for favorite in clients_dict[new_id].favorite_list:
-                                # для каждого идентификатора избранного получаем данные
-                                if from_json:
-                                    print("Get data from json.")
-                                    self.person_presentation_f_json(new_id, favorite)
-                                else:
-                                    print("Get data from DataBase.")
-                                    self.person_presentation(new_id, favorite)
+                                self.person_presentation_f_vk(new_id, favorite)
                             self.ask_user_after_favor(user_id=new_id,
                                                       message='Продолжим?')
 
@@ -187,26 +160,14 @@ def bot_cycle(self, from_json=False):
                                     self.write_msg(user_id=new_id,
                                                    message="Давай посмотрим, кого ты выбрал:")
                                     for favorite in clients_dict[new_id].favorite_list:
-                                        if from_json:
-                                            print("Get data from json.")
-                                            self.person_presentation_f_json(new_id, favorite)
-                                        else:
-                                            print("Get data from DataBase.")
-                                            self.person_presentation(new_id, favorite)
+                                        self.person_presentation_f_vk(new_id, favorite)
                                 self.write_msg(user_id=new_id,
                                                message='Спасибо что воспользовались нашим сервисом.')
                                 clients_dict.pop(new_id)  # удалили клиента из списка, разговор окончен
                             else:
                                 candidate_id = clients_dict[new_id].candidates_list.pop()
                                 clients_dict[new_id].current_candidate = candidate_id
-
-                                # bot.person_presentation(new_id, candidate_id)
-                                if from_json:
-                                    print("Get data from json.")
-                                    self.person_presentation_f_json(new_id, candidate_id)
-                                else:
-                                    print("Get data from DataBase.")
-                                    self.person_presentation(new_id, candidate_id)
+                                self.person_presentation_f_vk(new_id, candidate_id)
 
                                 clients_dict[new_id].dialog_status = 'presentation'
                                 self.ask_user_about_candidate(user_id=new_id,

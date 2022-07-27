@@ -1,7 +1,10 @@
 import time
-from pprint import pprint
+# from pprint import pprint
 from cls.cls_DataBaseExchange import DataBaseExchange
 from vk_tools.cls_application import Application
+from vk_tools.cls_VkUrl import VkUrl
+
+from pprint import pprint
 
 if __name__ == '__main__':
 
@@ -11,6 +14,7 @@ if __name__ == '__main__':
                         "'c' -get candidates list, \n"
                         "'p' -get photos list, \n"
                         "'b' -start bot, \n"
+                        "'h' -get thousand users, \n"
                         "'q'- to quit: \t")
         match command:
             case 'q':
@@ -43,9 +47,7 @@ if __name__ == '__main__':
                 pprint(photos_list)
             case 'b':
                 bot = Application()
-                data_source = input("Take data from DataBase (any key) "
-                                    "or from json file (j)?:\t")
-                if data_source == 'j':
-                    print(bot.bot_cycle(from_json=True))
-                else:
-                    print(bot.bot_cycle())
+                print(bot.bot_cycle())
+            case 'h':
+                vk = VkUrl()
+                pprint(vk.get_thousand_users(city_name='Москва', age_min='30', age_max='35'))

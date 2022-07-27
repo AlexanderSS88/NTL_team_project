@@ -137,3 +137,35 @@ class VkUrl:
                 album_list.append(items['id'])
 
         return album_list
+
+    def get_thousand_users(self, city_name: str, age_min: str, age_max: str):
+        """
+        Gets a user's data by user id
+        :param city_name
+        :param age_min
+        :param age_max: user identification number
+        :return: requests result json()
+        """
+        result = requests.get(self.get_url(method="users.search"),
+                              params=self.transform_param(
+                                  self.get_params(
+                                      fields='bdate,'
+                                             'sex,'
+                                             'city,'
+                                      # 'photo_400_orig,'
+                                             'interests,'
+                                             'music',
+                                      pdict={'count': '1000',
+                                             'has_photo': '1',
+                                             'sex': '0',
+                                             'hometown': city_name,
+                                             'age_from': age_min,
+                                             'age_to': age_max})
+                              ), timeout=5)
+
+        time.sleep(0.3)
+        if result.status_code == 200 and 'response' in result.json():
+            return result.json()
+        else:
+            pprint(result.json())
+            return f"Error"

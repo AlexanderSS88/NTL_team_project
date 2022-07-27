@@ -163,6 +163,23 @@ class Application:
                                for photo_id in photos_id_list])}"""[:-1]
         self.write_msg(user_id=user_id, message=message, attachment=attach)
 
+    def person_presentation_f_vk(self, user_id, candidate_id):
+        """Outputs some candidate data from json storage file to present param:
+        user_id: user identification number
+        candidate_id: identification of other person,
+        whose data user pretend to get
+        """
+        pers = Person(candidate_id)
+
+        user_data = pers.get_person_data()
+        message = f"{user_data['first_name']} " \
+                  f"{user_data['last_name']}" \
+                  f"\n{user_data['url']}"
+        photos_list, photos_id_list = self.get_photo_list_from_vk(candidate_id)
+        attach = f"""{''.join([f'photo{candidate_id}_{photo_id},'
+                               for photo_id in photos_id_list])}"""[:-1]
+        self.write_msg(user_id=user_id, message=message, attachment=attach)
+
     @staticmethod
     def get_photo_list_from_vk(user_id):
         """Gets user photo from VK by user identification number:
