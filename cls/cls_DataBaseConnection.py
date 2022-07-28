@@ -18,12 +18,14 @@ class DataBaseConnection:
             self.connection = engine.connect()
 
     def prepare_database_connection(self):
-        """take DataBase parameters from class Token return: engine"""
+        """
+        take DataBase parameters from class Token return: engine
+        """
         token = Token(self.db_data_file_path)
         user_name = token.app_dict['DATABASE']['user_name']
         port = token.app_dict['DATABASE']['port']
         database_name = token.app_dict['DATABASE']['database_name']
         host = token.app_dict['DATABASE']['host']
         user_pass_word = token.app_dict['PASSWORDS']['db_passw']
-        return f'postgresql://{user_name}:{user_pass_word}@{host}' \
-               f':{port}/{database_name}'
+
+        return f'postgresql://{user_name}:{user_pass_word}@{host}:{port}/{database_name}'

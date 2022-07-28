@@ -59,13 +59,16 @@ class Person:
     @staticmethod
     def normalize_user_data(data_str: str):
         """Solve some word problems before add data to database.
-        param: data_str:
-        return: fixed string
+        :param: data_str:
+        :return: fixed string
         """
         return re.sub("[$@&'*ó]", "", data_str)
 
     def get_photos(self) -> list:
-        """Get list of person from VK return: list of photos"""
+        """
+        Get list of person from VK
+        :return: list of photos
+        """
         # search another albums
         print('search_albums')
         self.album_list.clear()
@@ -81,7 +84,8 @@ class Person:
 
     def get_photos_of_person_4_attach(self, user_id) -> str:
         """Get list of person from VK
-        return: string, format for application attachment
+        :param: user_id
+        :return: string, format for application attachment
         """
         n_char = '\n'
         # search another albums
@@ -99,8 +103,8 @@ class Person:
 
     def get_photos_of_person(self, user_id) -> list:
         """Get list of person from VK
-        param user_id: user identification number
-        return: list of photos
+        :param: user_id: user identification number
+        :return: list of photos
         """
         # search another albums
         print('search_albums')
@@ -117,7 +121,7 @@ class Person:
 
     def get_city(self, pers_data_json: dict):
         """Check if person city name is wrong
-        param pers_data_json: dictionary of person data
+        :param: pers_data_json: dictionary of person data
         """
         city_dict = pers_data_json.get('city')
         if city_dict is None:
@@ -137,10 +141,17 @@ class Person:
 
     @staticmethod
     def test_response(response: dict) -> bool:
+        """
+        Check if response is valid
+        :param response:
+        :return: False or True up to result
+        """
         return 'response' in response
 
     def get_person_data(self):
-        """return: the person information in short dictionary"""
+        """
+        :return: the person information in short dictionary
+        """
         if self.successful_read:
             response_dict = dict(self.pers_data_json['response'][0])
             return {'first_name': response_dict['first_name'],
@@ -158,8 +169,8 @@ class Person:
 
     def get_age(self, pers_data_json: dict):
         """Calculate Age from date of birth
-        param pers_data_json: dictionary of person data
-        return: -1 if pers_data_json.get('b date') is wrong
+        :param: pers_data_json: dictionary of person data
+        :return: -1 if pers_data_json.get('b date') is wrong
         """
         data_str = pers_data_json.get('b date')
         if data_str is not None:
@@ -176,8 +187,8 @@ class Person:
     @staticmethod
     def get_interests(pers_data_json: dict) -> list:
         """Take user interests from user data
-        param pers_data_json: dictionary of person data
-        return: user interests list
+        :param: pers_data_json: dictionary of person data
+        :return: user interests list
         """
         data_str = pers_data_json.get('interests')
         interests = []
@@ -195,7 +206,9 @@ class Person:
         "size": "z"
         "width": width of photo
         }]
-        return: list of urls
+        :param: photo_list
+        :param: qtt: photos quantity
+        :return: list of urls
         """
         files_inf_list = list()
         if 'Error' in photo_list or not photo_list:

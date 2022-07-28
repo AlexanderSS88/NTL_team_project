@@ -18,6 +18,8 @@ class DataBaseExchange(DataBaseConnection):
     def add_user_data(self, user_data: dict):
         """Add a user data to database param:
          user_data: the user data dictionary
+         :param: user_data
+         :return: select
         """
         sel = ()
         try:
@@ -39,14 +41,17 @@ class DataBaseExchange(DataBaseConnection):
     @staticmethod
     def normalize_user_data(data_str):
         """Solve some word problems before add data to database.
-        param data_str:
+        :param: data_str:
         return: fixed string
         """
         # return re.sub('[\0\200-\377]', '', data_str)
         return re.sub(r"[$@&'*ó]", "", data_str)
 
     def create_tables(self):
-        """Create tables in database if there is are not existed"""
+        """
+        Create tables in database if there is are not existed
+        :return: select
+        """
         self.connection.execute("""
                                 CREATE TABLE IF NOT EXISTS user_data(
                                 id integer PRIMARY KEY, 
@@ -66,7 +71,7 @@ class DataBaseExchange(DataBaseConnection):
         :param user_id:
         :param first_name:
         :param last_name:
-        :return:
+        :return: select
         """
         sel = ()
         try:
@@ -86,7 +91,7 @@ class DataBaseExchange(DataBaseConnection):
         :param user_id:
         :param candidate_id:
         :param in_favorites:
-        :return:
+        :return: select
         """
         sel = ()
         try:
@@ -101,6 +106,12 @@ class DataBaseExchange(DataBaseConnection):
         return sel
 
     def check_candidate(self, user_id, candidate_id):
+        """
+        Check if candidate was presented to this user yet
+        :param user_id:
+        :param candidate_id:
+        :return: part of select (False or True)
+        """
         sel = self.connection.execute(f"""SELECT EXISTS(SELECT * FROM candidates
                     WHERE user_id = '{user_id}' AND candidate_id ={candidate_id});"""
                                       ).fetchall()
