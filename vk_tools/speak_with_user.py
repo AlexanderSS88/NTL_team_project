@@ -24,6 +24,7 @@ def wellcome(self, user_id, message):
     db.add_user(user_id, companion_user.first_name, companion_user.last_name)
 
 
+
 def ask_user_yes_no(self, message, user_id='default'):
     """
     Ask user opinion: "yes" or "no"

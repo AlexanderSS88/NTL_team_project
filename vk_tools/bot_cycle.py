@@ -1,16 +1,18 @@
 from cls.cls_DataBaseExchange import DataBaseExchange
-# from cls.cls_json import Add2Json
+from cls.cls_json import Add2Json
 from vk_tools.cls_new_user import NewUser
 from cls.cls_Person import Person
 
 
-def bot_cycle(self):
+def bot_cycle(self, work_w_json=False):
     """
     This is the base VK bot cycle
     :param self
+    :param work_w_json
     """
     clients_dict = {}
     db = DataBaseExchange()
+    jsn = Add2Json('db_in_json.json')
 
     while True:
         new_id, message, event_type = self.get_external_call()
@@ -19,6 +21,7 @@ def bot_cycle(self):
             new_user = NewUser(new_id)
             self.wellcome(new_id, message)
             clients_dict.setdefault(new_id, new_user)  # добавляем клиента в словарь
+            jsn.add_new_user(new_id)  # добавляем клиента в json
             clients_dict[new_id].dialog_status = 'wellcome'  # спросили, хочешь знакомиться
         else:
             match clients_dict[new_id].dialog_status:
@@ -106,11 +109,19 @@ def bot_cycle(self):
                         # собираем список кандидатов
                         for candidate in candidates_list:
                             # проверяем, если показывали этого кандидата для данного пользователя
-                            if not db.check_candidate(user_id=new_id, candidate_id=candidate):
-                                print(f"Candidate {candidate} added to list.")
-                                clients_dict[new_id].candidates_list.append(candidate)
+
+                            if not work_w_json:
+                                if not db.check_candidate(user_id=new_id, candidate_id=candidate):
+                                    print(f"Candidate {candidate} added to list.")
+                                    clients_dict[new_id].candidates_list.append(candidate)
+                                else:
+                                    print("Skip known candidate.")
                             else:
-                                print("Skip known candidate.")
+                                if not jsn.check_candidate(user_id=new_id, candidate_id=candidate):
+                                    print(f"Candidate {candidate} added to list.")
+                                    clients_dict[new_id].candidates_list.append(candidate)
+                                else:
+                                    print("Skip known candidate.")
 
                         # по типу стека достаём последнего кандидата
                         candidate_id = clients_dict[new_id].candidates_list.pop()  # удаляем этого кандидата из стека
@@ -136,13 +147,25 @@ def bot_cycle(self):
                     match message:
                         case 'add_to_favor':  # добавить в избранное
                             clients_dict[new_id].favorite_list.append(clients_dict[new_id].current_candidate)
-                            db.add_candidate(user_id=new_id,
-                                             candidate_id=clients_dict[new_id].current_candidate,
-                                             in_favorites=True)
+
+                            if not work_w_json:
+                                db.add_candidate(user_id=new_id,
+                                                 candidate_id=clients_dict[new_id].current_candidate,
+                                                 in_favorites=True)
+                            else:
+                                jsn.add_candidate(user_id=new_id,
+                                                  candidate_id=clients_dict[new_id].current_candidate,
+                                                  in_favorites=True)
                         case 'complete':  # завершить
-                            db.add_candidate(user_id=new_id,
-                                             candidate_id=clients_dict[new_id].current_candidate,
-                                             in_favorites=False)
+                            if not work_w_json:
+                                db.add_candidate(user_id=new_id,
+                                                 candidate_id=clients_dict[new_id].current_candidate,
+                                                 in_favorites=False)
+                            else:
+                                jsn.add_candidate(user_id=new_id,
+                                                  candidate_id=clients_dict[new_id].current_candidate,
+                                                  in_favorites=False)
+
                             if not clients_dict[new_id].favorite_list:
                                 self.write_msg(user_id=new_id,
                                                message="Как знаешь.\nЕсли что, я тут, обращайся")
@@ -168,9 +191,15 @@ def bot_cycle(self):
                                                       message='Продолжим?')
 
                         case 'next':
-                            db.add_candidate(user_id=new_id,
-                                             candidate_id=clients_dict[new_id].current_candidate,
-                                             in_favorites=False)
+                            if not work_w_json:
+                                db.add_candidate(user_id=new_id,
+                                                 candidate_id=clients_dict[new_id].current_candidate,
+                                                 in_favorites=False)
+                            else:
+                                jsn.add_candidate(user_id=new_id,
+                                                  candidate_id=clients_dict[new_id].current_candidate,
+                                                  in_favorites=False)
+
                             self.delete_messages(new_id)
 
                             #  Если список иссяк
