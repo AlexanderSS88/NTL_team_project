@@ -1,3 +1,20 @@
 {
-
+   "668524": [
+      {
+         "candidate_id": 0,
+         "favorite": false
+      },
+      {
+         "candidate_id": 24189213,
+         "favorite": false
+      },
+      {
+         "candidate_id": 155541083,
+         "favorite": true
+      },
+      {
+         "candidate_id": 175702817,
+         "favorite": false
+      }
+   ]
 }

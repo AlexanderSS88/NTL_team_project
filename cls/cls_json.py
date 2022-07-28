@@ -41,17 +41,10 @@ class Add2Json:
         if str(user_id) in data_json.keys():
             print('User is in json yet.')
         else:
-            user_dict = {user_id: [{'candidate_id': 0,
-                                    'favorite': False}]
-                         }
+            user_dict = {user_id: [{'candidate_id': 0, 'favorite': False}]}
             data_json.update(user_dict)
-            try:
-                with open(self.file_name, "w", encoding="utf-8") as f2:
-                    json.dump(data_json, f2, ensure_ascii=False, indent=3)
-            except UnicodeDecodeError:
-                print("Codec can't decode some byte. "
-                      "Data wasn't recorded in json.")
-            print('New User saved in json.')
+            self.write_json(data_json)
+            print('User added to json file.')
 
     def add_candidate(self, user_id: str, candidate_id: int, in_favorites: bool):
         """
@@ -62,8 +55,7 @@ class Add2Json:
         :return: None
         """
         data_json = self.get_json_data()
-        data_json[str(user_id)].append({'candidate_id': candidate_id,
-                                        'favorite': in_favorites})
+        data_json[str(user_id)].append({'candidate_id': candidate_id, 'favorite': in_favorites})
         self.write_json(data_json)
 
     def check_candidate(self, user_id: int, candidate_id: int):
@@ -74,8 +66,5 @@ class Add2Json:
         :return: False or True up to check result
         """
         data_json = self.get_json_data()
-        if str(user_id) in data_json.keys():
-            for item in data_json[str(user_id)]:
-                if item['candidate_id'] == candidate_id:
-                    return True
-        return False
+
+        return len([item for item in data_json[str(user_id)] if item['candidate_id'] == candidate_id]) > 0
