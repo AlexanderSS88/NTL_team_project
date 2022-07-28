@@ -13,6 +13,7 @@ class DataBaseExchange(DataBaseConnection):
             make_connection=make_connection,
             db_data_file_path=db_data_file_path
         )
+        self.create_tables()
 
     def add_user_data(self, user_data: dict):
         """Add a user data to database param:

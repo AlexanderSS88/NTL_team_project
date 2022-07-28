@@ -13,7 +13,6 @@ def wellcome(self, user_id, message):
     :param message: user message text
     """
     companion_user = Person(user_id)
-    db = DataBaseExchange()
     if re.findall(self.pattern_hi, message, flags=re.IGNORECASE):
         message = f"Здаров, коль не шутишь! {companion_user.first_name}, " \
                   f"предлагаю тебе попробовать познакомиться с кем-нибудь. Согласен? :)"
@@ -21,7 +20,6 @@ def wellcome(self, user_id, message):
         message = f"Не здороваюсь.... {companion_user.last_name}, будешь знакомиться с кем-нибудь?"
 
     self.ask_user_yes_no(user_id=companion_user.user_id, message=message)
-    db.add_user(user_id, companion_user.first_name, companion_user.last_name)
 
 
 

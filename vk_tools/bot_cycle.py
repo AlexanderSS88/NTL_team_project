@@ -11,7 +11,9 @@ def bot_cycle(self, work_w_json=False):
     :param work_w_json
     """
     clients_dict = {}
-    db = DataBaseExchange()
+    db = 0
+    if not work_w_json:
+        db = DataBaseExchange()
     jsn = Add2Json('db_in_json.json')
 
     while True:
@@ -21,7 +23,11 @@ def bot_cycle(self, work_w_json=False):
             new_user = NewUser(new_id)
             self.wellcome(new_id, message)
             clients_dict.setdefault(new_id, new_user)  # добавляем клиента в словарь
-            jsn.add_new_user(new_id)  # добавляем клиента в json
+            if not work_w_json:
+                companion_user = Person(new_id)
+                db.add_user(new_id, companion_user.first_name, companion_user.last_name)
+            else:
+                jsn.add_new_user(new_id)  # добавляем клиента в json
             clients_dict[new_id].dialog_status = 'wellcome'  # спросили, хочешь знакомиться
         else:
             match clients_dict[new_id].dialog_status:
@@ -157,14 +163,15 @@ def bot_cycle(self, work_w_json=False):
                                                   candidate_id=clients_dict[new_id].current_candidate,
                                                   in_favorites=True)
                         case 'complete':  # завершить
-                            if not work_w_json:
-                                db.add_candidate(user_id=new_id,
-                                                 candidate_id=clients_dict[new_id].current_candidate,
-                                                 in_favorites=False)
-                            else:
-                                jsn.add_candidate(user_id=new_id,
-                                                  candidate_id=clients_dict[new_id].current_candidate,
-                                                  in_favorites=False)
+                            if clients_dict[new_id].current_candidate not in clients_dict[new_id].favorite_list:
+                                if not work_w_json:
+                                    db.add_candidate(user_id=new_id,
+                                                     candidate_id=clients_dict[new_id].current_candidate,
+                                                     in_favorites=False)
+                                else:
+                                    jsn.add_candidate(user_id=new_id,
+                                                      candidate_id=clients_dict[new_id].current_candidate,
+                                                      in_favorites=False)
 
                             if not clients_dict[new_id].favorite_list:
                                 self.write_msg(user_id=new_id,
@@ -191,14 +198,15 @@ def bot_cycle(self, work_w_json=False):
                                                       message='Продолжим?')
 
                         case 'next':
-                            if not work_w_json:
-                                db.add_candidate(user_id=new_id,
-                                                 candidate_id=clients_dict[new_id].current_candidate,
-                                                 in_favorites=False)
-                            else:
-                                jsn.add_candidate(user_id=new_id,
-                                                  candidate_id=clients_dict[new_id].current_candidate,
-                                                  in_favorites=False)
+                            if clients_dict[new_id].current_candidate not in clients_dict[new_id].favorite_list:
+                                if not work_w_json:
+                                    db.add_candidate(user_id=new_id,
+                                                     candidate_id=clients_dict[new_id].current_candidate,
+                                                     in_favorites=False)
+                                else:
+                                    jsn.add_candidate(user_id=new_id,
+                                                      candidate_id=clients_dict[new_id].current_candidate,
+                                                      in_favorites=False)
 
                             self.delete_messages(new_id)
 
